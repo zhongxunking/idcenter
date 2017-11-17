@@ -31,5 +31,9 @@
             <artifactId>ids-integration</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.antframework.boot</groupId>
+            <artifactId>ant-boot-starter-bekit</artifactId>
+        </dependency>
     </dependencies>
 </project>
