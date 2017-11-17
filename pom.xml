@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.antframework.boot</groupId>
+        <artifactId>ant-boot-starter-parent</artifactId>
+        <version>1.0.0.RELEASE</version>
+    </parent>
+
+    <groupId>org.antframework.ids</groupId>
+    <artifactId>ids</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>ids</name>
+
+    <dependencyManagement>
+    </dependencyManagement>
+  <modules>
+    <module>ids-facade</module>
+    <module>ids-common</module>
+    <module>ids-dal</module>
+    <module>ids-integration</module>
+    <module>ids-biz</module>
+    <module>ids-web</module>
+    <module>ids-assemble</module>
+    <module>ids-test</module>
+  </modules>
+</project>
