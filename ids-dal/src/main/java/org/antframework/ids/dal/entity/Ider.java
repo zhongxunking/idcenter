@@ -35,7 +35,7 @@ public class Ider extends AbstractEntity {
     @Column
     private Date currentPeriod;
 
-    // 一个周期内id最大值（不包含）
+    // 一个周期内id最大值（不包含），null表示不限制最大值
     @Column
     private Long maxId;
 
