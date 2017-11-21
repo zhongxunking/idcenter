@@ -6,7 +6,7 @@
  * 修订记录:
  * @author 钟勋 2017-06-22 11:34 创建
  */
-package org.antframework.ids.assemble;
+package org.antframework.ids;
 
 import org.antframework.boot.core.AntBootApplication;
 import org.antframework.boot.core.Apps;

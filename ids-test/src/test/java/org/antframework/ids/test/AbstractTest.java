@@ -9,7 +9,7 @@
 package org.antframework.ids.test;
 
 import org.antframework.boot.core.Apps;
-import org.antframework.ids.assemble.Main;
+import org.antframework.ids.Main;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
