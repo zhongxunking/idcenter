@@ -15,9 +15,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * 新增id提供者order
+ * 新增或修改id提供者order
  */
-public class AddIderOrder extends AbstractOrder {
+public class AddOrModifyIderOrder extends AbstractOrder {
     // id编码
     @NotBlank
     private String idCode;

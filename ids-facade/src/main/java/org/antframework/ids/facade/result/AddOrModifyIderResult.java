@@ -11,7 +11,7 @@ package org.antframework.ids.facade.result;
 import org.antframework.common.util.facade.AbstractResult;
 
 /**
- * 添加id提供者result
+ * 新增或修改id提供者result
  */
-public class AddIderResult extends AbstractResult {
+public class AddOrModifyIderResult extends AbstractResult {
 }

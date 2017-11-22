@@ -8,8 +8,8 @@
  */
 package org.antframework.ids.facade.api.manage;
 
-import org.antframework.ids.facade.order.AddIderOrder;
-import org.antframework.ids.facade.result.AddIderResult;
+import org.antframework.ids.facade.order.AddOrModifyIderOrder;
+import org.antframework.ids.facade.result.AddOrModifyIderResult;
 
 /**
  * id提供者管理服务
@@ -17,8 +17,7 @@ import org.antframework.ids.facade.result.AddIderResult;
 public interface IderManageService {
 
     /**
-     * 添加id提供者
+     * 新增或修改id提供者
      */
-    AddIderResult addIder(AddIderOrder order);
-
+    AddOrModifyIderResult addOrModifyIder(AddOrModifyIderOrder order);
 }
