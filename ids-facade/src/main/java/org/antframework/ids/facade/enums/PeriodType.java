@@ -13,11 +13,6 @@ package org.antframework.ids.facade.enums;
  */
 public enum PeriodType {
     /**
-     * 无周期
-     */
-    NONE,
-
-    /**
      * 每小时算一个周期
      */
     HOUR,
@@ -35,5 +30,10 @@ public enum PeriodType {
     /**
      * 每一年算一个周期
      */
-    YEAR
+    YEAR,
+
+    /**
+     * 无周期
+     */
+    NONE,
 }

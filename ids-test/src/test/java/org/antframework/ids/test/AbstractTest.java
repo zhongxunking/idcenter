@@ -9,7 +9,10 @@
 package org.antframework.ids.test;
 
 import org.antframework.boot.core.Apps;
+import org.antframework.common.util.facade.AbstractResult;
+import org.antframework.common.util.facade.Status;
 import org.antframework.ids.Main;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,5 +30,9 @@ public class AbstractTest {
     static {
         // 设置使用环境
         Apps.setProfileIfNotExists("dev");
+    }
+
+    protected void assertSuccess(AbstractResult result) {
+        Assert.assertEquals(Status.SUCCESS, result.getStatus());
     }
 }
