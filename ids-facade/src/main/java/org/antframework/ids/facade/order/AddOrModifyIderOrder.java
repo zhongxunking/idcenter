@@ -12,6 +12,7 @@ import org.antframework.common.util.facade.AbstractOrder;
 import org.antframework.ids.facade.enums.PeriodType;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -25,6 +26,7 @@ public class AddOrModifyIderOrder extends AbstractOrder {
     @NotNull
     private PeriodType periodType;
     // 一个周期内id最大值（不包含），null表示不限制最大值
+    @Min(2)
     private Long maxId;
 
     public String getIdCode() {
