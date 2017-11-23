@@ -15,6 +15,7 @@ import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.entity.Ider;
 import org.antframework.ids.facade.order.ModifyIderCurrentPeriodOrder;
 import org.antframework.ids.facade.result.ModifyIderCurrentPeriodResult;
+import org.antframework.ids.facade.util.PeriodUtils;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
@@ -36,7 +37,7 @@ public class ModifyIderCurrentPeriodService {
         if (ider == null) {
             throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
-        ider.setCurrentPeriod(order.getNewCurrentPeriod());
+        ider.setCurrentPeriod(PeriodUtils.parsePeriod(ider.getPeriodType(), order.getNewCurrentPeriod()));
         iderDao.save(ider);
     }
 }
