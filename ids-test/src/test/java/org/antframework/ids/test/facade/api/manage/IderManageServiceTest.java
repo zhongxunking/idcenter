@@ -11,7 +11,9 @@ package org.antframework.ids.test.facade.api.manage;
 import org.antframework.ids.facade.api.manage.IderManageService;
 import org.antframework.ids.facade.enums.PeriodType;
 import org.antframework.ids.facade.order.AddOrModifyIderOrder;
+import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
 import org.antframework.ids.facade.result.AddOrModifyIderResult;
+import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
 import org.antframework.ids.test.AbstractTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,6 +35,16 @@ public class IderManageServiceTest extends AbstractTest {
         order.setMaxId(9000000000L);
 
         AddOrModifyIderResult result = iderManageService.addOrModifyIder(order);
+        assertSuccess(result);
+    }
+
+    @Test
+    public void testModifyIderProducerNumber() {
+        ModifyIderProducerNumberOrder order = new ModifyIderProducerNumberOrder();
+        order.setIdCode("oid");
+        order.setNewProducerNumber(1);
+
+        ModifyIderProducerNumberResult result = iderManageService.modifyIderProducerNumber(order);
         assertSuccess(result);
     }
 }

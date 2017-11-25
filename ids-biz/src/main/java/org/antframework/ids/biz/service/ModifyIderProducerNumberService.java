@@ -12,13 +12,17 @@ import org.antframework.boot.bekit.AntBekitException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.Status;
 import org.antframework.ids.dal.dao.IderDao;
+import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
+import org.antframework.ids.dal.entity.Producer;
 import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
 import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * 修改id提供者的生产者数量服务
@@ -27,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ModifyIderProducerNumberService {
     @Autowired
     private IderDao iderDao;
+    @Autowired
+    private ProducerDao producerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<ModifyIderProducerNumberOrder, ModifyIderProducerNumberResult> context) {
@@ -36,6 +42,31 @@ public class ModifyIderProducerNumberService {
         if (ider == null) {
             throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
+        List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
+        for (int i = producers.size(); i < order.getNewProducerNumber(); i++) {
+            Producer sourceProducer = producers.get(i % producers.size());
 
+            Producer producer = new Producer();
+            producer.setIdCode(ider.getIdCode());
+            producer.setIndex(i);
+            producer.setCurrentPeriod(sourceProducer.getCurrentPeriod());
+            producer.setCurrentId(sourceProducer.getCurrentId() + (i - i % producers.size()));
+
+            producerDao.save(producer);
+        }
+
+        for (int i = order.getNewProducerNumber(); i < producers.size(); i++) {
+            Producer targetProducer = producers.get(i % order.getNewProducerNumber());
+
+            Producer producer = producers.get(i);
+            if (producer.getCurrentId() > targetProducer.getCurrentId()) {
+                targetProducer.setCurrentId(producer.getCurrentId());
+                producerDao.save(producer);
+            }
+            producerDao.delete(producer);
+        }
+
+        ider.setProducerNumber(order.getNewProducerNumber());
+        iderDao.save(ider);
     }
 }

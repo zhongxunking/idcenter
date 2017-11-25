@@ -20,9 +20,9 @@ public class ModifyIderProducerNumberOrder extends AbstractOrder {
     // id编码
     @NotBlank
     private String idCode;
-    // 生产者个数
+    // 新的生产者个数
     @Min(1)
-    private int producerNumber;
+    private int newProducerNumber;
 
     public String getIdCode() {
         return idCode;
@@ -32,11 +32,11 @@ public class ModifyIderProducerNumberOrder extends AbstractOrder {
         this.idCode = idCode;
     }
 
-    public int getProducerNumber() {
-        return producerNumber;
+    public int getNewProducerNumber() {
+        return newProducerNumber;
     }
 
-    public void setProducerNumber(int producerNumber) {
-        this.producerNumber = producerNumber;
+    public void setNewProducerNumber(int newProducerNumber) {
+        this.newProducerNumber = newProducerNumber;
     }
 }

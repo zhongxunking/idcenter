@@ -9,7 +9,11 @@
 package org.antframework.ids.dal.dao;
 
 import org.antframework.ids.dal.entity.Producer;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.repository.RepositoryDefinition;
+
+import javax.persistence.LockModeType;
+import java.util.List;
 
 /**
  * id生产者dao
@@ -18,4 +22,9 @@ import org.springframework.data.repository.RepositoryDefinition;
 public interface ProducerDao {
 
     void save(Producer producer);
+
+    void delete(Producer producer);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    List<Producer> findLockByIdCodeOrderByIndexAsc(String idCode);
 }
