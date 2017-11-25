@@ -15,7 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.Date;
 
 /**
  * id提供者
@@ -31,17 +30,13 @@ public class Ider extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private PeriodType periodType;
 
-    // 当前周期
-    @Column
-    private Date currentPeriod;
-
     // 一个周期内id最大值（不包含），null表示不限制最大值
     @Column
     private Long maxId;
 
-    // 当前Id
+    // 生产者个数
     @Column
-    private Long currentId;
+    private Integer producerNumber;
 
     public String getIdCode() {
         return idCode;
@@ -59,14 +54,6 @@ public class Ider extends AbstractEntity {
         this.periodType = periodType;
     }
 
-    public Date getCurrentPeriod() {
-        return currentPeriod;
-    }
-
-    public void setCurrentPeriod(Date currentPeriod) {
-        this.currentPeriod = currentPeriod;
-    }
-
     public Long getMaxId() {
         return maxId;
     }
@@ -75,11 +62,11 @@ public class Ider extends AbstractEntity {
         this.maxId = maxId;
     }
 
-    public Long getCurrentId() {
-        return currentId;
+    public Integer getProducerNumber() {
+        return producerNumber;
     }
 
-    public void setCurrentId(Long currentId) {
-        this.currentId = currentId;
+    public void setProducerNumber(Integer producerNumber) {
+        this.producerNumber = producerNumber;
     }
 }
