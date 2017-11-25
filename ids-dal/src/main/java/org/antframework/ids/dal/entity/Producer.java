@@ -11,11 +11,13 @@ package org.antframework.ids.dal.entity;
 import org.antframework.boot.jpa.AbstractEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.util.Date;
 
 /**
  * id生产者
  */
+@Entity
 public class Producer extends AbstractEntity {
     // 生产者编码
     @Column(unique = true, length = 128)
