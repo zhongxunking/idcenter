@@ -34,7 +34,7 @@ public class Ider extends AbstractEntity {
     @Column
     private Long maxId;
 
-    // 生产者个数
+    // 生产者数量
     @Column
     private Integer producerNumber;
 
