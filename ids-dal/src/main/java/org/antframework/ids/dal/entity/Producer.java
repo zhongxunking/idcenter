@@ -12,16 +12,23 @@ import org.antframework.boot.jpa.AbstractEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.Date;
 
 /**
  * id生产者
  */
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"idCode", "index"}))
 public class Producer extends AbstractEntity {
-    // 生产者编码
-    @Column(unique = true, length = 128)
-    private String producerCode;
+    // id编码
+    @Column(length = 128)
+    private String idCode;
+
+    // 序号
+    @Column(name = "`index`")
+    private Integer index;
 
     // 当前周期
     @Column
@@ -31,12 +38,20 @@ public class Producer extends AbstractEntity {
     @Column
     private Long currentId;
 
-    public String getProducerCode() {
-        return producerCode;
+    public String getIdCode() {
+        return idCode;
     }
 
-    public void setProducerCode(String producerCode) {
-        this.producerCode = producerCode;
+    public void setIdCode(String idCode) {
+        this.idCode = idCode;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     public Date getCurrentPeriod() {

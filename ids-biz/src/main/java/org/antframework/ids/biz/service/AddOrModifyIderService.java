@@ -15,7 +15,6 @@ import org.antframework.ids.dal.entity.Producer;
 import org.antframework.ids.facade.order.AddOrModifyIderOrder;
 import org.antframework.ids.facade.result.AddOrModifyIderResult;
 import org.antframework.ids.facade.util.PeriodUtils;
-import org.antframework.ids.facade.util.ProducerUtils;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
@@ -60,7 +59,8 @@ public class AddOrModifyIderService {
     // 构建生产者
     private Producer buildProducer(Ider ider) {
         Producer producer = new Producer();
-        producer.setProducerCode(ProducerUtils.parseProducerCode(ider.getIdCode(), 0));
+        producer.setIdCode(ider.getIdCode());
+        producer.setIndex(0);
         producer.setCurrentPeriod(PeriodUtils.parsePeriod(ider.getPeriodType(), new Date()));
         producer.setCurrentId(0L);
 
