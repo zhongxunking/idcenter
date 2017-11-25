@@ -9,11 +9,7 @@
 package org.antframework.ids.facade.api.manage;
 
 import org.antframework.ids.facade.order.AddOrModifyIderOrder;
-import org.antframework.ids.facade.order.ModifyIderCurrentIdOrder;
-import org.antframework.ids.facade.order.ModifyIderCurrentPeriodOrder;
 import org.antframework.ids.facade.result.AddOrModifyIderResult;
-import org.antframework.ids.facade.result.ModifyIderCurrentIdResult;
-import org.antframework.ids.facade.result.ModifyIderCurrentPeriodResult;
 
 /**
  * id提供者管理服务
@@ -25,13 +21,4 @@ public interface IderManageService {
      */
     AddOrModifyIderResult addOrModifyIder(AddOrModifyIderOrder order);
 
-    /**
-     * 修改id提供者当前周期
-     */
-    ModifyIderCurrentPeriodResult modifyIderCurrentPeriod(ModifyIderCurrentPeriodOrder order);
-
-    /**
-     * 修改id提供者当前id
-     */
-    ModifyIderCurrentIdResult modifyIderCurrentId(ModifyIderCurrentIdOrder order);
 }
