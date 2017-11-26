@@ -23,9 +23,13 @@ public class PeriodUtils {
      *
      * @param periodType 周期类型
      * @param date       时间
-     * @return 周期
+     * @return 周期（null 如果周期类型为PeriodType.NONE）
      */
     public static Date parsePeriod(PeriodType periodType, Date date) {
+        if (periodType == PeriodType.NONE) {
+            return null;
+        }
+
         Calendar calendar = Calendar.getInstance();
         calendar.setLenient(false);
         calendar.setTime(date);
@@ -43,7 +47,7 @@ public class PeriodUtils {
                 calendar.set(Calendar.MILLISECOND, 0);
                 break;
             default:
-                return null;
+                throw new IllegalArgumentException("无法识别的周期类型：" + periodType);
         }
         return calendar.getTime();
     }
