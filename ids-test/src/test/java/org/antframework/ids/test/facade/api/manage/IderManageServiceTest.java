@@ -42,7 +42,7 @@ public class IderManageServiceTest extends AbstractTest {
     public void testModifyIderProducerNumber() {
         ModifyIderProducerNumberOrder order = new ModifyIderProducerNumberOrder();
         order.setIdCode("oid");
-        order.setNewProducerNumber(1);
+        order.setNewProducerNumber(4);
 
         ModifyIderProducerNumberResult result = iderManageService.modifyIderProducerNumber(order);
         assertSuccess(result);

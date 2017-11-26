@@ -73,7 +73,7 @@ public class ModifyIderProducerNumberService {
         producer.setIndex(index);
         producer.setCurrentPeriod(sourceProducer.getCurrentPeriod());
         producer.setCurrentId(sourceProducer.getCurrentId());
-        ProducerUtils.produce(producer, ider, index - sourceProducer.getIndex());
+        ProducerUtils.produce(producer, ider, index / ider.getProducerNumber());
 
         return producer;
     }
@@ -83,7 +83,7 @@ public class ModifyIderProducerNumberService {
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
         for (int i = newProducerNumber; i < ider.getProducerNumber(); i++) {
             Producer deletingProducer = producers.get(i);
-            updateProducer(producers.get(i % ider.getProducerNumber()), deletingProducer);
+            updateProducer(producers.get(i % newProducerNumber), deletingProducer);
             producerDao.delete(deletingProducer);
         }
     }

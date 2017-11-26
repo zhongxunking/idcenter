@@ -69,18 +69,16 @@ public class ProducerUtils {
             if (o1.getCurrentPeriod() != o2.getCurrentPeriod()) {
                 if (o1.getCurrentPeriod().getTime() < o2.getCurrentPeriod().getTime()) {
                     return -1;
-                } else if (o1.getCurrentPeriod().getTime() == o2.getCurrentPeriod().getTime()) {
-                    return 0;
-                } else {
+                } else if (o1.getCurrentPeriod().getTime() > o2.getCurrentPeriod().getTime()) {
                     return 1;
                 }
             }
             if (o1.getCurrentId() < o2.getCurrentId()) {
                 return -1;
-            } else if (o1.getCurrentId() == o2.getCurrentId()) {
-                return 0;
-            } else {
+            } else if (o1.getCurrentId() > o2.getCurrentId()) {
                 return 1;
+            } else {
+                return 0;
             }
         }
     }
