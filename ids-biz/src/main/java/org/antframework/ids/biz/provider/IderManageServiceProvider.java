@@ -10,9 +10,11 @@ package org.antframework.ids.biz.provider;
 
 import org.antframework.ids.facade.api.manage.IderManageService;
 import org.antframework.ids.facade.order.AddOrModifyIderOrder;
+import org.antframework.ids.facade.order.ModifyIderCurrentOrder;
 import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
 import org.antframework.ids.facade.order.QueryIderOrder;
 import org.antframework.ids.facade.result.AddOrModifyIderResult;
+import org.antframework.ids.facade.result.ModifyIderCurrentResult;
 import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
 import org.antframework.ids.facade.result.QueryIderResult;
 import org.bekit.service.ServiceEngine;
@@ -35,6 +37,11 @@ public class IderManageServiceProvider implements IderManageService {
     @Override
     public ModifyIderProducerNumberResult modifyIderProducerNumber(ModifyIderProducerNumberOrder order) {
         return serviceEngine.execute("modifyIderProducerNumberService", order);
+    }
+
+    @Override
+    public ModifyIderCurrentResult modifyIderCurrent(ModifyIderCurrentOrder order) {
+        return serviceEngine.execute("modifyIderCurrentService", order);
     }
 
     @Override
