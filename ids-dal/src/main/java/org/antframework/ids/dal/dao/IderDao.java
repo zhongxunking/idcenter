@@ -9,10 +9,13 @@
 package org.antframework.ids.dal.dao;
 
 import org.antframework.ids.dal.entity.Ider;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.repository.RepositoryDefinition;
 
 import javax.persistence.LockModeType;
+import java.util.Map;
 
 /**
  * id提供则dao
@@ -24,4 +27,6 @@ public interface IderDao {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Ider findLockByIdCode(String idCode);
+
+    Page<Ider> query(Map<String, Object> searchParams, Pageable pageable);
 }

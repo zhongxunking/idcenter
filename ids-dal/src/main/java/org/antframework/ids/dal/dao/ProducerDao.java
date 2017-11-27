@@ -27,4 +27,6 @@ public interface ProducerDao {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Producer> findLockByIdCodeOrderByIndexAsc(String idCode);
+
+    List<Producer> findByIdCodeOrderByIndexAsc(String idCode);
 }
