@@ -12,8 +12,10 @@ import org.antframework.ids.facade.api.manage.IderManageService;
 import org.antframework.ids.facade.enums.PeriodType;
 import org.antframework.ids.facade.order.AddOrModifyIderOrder;
 import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
+import org.antframework.ids.facade.order.QueryIderOrder;
 import org.antframework.ids.facade.result.AddOrModifyIderResult;
 import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
+import org.antframework.ids.facade.result.QueryIderResult;
 import org.antframework.ids.test.AbstractTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,6 +47,17 @@ public class IderManageServiceTest extends AbstractTest {
         order.setNewProducerNumber(4);
 
         ModifyIderProducerNumberResult result = iderManageService.modifyIderProducerNumber(order);
+        assertSuccess(result);
+    }
+
+    @Test
+    public void testQueryIder() {
+        QueryIderOrder order = new QueryIderOrder();
+        order.setPageNo(1);
+        order.setPageSize(10);
+        order.setIdCode("o");
+
+        QueryIderResult result = iderManageService.queryIder(order);
         assertSuccess(result);
     }
 }
