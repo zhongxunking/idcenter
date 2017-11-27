@@ -11,15 +11,19 @@ package org.antframework.ids.test.facade.api.manage;
 import org.antframework.ids.facade.api.manage.IderManageService;
 import org.antframework.ids.facade.enums.PeriodType;
 import org.antframework.ids.facade.order.AddOrModifyIderOrder;
+import org.antframework.ids.facade.order.ModifyIderCurrentOrder;
 import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
 import org.antframework.ids.facade.order.QueryIderOrder;
 import org.antframework.ids.facade.result.AddOrModifyIderResult;
+import org.antframework.ids.facade.result.ModifyIderCurrentResult;
 import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
 import org.antframework.ids.facade.result.QueryIderResult;
 import org.antframework.ids.test.AbstractTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
  * id提供者管理服务单元测试
@@ -47,6 +51,17 @@ public class IderManageServiceTest extends AbstractTest {
         order.setNewProducerNumber(4);
 
         ModifyIderProducerNumberResult result = iderManageService.modifyIderProducerNumber(order);
+        assertSuccess(result);
+    }
+
+    @Test
+    public void testModifyIderCurrent() {
+        ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
+        order.setIdCode("oid");
+        order.setNewCurrentPeriod(new Date());
+        order.setNewCurrentId(100);
+
+        ModifyIderCurrentResult result = iderManageService.modifyIderCurrent(order);
         assertSuccess(result);
     }
 

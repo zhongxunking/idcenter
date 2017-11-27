@@ -25,7 +25,7 @@ public class ModifyIderCurrentOrder extends AbstractOrder {
     private Date newCurrentPeriod;
     // 新的当前Id
     @Min(0)
-    private Long newCurrentId;
+    private long newCurrentId;
 
     public String getIdCode() {
         return idCode;
@@ -43,11 +43,11 @@ public class ModifyIderCurrentOrder extends AbstractOrder {
         this.newCurrentPeriod = newCurrentPeriod;
     }
 
-    public Long getNewCurrentId() {
+    public long getNewCurrentId() {
         return newCurrentId;
     }
 
-    public void setNewCurrentId(Long newCurrentId) {
+    public void setNewCurrentId(long newCurrentId) {
         this.newCurrentId = newCurrentId;
     }
 }
