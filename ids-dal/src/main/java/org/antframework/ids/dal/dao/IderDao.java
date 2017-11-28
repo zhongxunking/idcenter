@@ -25,6 +25,8 @@ public interface IderDao {
 
     void save(Ider ider);
 
+    void delete(Ider ider);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Ider findLockByIdCode(String idCode);
 

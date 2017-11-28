@@ -8,14 +8,8 @@
  */
 package org.antframework.ids.facade.api.manage;
 
-import org.antframework.ids.facade.order.AddOrModifyIderOrder;
-import org.antframework.ids.facade.order.ModifyIderCurrentOrder;
-import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
-import org.antframework.ids.facade.order.QueryIderOrder;
-import org.antframework.ids.facade.result.AddOrModifyIderResult;
-import org.antframework.ids.facade.result.ModifyIderCurrentResult;
-import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
-import org.antframework.ids.facade.result.QueryIderResult;
+import org.antframework.ids.facade.order.*;
+import org.antframework.ids.facade.result.*;
 
 /**
  * id提供者管理服务
@@ -36,6 +30,11 @@ public interface IderManageService {
      * 修改id提供者当前数据
      */
     ModifyIderCurrentResult modifyIderCurrent(ModifyIderCurrentOrder order);
+
+    /**
+     * 删除id提供者
+     */
+    DeleteIderResult deleteIder(DeleteIderOrder order);
 
     /**
      * 查询id提供者

@@ -9,14 +9,8 @@
 package org.antframework.ids.biz.provider;
 
 import org.antframework.ids.facade.api.manage.IderManageService;
-import org.antframework.ids.facade.order.AddOrModifyIderOrder;
-import org.antframework.ids.facade.order.ModifyIderCurrentOrder;
-import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
-import org.antframework.ids.facade.order.QueryIderOrder;
-import org.antframework.ids.facade.result.AddOrModifyIderResult;
-import org.antframework.ids.facade.result.ModifyIderCurrentResult;
-import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
-import org.antframework.ids.facade.result.QueryIderResult;
+import org.antframework.ids.facade.order.*;
+import org.antframework.ids.facade.result.*;
 import org.bekit.service.ServiceEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +36,11 @@ public class IderManageServiceProvider implements IderManageService {
     @Override
     public ModifyIderCurrentResult modifyIderCurrent(ModifyIderCurrentOrder order) {
         return serviceEngine.execute("modifyIderCurrentService", order);
+    }
+
+    @Override
+    public DeleteIderResult deleteIder(DeleteIderOrder order) {
+        return serviceEngine.execute("deleteIderService", order);
     }
 
     @Override
