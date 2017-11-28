@@ -11,12 +11,15 @@ package org.antframework.ids.biz.service;
 import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
+import org.antframework.ids.dal.entity.Producer;
 import org.antframework.ids.facade.order.DeleteIderOrder;
 import org.antframework.ids.facade.result.DeleteIderResult;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * 删除id提供者服务
@@ -36,7 +39,11 @@ public class DeleteIderService {
         if (ider == null) {
             return;
         }
-        producerDao.deleteByIdCode(ider.getIdCode());
+
+        List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
+        for (Producer producer : producers) {
+            producerDao.delete(producer);
+        }
         iderDao.delete(ider);
     }
 }

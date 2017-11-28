@@ -25,8 +25,6 @@ public interface ProducerDao {
 
     void delete(Producer producer);
 
-    void deleteByIdCode(String idCode);
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Producer> findLockByIdCodeOrderByIndexAsc(String idCode);
 
