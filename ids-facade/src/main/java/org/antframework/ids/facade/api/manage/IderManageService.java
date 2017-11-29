@@ -22,9 +22,9 @@ public interface IderManageService {
     AddOrModifyIderResult addOrModifyIder(AddOrModifyIderOrder order);
 
     /**
-     * 修改id提供者的生产者数量
+     * 修改id提供者的因数
      */
-    ModifyIderProducerNumberResult modifyIderProducerNumber(ModifyIderProducerNumberOrder order);
+    ModifyIderFactorResult modifyIderFactor(ModifyIderFactorOrder order);
 
     /**
      * 修改id提供者当前数据

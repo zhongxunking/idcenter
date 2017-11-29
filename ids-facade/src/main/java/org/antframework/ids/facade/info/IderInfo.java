@@ -24,8 +24,8 @@ public class IderInfo extends AbstractInfo {
     private PeriodType periodType;
     // 一个周期内id最大值（不包含），null表示不限制最大值
     private Long maxId;
-    // 生产者数量
-    private Integer producerNumber;
+    // 因数（生产者数量）
+    private Integer factor;
     // 生产者信息
     private List<ProducerInfo> producerInfos = new ArrayList<>();
 
@@ -53,12 +53,12 @@ public class IderInfo extends AbstractInfo {
         this.maxId = maxId;
     }
 
-    public Integer getProducerNumber() {
-        return producerNumber;
+    public Integer getFactor() {
+        return factor;
     }
 
-    public void setProducerNumber(Integer producerNumber) {
-        this.producerNumber = producerNumber;
+    public void setFactor(Integer factor) {
+        this.factor = factor;
     }
 
     public List<ProducerInfo> getProducerInfos() {

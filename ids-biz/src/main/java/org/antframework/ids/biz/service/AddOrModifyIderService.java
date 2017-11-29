@@ -51,7 +51,7 @@ public class AddOrModifyIderService {
     private Ider buildIder(AddOrModifyIderOrder addOrModifyIderOrder) {
         Ider ider = new Ider();
         BeanUtils.copyProperties(addOrModifyIderOrder, ider);
-        ider.setProducerNumber(1);
+        ider.setFactor(1);
 
         return ider;
     }

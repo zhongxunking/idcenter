@@ -48,7 +48,7 @@ public class ModifyIderCurrentService {
             throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]周期类型为%s，新的当前周期不能为null", ider.getIdCode(), ider.getPeriodType()));
         }
         if (order.getNewCurrentId() >= ider.getMaxId()) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的当前id[%s]超过id提供者[%s]允许的最大值[%s]（不包含）", order.getNewCurrentId(), ider.getIdCode(), ider.getMaxId()));
+            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的当前id[%d]超过id提供者[%s]允许的最大值[%d]（不包含）", order.getNewCurrentId(), ider.getIdCode(), ider.getMaxId()));
         }
 
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());

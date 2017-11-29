@@ -29,8 +29,8 @@ public class IderManageServiceProvider implements IderManageService {
     }
 
     @Override
-    public ModifyIderProducerNumberResult modifyIderProducerNumber(ModifyIderProducerNumberOrder order) {
-        return serviceEngine.execute("modifyIderProducerNumberService", order);
+    public ModifyIderFactorResult modifyIderFactor(ModifyIderFactorOrder order) {
+        return serviceEngine.execute("modifyIderFactorService", order);
     }
 
     @Override

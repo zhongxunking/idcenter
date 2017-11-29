@@ -14,15 +14,15 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Min;
 
 /**
- * 修改id提供者的生产者数量order
+ * 修改id提供者的因数order
  */
-public class ModifyIderProducerNumberOrder extends AbstractOrder {
+public class ModifyIderFactorOrder extends AbstractOrder {
     // id编码
     @NotBlank
     private String idCode;
-    // 新的生产者个数
+    // 新的因数
     @Min(1)
-    private int newProducerNumber;
+    private int newFactor;
 
     public String getIdCode() {
         return idCode;
@@ -32,11 +32,11 @@ public class ModifyIderProducerNumberOrder extends AbstractOrder {
         this.idCode = idCode;
     }
 
-    public int getNewProducerNumber() {
-        return newProducerNumber;
+    public int getNewFactor() {
+        return newFactor;
     }
 
-    public void setNewProducerNumber(int newProducerNumber) {
-        this.newProducerNumber = newProducerNumber;
+    public void setNewFactor(int newFactor) {
+        this.newFactor = newFactor;
     }
 }

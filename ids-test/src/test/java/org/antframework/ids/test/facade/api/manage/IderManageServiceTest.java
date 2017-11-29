@@ -39,12 +39,12 @@ public class IderManageServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testModifyIderProducerNumber() {
-        ModifyIderProducerNumberOrder order = new ModifyIderProducerNumberOrder();
+    public void testModifyIderFactor() {
+        ModifyIderFactorOrder order = new ModifyIderFactorOrder();
         order.setIdCode("oid");
-        order.setNewProducerNumber(4);
+        order.setNewFactor(4);
 
-        ModifyIderProducerNumberResult result = iderManageService.modifyIderProducerNumber(order);
+        ModifyIderFactorResult result = iderManageService.modifyIderFactor(order);
         assertSuccess(result);
     }
 

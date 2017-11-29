@@ -11,7 +11,7 @@ package org.antframework.ids.facade.result;
 import org.antframework.common.util.facade.AbstractResult;
 
 /**
- * 修改id提供者的生产者数量result
+ * 修改id提供者的因数result
  */
-public class ModifyIderProducerNumberResult extends AbstractResult {
+public class ModifyIderFactorResult extends AbstractResult {
 }

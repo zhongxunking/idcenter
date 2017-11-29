@@ -16,8 +16,8 @@ import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
 import org.antframework.ids.dal.entity.Producer;
-import org.antframework.ids.facade.order.ModifyIderProducerNumberOrder;
-import org.antframework.ids.facade.result.ModifyIderProducerNumberResult;
+import org.antframework.ids.facade.order.ModifyIderFactorOrder;
+import org.antframework.ids.facade.result.ModifyIderFactorResult;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
@@ -26,42 +26,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 /**
- * 修改id提供者的生产者数量服务
+ * 修改id提供者的因数服务
  */
 @Service(enableTx = true)
-public class ModifyIderProducerNumberService {
+public class ModifyIderFactorService {
     @Autowired
     private IderDao iderDao;
     @Autowired
     private ProducerDao producerDao;
 
     @ServiceExecute
-    public void execute(ServiceContext<ModifyIderProducerNumberOrder, ModifyIderProducerNumberResult> context) {
-        ModifyIderProducerNumberOrder order = context.getOrder();
+    public void execute(ServiceContext<ModifyIderFactorOrder, ModifyIderFactorResult> context) {
+        ModifyIderFactorOrder order = context.getOrder();
 
         Ider ider = iderDao.findLockByIdCode(order.getIdCode());
         if (ider == null) {
             throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
-        if (Math.max(order.getNewProducerNumber(), ider.getProducerNumber()) % Math.min(order.getNewProducerNumber(), ider.getProducerNumber()) != 0) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("生产者数量要么成倍增加要么成倍减少，id提供者[%s]当前生产者数量[%s]，期望数量[%s]不符合要求", order.getIdCode(), ider.getProducerNumber(), order.getNewProducerNumber()));
+        if (Math.max(order.getNewFactor(), ider.getFactor()) % Math.min(order.getNewFactor(), ider.getFactor()) != 0) {
+            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("因数要么成倍增加要么成倍减少，id提供者[%s]当前因数[%d]，期望因数[%d]不符合要求", order.getIdCode(), ider.getFactor(), order.getNewFactor()));
         }
 
-        if (order.getNewProducerNumber() > ider.getProducerNumber()) {
-            addProducers(ider, order.getNewProducerNumber());
-        } else if (order.getNewProducerNumber() < ider.getProducerNumber()) {
-            deleteProducers(ider, order.getNewProducerNumber());
+        if (order.getNewFactor() > ider.getFactor()) {
+            addProducers(ider, order.getNewFactor());
+        } else if (order.getNewFactor() < ider.getFactor()) {
+            deleteProducers(ider, order.getNewFactor());
         }
 
-        ider.setProducerNumber(order.getNewProducerNumber());
+        ider.setFactor(order.getNewFactor());
         iderDao.save(ider);
     }
 
     // 添加id生产者
-    private void addProducers(Ider ider, int newProducerNumber) {
+    private void addProducers(Ider ider, int newFactor) {
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
-        for (int i = ider.getProducerNumber(); i < newProducerNumber; i++) {
-            Producer producer = buildProducer(producers.get(i % ider.getProducerNumber()), i, ider);
+        for (int i = ider.getFactor(); i < newFactor; i++) {
+            Producer producer = buildProducer(producers.get(i % ider.getFactor()), i, ider);
             producerDao.save(producer);
         }
     }
@@ -73,17 +73,17 @@ public class ModifyIderProducerNumberService {
         producer.setIndex(index);
         producer.setCurrentPeriod(sourceProducer.getCurrentPeriod());
         producer.setCurrentId(sourceProducer.getCurrentId());
-        ProducerUtils.produce(producer, ider, index / ider.getProducerNumber());
+        ProducerUtils.produce(producer, ider, index / ider.getFactor());
 
         return producer;
     }
 
     // 删除id生产者
-    private void deleteProducers(Ider ider, int newProducerNumber) {
+    private void deleteProducers(Ider ider, int newFactor) {
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
-        for (int i = newProducerNumber; i < ider.getProducerNumber(); i++) {
+        for (int i = newFactor; i < ider.getFactor(); i++) {
             Producer deletingProducer = producers.get(i);
-            updateProducer(producers.get(i % newProducerNumber), deletingProducer);
+            updateProducer(producers.get(i % newFactor), deletingProducer);
             producerDao.delete(deletingProducer);
         }
     }

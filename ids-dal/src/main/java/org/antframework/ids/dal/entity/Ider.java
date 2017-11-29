@@ -34,9 +34,9 @@ public class Ider extends AbstractEntity {
     @Column
     private Long maxId;
 
-    // 生产者数量
+    // 因数（生产者数量）
     @Column
-    private Integer producerNumber;
+    private Integer factor;
 
     public String getIdCode() {
         return idCode;
@@ -62,11 +62,11 @@ public class Ider extends AbstractEntity {
         this.maxId = maxId;
     }
 
-    public Integer getProducerNumber() {
-        return producerNumber;
+    public Integer getFactor() {
+        return factor;
     }
 
-    public void setProducerNumber(Integer producerNumber) {
-        this.producerNumber = producerNumber;
+    public void setFactor(Integer factor) {
+        this.factor = factor;
     }
 }

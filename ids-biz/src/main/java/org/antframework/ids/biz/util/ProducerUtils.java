@@ -29,7 +29,7 @@ public class ProducerUtils {
      * @param amount   需生产的id个数
      */
     public static void produce(Producer producer, Ider ider, int amount) {
-        long newCurrentId = producer.getCurrentId() + amount * ider.getProducerNumber();
+        long newCurrentId = producer.getCurrentId() + amount * ider.getFactor();
         if (ider.getMaxId() != null && newCurrentId >= ider.getMaxId()) {
             Date newCurrentPeriod = producer.getCurrentPeriod();
             int carry = (int) (newCurrentId / ider.getMaxId());
