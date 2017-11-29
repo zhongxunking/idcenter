@@ -9,9 +9,22 @@
 package org.antframework.ids.facade.result;
 
 import org.antframework.common.util.facade.AbstractResult;
+import org.antframework.ids.facade.info.IdsInfo;
+
+import java.util.List;
 
 /**
  * 获取批量id-result
  */
 public class AcquireIdsResult extends AbstractResult {
+    // 获取到的批量id
+    private List<IdsInfo> idsInfos;
+
+    public List<IdsInfo> getIdsInfos() {
+        return idsInfos;
+    }
+
+    public void setIdsInfos(List<IdsInfo> idsInfos) {
+        this.idsInfos = idsInfos;
+    }
 }

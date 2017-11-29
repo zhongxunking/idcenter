@@ -24,8 +24,56 @@ public class IdsInfo extends AbstractInfo {
     private Date period;
     // 开始id
     private long startId;
-    //
+    // 因数
     private int factor;
-
+    // id个数
     private int amount;
+
+    public String getIdCode() {
+        return idCode;
+    }
+
+    public void setIdCode(String idCode) {
+        this.idCode = idCode;
+    }
+
+    public PeriodType getPeriodType() {
+        return periodType;
+    }
+
+    public void setPeriodType(PeriodType periodType) {
+        this.periodType = periodType;
+    }
+
+    public Date getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(Date period) {
+        this.period = period;
+    }
+
+    public long getStartId() {
+        return startId;
+    }
+
+    public void setStartId(long startId) {
+        this.startId = startId;
+    }
+
+    public int getFactor() {
+        return factor;
+    }
+
+    public void setFactor(int factor) {
+        this.factor = factor;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 }
