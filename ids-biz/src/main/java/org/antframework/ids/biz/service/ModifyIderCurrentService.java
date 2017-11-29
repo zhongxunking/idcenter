@@ -11,6 +11,7 @@ package org.antframework.ids.biz.service;
 import org.antframework.boot.bekit.AntBekitException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.Status;
+import org.antframework.ids.biz.util.ProducerUtils;
 import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
@@ -52,9 +53,11 @@ public class ModifyIderCurrentService {
         }
 
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
-        for (Producer producer : producers) {
+        for (int i = 0; i < ider.getFactor(); i++) {
+            Producer producer = producers.get(i);
             producer.setCurrentPeriod(PeriodUtils.parsePeriod(ider.getPeriodType(), order.getNewCurrentPeriod()));
             producer.setCurrentId(order.getNewCurrentId());
+            ProducerUtils.grow(producer, ider, i);
 
             producerDao.save(producer);
         }

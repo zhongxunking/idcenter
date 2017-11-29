@@ -29,10 +29,21 @@ public class ProducerUtils {
      * @param amount   需生产的id个数
      */
     public static void produce(Producer producer, Ider ider, int amount) {
-        long newCurrentId = producer.getCurrentId() + amount * ider.getFactor();
+        grow(producer, ider, amount * ider.getFactor());
+    }
+
+    /**
+     * 成长
+     *
+     * @param producer id生产者
+     * @param ider     id提供者
+     * @param length   成长长度
+     */
+    public static void grow(Producer producer, Ider ider, int length) {
+        long newCurrentId = producer.getCurrentId() + length;
         if (ider.getMaxId() != null && newCurrentId >= ider.getMaxId()) {
-            Date newCurrentPeriod = producer.getCurrentPeriod();
             int carry = (int) (newCurrentId / ider.getMaxId());
+            Date newCurrentPeriod = producer.getCurrentPeriod();
             switch (ider.getPeriodType()) {
                 case HOUR:
                     newCurrentPeriod = DateUtils.addHours(newCurrentPeriod, carry);
