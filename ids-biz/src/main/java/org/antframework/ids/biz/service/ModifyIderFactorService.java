@@ -43,8 +43,11 @@ public class ModifyIderFactorService {
         if (ider == null) {
             throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
+        if (order.getNewFactor() > ider.getMaxId()) {
+            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的因数不能大于id提供者[%s]的最大id[%d]", ider.getIdCode(), ider.getMaxId()));
+        }
         if (Math.max(order.getNewFactor(), ider.getFactor()) % Math.min(order.getNewFactor(), ider.getFactor()) != 0) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("因数要么成倍增加要么成倍减少，id提供者[%s]当前因数[%d]，期望因数[%d]不符合要求", order.getIdCode(), ider.getFactor(), order.getNewFactor()));
+            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("因数要么成倍增加要么成倍减少，id提供者[%s]当前因数[%d]，期望因数[%d]不符合要求", ider.getIdCode(), ider.getFactor(), order.getNewFactor()));
         }
 
         if (order.getNewFactor() > ider.getFactor()) {
@@ -90,7 +93,7 @@ public class ModifyIderFactorService {
 
     // 更新id生产者
     private void updateProducer(Producer producer, Producer deletingProducer) {
-        if (new ProducerUtils.ProducerComparator().compare(producer, deletingProducer) < 0) {
+        if (ProducerUtils.ProducerComparator.INSTANCE.compare(deletingProducer, producer) > 0) {
             producer.setCurrentPeriod(deletingProducer.getCurrentPeriod());
             producer.setCurrentId(deletingProducer.getCurrentId());
             producerDao.save(producer);

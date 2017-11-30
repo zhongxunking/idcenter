@@ -71,6 +71,13 @@ public class ProducerUtils {
      * id生产者比较器
      */
     public static class ProducerComparator implements Comparator<Producer> {
+        /**
+         * 实例
+         */
+        public static final ProducerComparator INSTANCE = new ProducerComparator();
+
+        private ProducerComparator() {
+        }
 
         @Override
         public int compare(Producer o1, Producer o2) {

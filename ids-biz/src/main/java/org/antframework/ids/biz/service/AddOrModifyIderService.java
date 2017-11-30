@@ -8,6 +8,9 @@
  */
 package org.antframework.ids.biz.service;
 
+import org.antframework.boot.bekit.AntBekitException;
+import org.antframework.common.util.facade.CommonResultCode;
+import org.antframework.common.util.facade.Status;
 import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
@@ -44,6 +47,10 @@ public class AddOrModifyIderService {
         } else {
             BeanUtils.copyProperties(order, ider);
         }
+        if (ider.getMaxId() < ider.getFactor()) {
+            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id最大值不能小于因数[%d]", ider.getFactor()));
+        }
+
         iderDao.save(ider);
     }
 
