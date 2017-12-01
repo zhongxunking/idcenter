@@ -45,6 +45,10 @@ public class AddOrModifyIderService {
             ider = buildIder(order);
             producerDao.save(buildProducer(ider));
         } else {
+            if (order.getPeriodType() != ider.getPeriodType()) {
+                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "周期类型不能修改");
+            }
+            checkMaxId(order, ider);
             BeanUtils.copyProperties(order, ider);
         }
         if (ider.getMaxId() < ider.getFactor()) {
@@ -72,5 +76,24 @@ public class AddOrModifyIderService {
         producer.setCurrentId(0L);
 
         return producer;
+    }
+
+    private void checkMaxId(AddOrModifyIderOrder order, Ider ider) {
+        if (order.getMaxId() == ider.getMaxId()) {
+            return;
+        }
+        if (order.getMaxId() == null) {
+            if (ider.getMaxId() % ider.getFactor() != 0) {
+                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "将id最大值改为不限制的前提是：现有id最大值必须是因数的整数倍");
+            }
+        } else if (ider.getMaxId() == null) {
+            if (order.getMaxId() % ider.getFactor() != 0) {
+                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "将id最大值由不限制改为固定大小的前提是：改后的id最大值必须是因数的整数倍");
+            }
+        } else {
+            if (Math.abs(order.getMaxId() - ider.getMaxId()) % ider.getFactor() != 0) {
+                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "id最大值被修改的差值必须是因数的整数倍");
+            }
+        }
     }
 }
