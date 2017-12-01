@@ -76,7 +76,7 @@ public class ModifyIderFactorService {
         producer.setIndex(index);
         producer.setCurrentPeriod(sourceProducer.getCurrentPeriod());
         producer.setCurrentId(sourceProducer.getCurrentId());
-        ProducerUtils.produce(producer, ider, index / ider.getFactor());
+        ProducerUtils.produce(ider, producer, index / ider.getFactor());
 
         return producer;
     }

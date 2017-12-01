@@ -20,12 +20,12 @@ public class IdsInfo extends AbstractInfo {
     private String idCode;
     // 周期类型
     private PeriodType periodType;
+    // 因数
+    private int factor;
     // 周期
     private Date period;
     // 开始id
     private long startId;
-    // 因数
-    private int factor;
     // id个数
     private int amount;
 
@@ -45,6 +45,14 @@ public class IdsInfo extends AbstractInfo {
         this.periodType = periodType;
     }
 
+    public int getFactor() {
+        return factor;
+    }
+
+    public void setFactor(int factor) {
+        this.factor = factor;
+    }
+
     public Date getPeriod() {
         return period;
     }
@@ -59,14 +67,6 @@ public class IdsInfo extends AbstractInfo {
 
     public void setStartId(long startId) {
         this.startId = startId;
-    }
-
-    public int getFactor() {
-        return factor;
-    }
-
-    public void setFactor(int factor) {
-        this.factor = factor;
     }
 
     public int getAmount() {

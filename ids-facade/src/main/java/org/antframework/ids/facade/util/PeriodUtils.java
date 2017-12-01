@@ -9,6 +9,7 @@
 package org.antframework.ids.facade.util;
 
 import org.antframework.ids.facade.enums.PeriodType;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -50,5 +51,33 @@ public class PeriodUtils {
                 throw new IllegalArgumentException("无法识别的周期类型：" + periodType);
         }
         return calendar.getTime();
+    }
+
+    /**
+     * 周期增加
+     *
+     * @param periodType 周期类型
+     * @param period     周期
+     * @param length     增加长度
+     * @return 增加后的周期
+     */
+    public static Date grow(PeriodType periodType, Date period, int length) {
+        switch (periodType) {
+            case HOUR:
+                return DateUtils.addHours(period, length);
+            case DAY:
+                return DateUtils.addDays(period, length);
+            case MONTH:
+                return DateUtils.addMonths(period, length);
+            case YEAR:
+                return DateUtils.addYears(period, length);
+            case NONE:
+                if (length == 0) {
+                    return null;
+                }
+                throw new IllegalArgumentException("周期类型为NONE的周期不能进行增加");
+            default:
+                throw new IllegalArgumentException("无法识别的周期类型：" + periodType);
+        }
     }
 }
