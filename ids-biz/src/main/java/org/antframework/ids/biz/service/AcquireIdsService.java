@@ -74,8 +74,9 @@ public class AcquireIdsService {
     private void modernizeProducer(Ider ider, Producer producer) {
         Date modernPeriod = PeriodUtils.parse(ider.getPeriodType(), new Date());
         if (PeriodUtils.compare(modernPeriod, producer.getCurrentPeriod()) > 0) {
+            int modernStartId = calcModernStartId(ider, producer, modernPeriod);
             producer.setCurrentPeriod(modernPeriod);
-            producer.setCurrentId((long) calcModernStartId(ider, producer, modernPeriod));
+            producer.setCurrentId((long) modernStartId);
         }
     }
 
