@@ -9,14 +9,9 @@
 package org.antframework.ids.test.facade.api.manage;
 
 import org.antframework.ids.facade.api.manage.IderManageService;
-import org.antframework.ids.facade.order.DeleteIderOrder;
-import org.antframework.ids.facade.order.ModifyIderCurrentOrder;
-import org.antframework.ids.facade.order.ModifyIderFactorOrder;
-import org.antframework.ids.facade.order.QueryIderOrder;
-import org.antframework.ids.facade.result.DeleteIderResult;
-import org.antframework.ids.facade.result.ModifyIderCurrentResult;
-import org.antframework.ids.facade.result.ModifyIderFactorResult;
-import org.antframework.ids.facade.result.QueryIderResult;
+import org.antframework.ids.facade.enums.PeriodType;
+import org.antframework.ids.facade.order.*;
+import org.antframework.ids.facade.result.*;
 import org.antframework.ids.test.AbstractTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,6 +26,27 @@ import java.util.Date;
 public class IderManageServiceTest extends AbstractTest {
     @Autowired
     private IderManageService iderManageService;
+
+    @Test
+    public void testAddIder() {
+        AddIderOrder order = new AddIderOrder();
+        order.setIdCode("oid");
+        order.setPeriodType(PeriodType.HOUR);
+        order.setMaxId(9000000000L);
+
+        AddIderResult result = iderManageService.addIder(order);
+        assertSuccess(result);
+    }
+
+    @Test
+    public void testModifyIderMaxId() {
+        ModifyIderMaxIdOrder order = new ModifyIderMaxIdOrder();
+        order.setIdCode("oid");
+        order.setNewMaxId(9000000000L - 2 * 4);
+
+        ModifyIderMaxIdResult result = iderManageService.modifyIderMaxId(order);
+        assertSuccess(result);
+    }
 
     @Test
     public void testModifyIderFactor() {
