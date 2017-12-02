@@ -62,11 +62,15 @@ public class AcquireIdsService {
         }
         // 刷新ider（生产者被锁住前因数可能会被修改，在此更新到最新因数）
         ider = iderDao.findByIdCode(ider.getIdCode());
+        // 现代化生产者
         modernizeProducer(ider, producer);
+        // 生产id
         result.setIdsInfos(ProducerUtils.produce(ider, producer, order.getExpectAmount()));
+
         producerDao.save(producer);
     }
 
+    // 如果生产者的当前周期小于最新周期，则更新当前周期
     private void modernizeProducer(Ider ider, Producer producer) {
         Date modernPeriod = PeriodUtils.parse(ider.getPeriodType(), new Date());
         if (PeriodUtils.compare(ider.getPeriodType(), modernPeriod, producer.getCurrentPeriod()) > 0) {
@@ -75,6 +79,7 @@ public class AcquireIdsService {
         }
     }
 
+    // 计算生产者跳跃到最新周期时的开始id
     private int calcModernStartId(Ider ider, Producer producer, Date modernPeriod) {
         int modernStartId = (int) (producer.getCurrentId() % ider.getFactor());
         if (ider.getMaxId() == null) {

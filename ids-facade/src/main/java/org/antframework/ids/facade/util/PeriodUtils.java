@@ -91,13 +91,7 @@ public class PeriodUtils {
      */
     public static int compare(PeriodType periodType, Date period1, Date period2) {
         if (periodType == PeriodType.NONE) {
-            if (period1 != null || period2 != null) {
-                throw new IllegalArgumentException("周期类型为NONE的周期必须为null");
-            }
             return 0;
-        }
-        if (period1 == null || period2 == null) {
-            throw new IllegalArgumentException("周期类型不为NONE的周期不能为null");
         }
         if (period1.getTime() > period2.getTime()) {
             return 1;
@@ -106,8 +100,4 @@ public class PeriodUtils {
         }
         return 0;
     }
-
-//    public static long calcNew(PeriodType periodType, Long maxId, Date oldPeriod, long oldCurrentId, Date newPeriod) {
-//        DateUtils
-//    }
 }
