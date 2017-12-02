@@ -93,7 +93,7 @@ public class ModifyIderFactorService {
 
     // 更新id生产者
     private void updateProducer(Producer producer, Producer deletingProducer) {
-        if (ProducerUtils.ProducerComparator.INSTANCE.compare(deletingProducer, producer) > 0) {
+        if (ProducerUtils.compare(deletingProducer, producer) > 0) {
             producer.setCurrentPeriod(deletingProducer.getCurrentPeriod());
             producer.setCurrentId(deletingProducer.getCurrentId());
             producerDao.save(producer);

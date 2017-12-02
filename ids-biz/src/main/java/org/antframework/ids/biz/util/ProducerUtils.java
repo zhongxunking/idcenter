@@ -17,13 +17,34 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * id生产者工具类
  */
 public class ProducerUtils {
+
+    /**
+     * 比较生产者进度
+     *
+     * @param producer1 待比较的生产者1
+     * @param producer2 待比较的生产者2
+     * @return 比较结果
+     */
+    public static int compare(Producer producer1, Producer producer2) {
+        if (!StringUtils.equals(producer1.getIdCode(), producer2.getIdCode())) {
+            throw new IllegalArgumentException(String.format("待比较的生产者%s和%s不属于同一个id提供者，不能进行比较", producer1.toString(), producer2.toString()));
+        }
+        if (PeriodUtils.compare(producer1.getCurrentPeriod(), producer2.getCurrentPeriod()) != 0) {
+            return PeriodUtils.compare(producer1.getCurrentPeriod(), producer2.getCurrentPeriod());
+        }
+        if (producer1.getCurrentId() < producer2.getCurrentId()) {
+            return -1;
+        } else if (producer1.getCurrentId() > producer2.getCurrentId()) {
+            return 1;
+        }
+        return 0;
+    }
 
     /**
      * 生产id
@@ -93,40 +114,6 @@ public class ProducerUtils {
         } else {
             producer.setCurrentPeriod(PeriodUtils.grow(ider.getPeriodType(), producer.getCurrentPeriod(), (int) (newCurrentId / ider.getMaxId())));
             producer.setCurrentId(newCurrentId % ider.getMaxId());
-        }
-    }
-
-    /**
-     * id生产者比较器
-     */
-    public static class ProducerComparator implements Comparator<Producer> {
-        /**
-         * 实例
-         */
-        public static final ProducerComparator INSTANCE = new ProducerComparator();
-
-        private ProducerComparator() {
-        }
-
-        @Override
-        public int compare(Producer o1, Producer o2) {
-            if (!StringUtils.equals(o1.getIdCode(), o2.getIdCode())) {
-                throw new IllegalArgumentException(String.format("待比较的id生产者%s和%s不属于同一个id提供者，不能进行比较", o1.toString(), o2.toString()));
-            }
-            if (o1.getCurrentPeriod() != o2.getCurrentPeriod()) {
-                if (o1.getCurrentPeriod().getTime() < o2.getCurrentPeriod().getTime()) {
-                    return -1;
-                } else if (o1.getCurrentPeriod().getTime() > o2.getCurrentPeriod().getTime()) {
-                    return 1;
-                }
-            }
-            if (o1.getCurrentId() < o2.getCurrentId()) {
-                return -1;
-            } else if (o1.getCurrentId() > o2.getCurrentId()) {
-                return 1;
-            } else {
-                return 0;
-            }
         }
     }
 }

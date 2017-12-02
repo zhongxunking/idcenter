@@ -73,7 +73,7 @@ public class AcquireIdsService {
     // 如果生产者的当前周期小于最新周期，则更新当前周期
     private void modernizeProducer(Ider ider, Producer producer) {
         Date modernPeriod = PeriodUtils.parse(ider.getPeriodType(), new Date());
-        if (PeriodUtils.compare(ider.getPeriodType(), modernPeriod, producer.getCurrentPeriod()) > 0) {
+        if (PeriodUtils.compare(modernPeriod, producer.getCurrentPeriod()) > 0) {
             producer.setCurrentPeriod(modernPeriod);
             producer.setCurrentId((long) calcModernStartId(ider, producer, modernPeriod));
         }

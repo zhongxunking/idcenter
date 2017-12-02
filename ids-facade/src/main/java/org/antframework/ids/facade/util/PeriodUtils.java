@@ -84,13 +84,12 @@ public class PeriodUtils {
     /**
      * 比较周期大小
      *
-     * @param periodType 周期类型
-     * @param period1    需进行比较的周期1
-     * @param period2    需进行比较的周期2
+     * @param period1 需进行比较的周期1
+     * @param period2 需进行比较的周期2
      * @return 比较结果
      */
-    public static int compare(PeriodType periodType, Date period1, Date period2) {
-        if (periodType == PeriodType.NONE) {
+    public static int compare(Date period1, Date period2) {
+        if (period1 == period2) {
             return 0;
         }
         if (period1.getTime() > period2.getTime()) {
