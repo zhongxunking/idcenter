@@ -11,6 +11,7 @@ package org.antframework.ids.biz.service;
 import org.antframework.boot.bekit.AntBekitException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.Status;
+import org.antframework.ids.biz.util.ProducerUtils;
 import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
@@ -52,6 +53,7 @@ public class AcquireIdsService {
     @ServiceExecute
     public void execute(ServiceContext<AcquireIdsOrder, AcquireIdsResult> context) {
         AcquireIdsOrder order = context.getOrder();
+        AcquireIdsResult result = context.getResult();
         Ider ider = context.getAttachmentAttr(Ider.class);
 
         Producer producer = producerDao.findLockByIdCodeAndIndex(ider.getIdCode(), RANDOM.nextInt(ider.getFactor()));
@@ -60,20 +62,30 @@ public class AcquireIdsService {
         }
         // 刷新ider（生产者被锁住前因数可能会被修改，在此更新到最新因数）
         ider = iderDao.findByIdCode(ider.getIdCode());
-        Date period = PeriodUtils.parse(ider.getPeriodType(), new Date());
-
+        modernizeProducer(ider, producer);
+        result.setIdsInfos(ProducerUtils.produce(ider, producer, order.getExpectAmount()));
+        producerDao.save(producer);
     }
 
     private void modernizeProducer(Ider ider, Producer producer) {
         Date modernPeriod = PeriodUtils.parse(ider.getPeriodType(), new Date());
         if (PeriodUtils.compare(ider.getPeriodType(), modernPeriod, producer.getCurrentPeriod()) > 0) {
             producer.setCurrentPeriod(modernPeriod);
-            long modernCurrentId = producer.getCurrentId();
-            if (ider.getMaxId() == null) {
-                modernCurrentId %= ider.getFactor();
-            } else {
-
-            }
+            producer.setCurrentId((long) calcModernStartId(ider, producer, modernPeriod));
         }
+    }
+
+    private int calcModernStartId(Ider ider, Producer producer, Date modernPeriod) {
+        int modernStartId = (int) (producer.getCurrentId() % ider.getFactor());
+        if (ider.getMaxId() == null) {
+            return modernStartId;
+        }
+        int growPerPeriod = ider.getFactor() - (int) (ider.getMaxId() % ider.getFactor());
+        Date anchorPeriod = producer.getCurrentPeriod();
+        while (anchorPeriod.getTime() < modernPeriod.getTime()) {
+            anchorPeriod = PeriodUtils.grow(ider.getPeriodType(), anchorPeriod, 1);
+            modernStartId = (modernStartId + growPerPeriod) % ider.getFactor();
+        }
+        return modernStartId;
     }
 }
