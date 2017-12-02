@@ -72,7 +72,7 @@ public class AddOrModifyIderService {
         Producer producer = new Producer();
         producer.setIdCode(ider.getIdCode());
         producer.setIndex(0);
-        producer.setCurrentPeriod(PeriodUtils.parsePeriod(ider.getPeriodType(), new Date()));
+        producer.setCurrentPeriod(PeriodUtils.parse(ider.getPeriodType(), new Date()));
         producer.setCurrentId(0L);
 
         return producer;

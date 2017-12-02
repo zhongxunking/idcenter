@@ -31,17 +31,17 @@ public class PeriodUtilsTest {
     @Test
     public void testParsePeriod() throws ParseException {
         Date hourDate = DateUtils.parseDate("2017-11-22 23:00:00.000", "yyyy-MM-dd HH:mm:ss.SSS");
-        Assert.assertEquals(hourDate, PeriodUtils.parsePeriod(PeriodType.HOUR, testDate));
+        Assert.assertEquals(hourDate, PeriodUtils.parse(PeriodType.HOUR, testDate));
 
         Date dayDate = DateUtils.parseDate("2017-11-22 00:00:00.000", "yyyy-MM-dd HH:mm:ss.SSS");
-        Assert.assertEquals(dayDate, PeriodUtils.parsePeriod(PeriodType.DAY, testDate));
+        Assert.assertEquals(dayDate, PeriodUtils.parse(PeriodType.DAY, testDate));
 
         Date monthDate = DateUtils.parseDate("2017-11-01 00:00:00.000", "yyyy-MM-dd HH:mm:ss.SSS");
-        Assert.assertEquals(monthDate, PeriodUtils.parsePeriod(PeriodType.MONTH, testDate));
+        Assert.assertEquals(monthDate, PeriodUtils.parse(PeriodType.MONTH, testDate));
 
         Date yearDate = DateUtils.parseDate("2017-01-01 00:00:00.000", "yyyy-MM-dd HH:mm:ss.SSS");
-        Assert.assertEquals(yearDate, PeriodUtils.parsePeriod(PeriodType.YEAR, testDate));
+        Assert.assertEquals(yearDate, PeriodUtils.parse(PeriodType.YEAR, testDate));
 
-        Assert.assertEquals(null, PeriodUtils.parsePeriod(PeriodType.NONE, testDate));
+        Assert.assertEquals(null, PeriodUtils.parse(PeriodType.NONE, testDate));
     }
 }

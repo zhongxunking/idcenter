@@ -26,7 +26,7 @@ public class PeriodUtils {
      * @param date       时间
      * @return 周期（null 如果周期类型为PeriodType.NONE）
      */
-    public static Date parsePeriod(PeriodType periodType, Date date) {
+    public static Date parse(PeriodType periodType, Date date) {
         if (periodType == PeriodType.NONE) {
             return null;
         }

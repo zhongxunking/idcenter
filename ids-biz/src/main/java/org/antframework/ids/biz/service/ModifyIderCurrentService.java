@@ -55,7 +55,7 @@ public class ModifyIderCurrentService {
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
         for (int i = 0; i < ider.getFactor(); i++) {
             Producer producer = producers.get(i);
-            producer.setCurrentPeriod(PeriodUtils.parsePeriod(ider.getPeriodType(), order.getNewCurrentPeriod()));
+            producer.setCurrentPeriod(PeriodUtils.parse(ider.getPeriodType(), order.getNewCurrentPeriod()));
             producer.setCurrentId(order.getNewCurrentId());
             ProducerUtils.grow(ider, producer, i);
 
