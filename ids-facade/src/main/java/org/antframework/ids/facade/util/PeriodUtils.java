@@ -80,4 +80,34 @@ public class PeriodUtils {
                 throw new IllegalArgumentException("无法识别的周期类型：" + periodType);
         }
     }
+
+    /**
+     * 比较周期大小
+     *
+     * @param periodType 周期类型
+     * @param period1    需进行比较的周期1
+     * @param period2    需进行比较的周期2
+     * @return 比较结果
+     */
+    public static int compare(PeriodType periodType, Date period1, Date period2) {
+        if (periodType == PeriodType.NONE) {
+            if (period1 != null || period2 != null) {
+                throw new IllegalArgumentException("周期类型为NONE的周期必须为null");
+            }
+            return 0;
+        }
+        if (period1 == null || period2 == null) {
+            throw new IllegalArgumentException("周期类型不为NONE的周期不能为null");
+        }
+        if (period1.getTime() > period2.getTime()) {
+            return 1;
+        } else if (period1.getTime() < period2.getTime()) {
+            return -1;
+        }
+        return 0;
+    }
+
+//    public static long calcNew(PeriodType periodType, Long maxId, Date oldPeriod, long oldCurrentId, Date newPeriod) {
+//        DateUtils
+//    }
 }

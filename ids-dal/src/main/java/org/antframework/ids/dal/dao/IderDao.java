@@ -30,5 +30,7 @@ public interface IderDao {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Ider findLockByIdCode(String idCode);
 
+    Ider findByIdCode(String idCode);
+
     Page<Ider> query(Map<String, Object> searchParams, Pageable pageable);
 }
