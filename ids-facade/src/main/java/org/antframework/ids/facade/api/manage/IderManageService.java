@@ -17,6 +17,11 @@ import org.antframework.ids.facade.result.*;
 public interface IderManageService {
 
     /**
+     * 新增id提供者
+     */
+    AddIderResult addIder(AddIderOrder order);
+
+    /**
      * 新增或修改id提供者
      */
     AddOrModifyIderResult addOrModifyIder(AddOrModifyIderOrder order);

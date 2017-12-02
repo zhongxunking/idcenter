@@ -24,6 +24,11 @@ public class IderManageServiceProvider implements IderManageService {
     private ServiceEngine serviceEngine;
 
     @Override
+    public AddIderResult addIder(AddIderOrder order) {
+        return serviceEngine.execute("addIderService", order);
+    }
+
+    @Override
     public AddOrModifyIderResult addOrModifyIder(AddOrModifyIderOrder order) {
         return serviceEngine.execute("addOrModifyIderService", order);
     }
