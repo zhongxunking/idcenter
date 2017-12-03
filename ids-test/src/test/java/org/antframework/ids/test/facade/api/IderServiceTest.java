@@ -30,10 +30,10 @@ public class IderServiceTest extends AbstractTest {
             1000,
             60,
             TimeUnit.SECONDS,
-            new ArrayBlockingQueue<Runnable>(10000));
+            new ArrayBlockingQueue<Runnable>(count));
     @Autowired
     private IderService iderService;
-    private int count = 10000;
+    private static int count = 10000;
 
     @Test
     public void testAcquireIds() throws InterruptedException {
@@ -45,7 +45,7 @@ public class IderServiceTest extends AbstractTest {
 
         System.out.println(String.format("添加任务耗时：%d毫秒", endTime - startTime));
 
-        Thread.sleep(100000);
+        Thread.sleep(1000000);
     }
 
     public class Task implements Runnable {
