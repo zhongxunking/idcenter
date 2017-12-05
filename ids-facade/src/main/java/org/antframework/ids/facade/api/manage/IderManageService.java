@@ -22,11 +22,6 @@ public interface IderManageService {
     AddIderResult addIder(AddIderOrder order);
 
     /**
-     * 修改id提供者的最大id
-     */
-    ModifyIderMaxIdResult modifyIderMaxId(ModifyIderMaxIdOrder order);
-
-    /**
      * 修改id提供者的最大数据
      */
     ModifyIderMaxResult modifyIderMax(ModifyIderMaxOrder order);

@@ -39,16 +39,6 @@ public class IderManageServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testModifyIderMaxId() {
-        ModifyIderMaxIdOrder order = new ModifyIderMaxIdOrder();
-        order.setIdCode("oid");
-        order.setNewMaxId(9000000000L - 2 * 4);
-
-        ModifyIderMaxIdResult result = iderManageService.modifyIderMaxId(order);
-        assertSuccess(result);
-    }
-
-    @Test
     public void testModifyIderFactor() {
         ModifyIderFactorOrder order = new ModifyIderFactorOrder();
         order.setIdCode("oid");
