@@ -64,8 +64,13 @@ public class AcquireIdsService {
         ider = iderDao.findByIdCode(ider.getIdCode());
         // 现代化生产者
         modernizeProducer(ider, producer);
+        // 计算生产的id数量
+        int amount = order.getExpectAmount();
+        if (ider.getMaxAmount() != null) {
+            amount = Math.min(amount, ider.getMaxAmount());
+        }
         // 生产id
-        result.setIdsInfos(ProducerUtils.produce(ider, producer, order.getExpectAmount()));
+        result.setIdsInfos(ProducerUtils.produce(ider, producer, amount));
 
         producerDao.save(producer);
     }
