@@ -26,7 +26,7 @@ public class AddIderOrder extends AbstractOrder {
     @NotNull
     private PeriodType periodType;
     // 一个周期内id最大值（不包含），null表示不限制最大值
-    @Min(2)
+    @Min(1)
     private Long maxId;
 
     public String getIdCode() {

@@ -21,7 +21,7 @@ public class ModifyIderMaxIdOrder extends AbstractOrder {
     @NotBlank
     private String idCode;
     // 新的id最大值
-    @Min(2)
+    @Min(1)
     private Long newMaxId;
 
     public String getIdCode() {
