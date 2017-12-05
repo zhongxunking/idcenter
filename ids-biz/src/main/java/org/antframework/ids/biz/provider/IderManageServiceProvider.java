@@ -34,6 +34,11 @@ public class IderManageServiceProvider implements IderManageService {
     }
 
     @Override
+    public ModifyIderMaxResult modifyIderMax(ModifyIderMaxOrder order) {
+        return serviceEngine.execute("modifyIderMaxService", order);
+    }
+
+    @Override
     public ModifyIderFactorResult modifyIderFactor(ModifyIderFactorOrder order) {
         return serviceEngine.execute("modifyIderFactorService", order);
     }
