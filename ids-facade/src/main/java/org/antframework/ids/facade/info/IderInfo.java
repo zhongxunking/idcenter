@@ -22,8 +22,10 @@ public class IderInfo extends AbstractInfo {
     private String idCode;
     // 周期类型
     private PeriodType periodType;
-    // 一个周期内id最大值（不包含），null表示不限制最大值
+    // 一个周期内id最大值（不包含），null表示不限制
     private Long maxId;
+    // 一次获取id的最大数量（包含），null表示不限制
+    private Integer maxAmount;
     // 因数（生产者数量）
     private Integer factor;
     // 生产者信息
@@ -51,6 +53,14 @@ public class IderInfo extends AbstractInfo {
 
     public void setMaxId(Long maxId) {
         this.maxId = maxId;
+    }
+
+    public Integer getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(Integer maxAmount) {
+        this.maxAmount = maxAmount;
     }
 
     public Integer getFactor() {

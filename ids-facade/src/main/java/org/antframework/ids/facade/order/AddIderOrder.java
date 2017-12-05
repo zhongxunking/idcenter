@@ -25,9 +25,12 @@ public class AddIderOrder extends AbstractOrder {
     // 周期类型
     @NotNull
     private PeriodType periodType;
-    // 一个周期内id最大值（不包含），null表示不限制最大值
+    // 一个周期内id最大值（不包含），null表示不限制
     @Min(1)
     private Long maxId;
+    // 一次获取id的最大数量（包含），null表示不限制
+    @Min(1)
+    private Integer maxAmount;
 
     public String getIdCode() {
         return idCode;
@@ -51,5 +54,13 @@ public class AddIderOrder extends AbstractOrder {
 
     public void setMaxId(Long maxId) {
         this.maxId = maxId;
+    }
+
+    public Integer getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(Integer maxAmount) {
+        this.maxAmount = maxAmount;
     }
 }
