@@ -56,7 +56,7 @@ public class ProducerUtils {
      * @return 生产出的id
      */
     public static List<IdsInfo> produce(Ider ider, Producer producer, int amount) {
-        return grow(ider, producer, amount * ider.getFactor());
+        return grow(ider, producer, ((long) amount) * ider.getFactor());
     }
 
     /**
@@ -67,7 +67,7 @@ public class ProducerUtils {
      * @param length   增加长度
      * @return 增加过程中产生的id
      */
-    public static List<IdsInfo> grow(Ider ider, Producer producer, int length) {
+    public static List<IdsInfo> grow(Ider ider, Producer producer, long length) {
         List<IdsInfo> idsInfos = new ArrayList<>();
 
         long newCurrentId = producer.getCurrentId() + length;
