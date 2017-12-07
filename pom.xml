@@ -24,6 +24,7 @@
         <module>ids-biz</module>
         <module>ids-web</module>
         <module>ids-assemble</module>
+        <module>ids-client</module>
         <module>ids-test</module>
     </modules>
 
