@@ -29,7 +29,7 @@ public class AbstractTest {
 
     static {
         // 设置使用环境
-        Apps.setProfileIfNotExists("dev");
+        Apps.setProfileIfAbsent("dev");
     }
 
     protected void assertSuccess(AbstractResult result) {
