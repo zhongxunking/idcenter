@@ -11,5 +11,22 @@
     <artifactId>ids-client</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.antframework.ids</groupId>
+            <artifactId>ids-facade</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antframework.common</groupId>
+            <artifactId>ant-common-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
     </dependencies>
 </project>
