@@ -8,12 +8,13 @@
  */
 package org.antframework.ids.facade.info;
 
+import org.antframework.common.util.facade.AbstractInfo;
 import org.antframework.ids.facade.enums.PeriodType;
 
 import java.util.Date;
 
 /**
- * 批量id信息
+ * 批量id-info
  */
 public class IdsInfo extends AbstractInfo {
     // id编码

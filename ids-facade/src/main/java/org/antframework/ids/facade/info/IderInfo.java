@@ -8,6 +8,7 @@
  */
 package org.antframework.ids.facade.info;
 
+import org.antframework.common.util.facade.AbstractInfo;
 import org.antframework.ids.facade.enums.PeriodType;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * id提供者信息
+ * id提供者info
  */
 public class IderInfo extends AbstractInfo {
     // id编码
@@ -28,7 +29,7 @@ public class IderInfo extends AbstractInfo {
     private Integer maxAmount;
     // 因数（生产者数量）
     private Integer factor;
-    // 生产者信息
+    // 生产者info
     private List<ProducerInfo> producerInfos = new ArrayList<>();
 
     public String getIdCode() {
@@ -80,7 +81,7 @@ public class IderInfo extends AbstractInfo {
     }
 
     /**
-     * 生产者信息
+     * 生产者info
      */
     public static class ProducerInfo extends AbstractInfo {
         // id编码
