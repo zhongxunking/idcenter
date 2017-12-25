@@ -8,7 +8,10 @@
  */
 package org.antframework.ids.biz.service;
 
+import org.antframework.boot.bekit.CommonQueryConstant;
+import org.antframework.boot.bekit.CommonQueryResult;
 import org.antframework.common.util.facade.FacadeUtils;
+import org.antframework.ids.biz.util.QueryUtils;
 import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
@@ -16,19 +19,14 @@ import org.antframework.ids.dal.entity.Producer;
 import org.antframework.ids.facade.info.IderInfo;
 import org.antframework.ids.facade.order.QueryIderOrder;
 import org.antframework.ids.facade.result.QueryIderResult;
+import org.bekit.service.ServiceEngine;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.core.convert.converter.Converter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 查询id提供者服务
@@ -36,38 +34,25 @@ import java.util.Map;
 @Service
 public class QueryIderService {
     @Autowired
-    private IderDao iderDao;
+    private ServiceEngine serviceEngine;
     @Autowired
     private ProducerDao producerDao;
+    // info转换器
+    private IderInfoConverter infoConverter = new IderInfoConverter();
 
     @ServiceExecute
     public void execute(ServiceContext<QueryIderOrder, QueryIderResult> context) {
         QueryIderOrder order = context.getOrder();
+        QueryIderResult result = context.getResult();
 
-        Page<Ider> page = iderDao.query(buildSearchParams(order), buildPageable(order));
-        FacadeUtils.setQueryResult(context.getResult(), new FacadeUtils.SpringDataPageExtractor<>(page), new IderInfoConverter());
+        CommonQueryResult commonQueryResult = serviceEngine.execute(CommonQueryConstant.SERVICE_NAME, order, QueryUtils.buildQueryAttachment(IderDao.class));
+        commonQueryResult.convertTo(result, infoConverter);
     }
 
-    // 构建查询条件
-    private Map<String, Object> buildSearchParams(QueryIderOrder queryIderOrder) {
-        Map<String, Object> searchParams = new HashMap<>();
-        if (queryIderOrder.getIdCode() != null) {
-            searchParams.put("LIKE_idCode", "%" + queryIderOrder.getIdCode() + "%");
-        }
-        if (queryIderOrder.getPeriodType() != null) {
-            searchParams.put("EQ_periodType", queryIderOrder.getPeriodType());
-        }
-        return searchParams;
-    }
-
-    // 构建分页
-    private Pageable buildPageable(QueryIderOrder queryIderOrder) {
-        Sort sort = new Sort(Sort.Direction.DESC, "id");
-        return new PageRequest(queryIderOrder.getPageNo() - 1, queryIderOrder.getPageSize(), sort);
-    }
-
-    // id提供者信息转换器
+    // id提供者info转换器
     private class IderInfoConverter extends FacadeUtils.DefaultConverter<Ider, IderInfo> {
+        // 生产者info转换器
+        private final Converter<Producer, IderInfo.ProducerInfo> producerInfoConverter = new FacadeUtils.DefaultConverter<>(IderInfo.ProducerInfo.class);
 
         public IderInfoConverter() {
             super(IderInfo.class);
@@ -79,11 +64,8 @@ public class QueryIderService {
             // 查找id提供者的所有生产者
             List<Producer> producers = producerDao.findByIdCodeOrderByIndexAsc(iderInfo.getIdCode());
             for (Producer producer : producers) {
-                IderInfo.ProducerInfo producerInfo = new IderInfo.ProducerInfo();
-                BeanUtils.copyProperties(producer, producerInfo);
-                iderInfo.addProducerInfo(producerInfo);
+                iderInfo.addProducerInfo(producerInfoConverter.convert(producer));
             }
-
             return iderInfo;
         }
     }

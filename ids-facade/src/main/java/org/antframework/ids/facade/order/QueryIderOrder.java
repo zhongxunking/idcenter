@@ -9,6 +9,8 @@
 package org.antframework.ids.facade.order;
 
 import org.antframework.common.util.facade.AbstractQueryOrder;
+import org.antframework.common.util.query.annotation.operator.QueryEQ;
+import org.antframework.common.util.query.annotation.operator.QueryLike;
 import org.antframework.ids.facade.enums.PeriodType;
 
 /**
@@ -16,8 +18,10 @@ import org.antframework.ids.facade.enums.PeriodType;
  */
 public class QueryIderOrder extends AbstractQueryOrder {
     // id编码
+    @QueryLike
     private String idCode;
     // 周期类型
+    @QueryEQ
     private PeriodType periodType;
 
     public String getIdCode() {
