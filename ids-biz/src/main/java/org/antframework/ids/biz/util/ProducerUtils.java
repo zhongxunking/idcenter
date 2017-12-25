@@ -71,7 +71,7 @@ public class ProducerUtils {
         List<IdsInfo> idsInfos = new ArrayList<>();
 
         long newCurrentId = producer.getCurrentId() + length;
-        Assert.isTrue(newCurrentId > producer.getCurrentId(), "运算中超过long类型最大值，无法进行计算");
+        Assert.isTrue(newCurrentId >= producer.getCurrentId(), "运算中超过long类型最大值，无法进行计算");
         long anchorId = producer.getCurrentId();
         while (anchorId < newCurrentId) {
             int periodIdAmount = calcPeriodIdAmount(ider, newCurrentId, anchorId);
@@ -88,7 +88,7 @@ public class ProducerUtils {
         long anchorEndId = newCurrentId;
         if (ider.getMaxId() != null) {
             long anchorMaxId = anchorId / ider.getMaxId() * ider.getMaxId() + ider.getMaxId();
-            Assert.isTrue(anchorMaxId > anchorId, "运算中超过long类型最大值，无法进行计算");
+            Assert.isTrue(anchorMaxId >= anchorId, "运算中超过long类型最大值，无法进行计算");
             anchorEndId = Math.min(anchorMaxId, newCurrentId);
         }
         return FacadeUtils.calcTotalPage(anchorEndId - anchorId, ider.getFactor());
