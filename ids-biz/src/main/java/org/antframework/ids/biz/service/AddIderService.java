@@ -10,13 +10,13 @@ package org.antframework.ids.biz.service;
 
 import org.antframework.boot.bekit.AntBekitException;
 import org.antframework.common.util.facade.CommonResultCode;
+import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
 import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.dao.ProducerDao;
 import org.antframework.ids.dal.entity.Ider;
 import org.antframework.ids.dal.entity.Producer;
 import org.antframework.ids.facade.order.AddIderOrder;
-import org.antframework.ids.facade.result.AddIderResult;
 import org.antframework.ids.facade.util.PeriodUtils;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
@@ -37,7 +37,7 @@ public class AddIderService {
     private ProducerDao producerDao;
 
     @ServiceExecute
-    public void execute(ServiceContext<AddIderOrder, AddIderResult> context) {
+    public void execute(ServiceContext<AddIderOrder, EmptyResult> context) {
         AddIderOrder order = context.getOrder();
 
         Ider ider = iderDao.findLockByIdCode(order.getIdCode());

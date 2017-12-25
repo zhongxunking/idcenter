@@ -8,8 +8,9 @@
  */
 package org.antframework.ids.facade.api.manage;
 
+import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.ids.facade.order.*;
-import org.antframework.ids.facade.result.*;
+import org.antframework.ids.facade.result.QueryIderResult;
 
 /**
  * id提供者管理服务
@@ -19,27 +20,27 @@ public interface IderManageService {
     /**
      * 新增id提供者
      */
-    AddIderResult addIder(AddIderOrder order);
+    EmptyResult addIder(AddIderOrder order);
 
     /**
      * 修改id提供者的最大数据
      */
-    ModifyIderMaxResult modifyIderMax(ModifyIderMaxOrder order);
+    EmptyResult modifyIderMax(ModifyIderMaxOrder order);
 
     /**
      * 修改id提供者的因数
      */
-    ModifyIderFactorResult modifyIderFactor(ModifyIderFactorOrder order);
+    EmptyResult modifyIderFactor(ModifyIderFactorOrder order);
 
     /**
      * 修改id提供者当前数据
      */
-    ModifyIderCurrentResult modifyIderCurrent(ModifyIderCurrentOrder order);
+    EmptyResult modifyIderCurrent(ModifyIderCurrentOrder order);
 
     /**
      * 删除id提供者
      */
-    DeleteIderResult deleteIder(DeleteIderOrder order);
+    EmptyResult deleteIder(DeleteIderOrder order);
 
     /**
      * 查询id提供者

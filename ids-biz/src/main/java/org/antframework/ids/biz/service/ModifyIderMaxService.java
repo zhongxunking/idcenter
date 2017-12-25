@@ -10,11 +10,11 @@ package org.antframework.ids.biz.service;
 
 import org.antframework.boot.bekit.AntBekitException;
 import org.antframework.common.util.facade.CommonResultCode;
+import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
 import org.antframework.ids.dal.dao.IderDao;
 import org.antframework.ids.dal.entity.Ider;
 import org.antframework.ids.facade.order.ModifyIderMaxOrder;
-import org.antframework.ids.facade.result.ModifyIderMaxResult;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
@@ -29,7 +29,7 @@ public class ModifyIderMaxService {
     private IderDao iderDao;
 
     @ServiceExecute
-    public void execute(ServiceContext<ModifyIderMaxOrder, ModifyIderMaxResult> context) {
+    public void execute(ServiceContext<ModifyIderMaxOrder, EmptyResult> context) {
         ModifyIderMaxOrder order = context.getOrder();
 
         Ider ider = iderDao.findLockByIdCode(order.getIdCode());

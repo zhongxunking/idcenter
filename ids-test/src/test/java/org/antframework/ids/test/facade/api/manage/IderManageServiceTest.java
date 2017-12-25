@@ -8,10 +8,11 @@
  */
 package org.antframework.ids.test.facade.api.manage;
 
+import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.ids.facade.api.manage.IderManageService;
 import org.antframework.ids.facade.enums.PeriodType;
 import org.antframework.ids.facade.order.*;
-import org.antframework.ids.facade.result.*;
+import org.antframework.ids.facade.result.QueryIderResult;
 import org.antframework.ids.test.AbstractTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setMaxId(9000000000L);
         order.setMaxAmount(10000);
 
-        AddIderResult result = iderManageService.addIder(order);
+        EmptyResult result = iderManageService.addIder(order);
         assertSuccess(result);
     }
 
@@ -46,7 +47,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setNewMaxId(9000000000L - 10 * 4);
         order.setNewMaxAmount(20000);
 
-        ModifyIderMaxResult result = iderManageService.modifyIderMax(order);
+        EmptyResult result = iderManageService.modifyIderMax(order);
         assertSuccess(result);
     }
 
@@ -56,7 +57,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setIdCode("oid");
         order.setNewFactor(4);
 
-        ModifyIderFactorResult result = iderManageService.modifyIderFactor(order);
+        EmptyResult result = iderManageService.modifyIderFactor(order);
         assertSuccess(result);
     }
 
@@ -67,7 +68,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setNewCurrentPeriod(new Date());
         order.setNewCurrentId(100);
 
-        ModifyIderCurrentResult result = iderManageService.modifyIderCurrent(order);
+        EmptyResult result = iderManageService.modifyIderCurrent(order);
         assertSuccess(result);
     }
 
@@ -76,7 +77,7 @@ public class IderManageServiceTest extends AbstractTest {
         DeleteIderOrder order = new DeleteIderOrder();
         order.setIdCode("oid");
 
-        DeleteIderResult result = iderManageService.deleteIder(order);
+        EmptyResult result = iderManageService.deleteIder(order);
         assertSuccess(result);
     }
 
