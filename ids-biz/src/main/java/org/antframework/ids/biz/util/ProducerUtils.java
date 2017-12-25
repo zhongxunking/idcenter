@@ -94,7 +94,7 @@ public class ProducerUtils {
         return FacadeUtils.calcTotalPage(anchorEndId - anchorId, ider.getFactor());
     }
 
-    // 构建批量id信息
+    // 构建批量id-info
     private static IdsInfo buildIdsInfo(Ider ider, Producer producer, long anchorId, int periodIdAmount) {
         IdsInfo info = new IdsInfo();
         BeanUtils.copyProperties(ider, info);
