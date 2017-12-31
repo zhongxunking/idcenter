@@ -23,6 +23,7 @@ import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceCheck;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -69,6 +70,8 @@ public class AcquireIdsService {
         if (ider.getMaxAmount() != null) {
             amount = Math.min(amount, ider.getMaxAmount());
         }
+
+        BeanUtils.copyProperties(ider, result);
         // 生产id
         result.setIdsInfos(ProducerUtils.produce(ider, producer, amount));
 
