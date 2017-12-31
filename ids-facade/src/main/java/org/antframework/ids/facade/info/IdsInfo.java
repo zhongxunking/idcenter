@@ -9,6 +9,7 @@
 package org.antframework.ids.facade.info;
 
 import org.antframework.common.util.facade.AbstractInfo;
+import org.antframework.ids.facade.enums.PeriodType;
 
 import java.util.Date;
 
@@ -16,6 +17,10 @@ import java.util.Date;
  * 批量id-info
  */
 public class IdsInfo extends AbstractInfo {
+    // id编码
+    private String idCode;
+    // 周期类型
+    private PeriodType periodType;
     // 因数
     private int factor;
     // 周期
@@ -24,6 +29,22 @@ public class IdsInfo extends AbstractInfo {
     private long startId;
     // id个数
     private int amount;
+
+    public String getIdCode() {
+        return idCode;
+    }
+
+    public void setIdCode(String idCode) {
+        this.idCode = idCode;
+    }
+
+    public PeriodType getPeriodType() {
+        return periodType;
+    }
+
+    public void setPeriodType(PeriodType periodType) {
+        this.periodType = periodType;
+    }
 
     public int getFactor() {
         return factor;
