@@ -14,10 +14,8 @@ import org.antframework.ids.client.IdContext;
  * 流量统计
  */
 public class FlowStat {
-    // 最大时间（毫秒）
-    private final long maxTime;
-    // 最小时间（毫秒）
-    private final long minTime;
+    // 初始化参数
+    private IdContext.InitParams initParams;
     // 统计开始时间
     private long startTime;
     // id使用量统计
@@ -28,8 +26,7 @@ public class FlowStat {
     private long nextCount;
 
     public FlowStat(IdContext.InitParams initParams) {
-        maxTime = initParams.getMaxTime();
-        minTime = initParams.getMinTime();
+        this.initParams = initParams;
         startTime = System.currentTimeMillis();
         count = 0;
         nextStartTime = System.currentTimeMillis();
@@ -55,18 +52,29 @@ public class FlowStat {
     }
 
     /**
-     * 计算缺口
+     * 计算差量
      *
      * @param remainAmount 剩余数量
-     * @return 缺口
+     * @return 差量
      */
     public int calcGap(int remainAmount) {
         long statDuration = System.currentTimeMillis() - startTime;
-        int min = (int) (((double) minTime) / statDuration * count);
-        if (remainAmount >= min) {
+        // 如果时钟被回拨
+        if (statDuration <= 0) {
+            if (remainAmount > 0) {
+                return 0;
+            } else {
+                return initParams.getInitAmount();
+            }
+        }
+
+        int min = (int) (((double) initParams.getMinTime()) / statDuration * count);
+        if (remainAmount > min) {
             return 0;
         }
-        int max = (int) (((double) maxTime) / statDuration * count);
-        return max - remainAmount;
+        int max = (int) (((double) initParams.getMaxTime()) / statDuration * count);
+        int gap = max - remainAmount;
+
+        return gap > 0 ? gap : 1;
     }
 }
