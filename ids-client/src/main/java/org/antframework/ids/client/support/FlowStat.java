@@ -10,6 +10,8 @@ package org.antframework.ids.client.support;
 
 import org.antframework.ids.client.IdContext;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 流量统计
  */
@@ -19,26 +21,26 @@ public class FlowStat {
     // 统计开始时间
     private long startTime;
     // id使用量统计
-    private long count;
+    private AtomicInteger count;
     // 下一个统计开始时间
     private long nextStartTime;
     // 下一个id使用量统计
-    private long nextCount;
+    private AtomicInteger nextCount;
 
     public FlowStat(IdContext.InitParams initParams) {
         this.initParams = initParams;
         startTime = System.currentTimeMillis();
-        count = 0;
+        count = new AtomicInteger(0);
         nextStartTime = System.currentTimeMillis();
-        nextCount = 0;
+        nextCount = new AtomicInteger(0);
     }
 
     /**
      * 增加统计
      */
     public void addCount() {
-        count++;
-        nextCount++;
+        count.addAndGet(1);
+        nextCount.addAndGet(1);
     }
 
     /**
@@ -46,9 +48,9 @@ public class FlowStat {
      */
     public void next() {
         startTime = nextStartTime;
-        count = nextCount;
+        count.set(nextCount.get());
         nextStartTime = System.currentTimeMillis();
-        nextCount = 0;
+        nextCount.set(0);
     }
 
     /**
@@ -68,11 +70,11 @@ public class FlowStat {
             }
         }
 
-        int min = (int) (((double) initParams.getMinTime()) / statDuration * count);
+        int min = (int) (((double) initParams.getMinTime()) / statDuration * count.get());
         if (remainAmount > min) {
             return 0;
         }
-        int max = (int) (((double) initParams.getMaxTime()) / statDuration * count);
+        int max = (int) (((double) initParams.getMaxTime()) / statDuration * count.get());
         int gap = max - remainAmount;
 
         return gap > 0 ? gap : 1;

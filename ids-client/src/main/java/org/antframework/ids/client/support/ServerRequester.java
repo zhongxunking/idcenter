@@ -89,7 +89,7 @@ public class ServerRequester {
     /**
      * 获取批量id-result
      */
-    private class AcquireIdsResult extends AbstractResult {
+    private static class AcquireIdsResult extends AbstractResult {
         // 获取到的批量id
         private List<IdsInfo> idsInfos;
 
@@ -105,7 +105,7 @@ public class ServerRequester {
     /**
      * 批量id-info
      */
-    private class IdsInfo extends AbstractInfo {
+    private static class IdsInfo extends AbstractInfo {
         // id编码
         private String idCode;
         // 周期类型
