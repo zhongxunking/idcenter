@@ -61,7 +61,7 @@ public class ServerRequester {
             if (!result.isSuccess()) {
                 throw new RuntimeException("从id中心获取批量id失败：" + result.getMessage());
             }
-            return toIds(result.getIdsInfos());
+            return toIdsList(result.getIdsInfos());
         } catch (IOException e) {
             return ExceptionUtils.rethrow(e);
         }
@@ -78,7 +78,7 @@ public class ServerRequester {
         return httpPost;
     }
 
-    private List<Ids> toIds(List<IdsInfo> idsInfos) {
+    private List<Ids> toIdsList(List<IdsInfo> idsInfos) {
         List<Ids> idsList = new ArrayList<>();
         for (IdsInfo info : idsInfos) {
             idsList.add(new Ids(info.getIdCode(), info.getPeriodType(), info.getFactor(), info.getPeriod(), info.getStartId(), info.getAmount()));
