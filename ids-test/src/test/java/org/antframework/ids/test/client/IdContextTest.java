@@ -13,15 +13,18 @@ import org.antframework.ids.client.IdAcquirer;
 import org.antframework.ids.client.IdContext;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * id上下文单元测试
  */
 @Ignore
 public class IdContextTest {
+    private static final Logger logger = LoggerFactory.getLogger(IdContextTest.class);
 
     @Test
-    public void testIdContext() {
+    public void testIdContext() throws InterruptedException {
         IdContext.InitParams initParams = new IdContext.InitParams();
         initParams.setIdCode("oid");
         initParams.setServerUrl("http://localhost:6210");
@@ -31,6 +34,11 @@ public class IdContextTest {
 
         IdContext idContext = new IdContext(initParams);
         IdAcquirer idAcquirer = idContext.getAcquirer();
-        Id id = idAcquirer.getId();
+        for (int i = 0; i < 20000; i++) {
+            Id id = idAcquirer.getId();
+            Thread.sleep(20);
+            logger.info("----{}----", i);
+        }
+        int a = 0;
     }
 }
