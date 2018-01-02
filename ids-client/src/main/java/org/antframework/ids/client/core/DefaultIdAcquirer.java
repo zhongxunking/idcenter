@@ -52,7 +52,7 @@ public class DefaultIdAcquirer implements ConfigurableIdAcquirer {
     }
 
     @Override
-    public Id getId() {
+    public synchronized Id getId() {
         flowStat.addCount();
         acquireIfNecessary();
         return idStorage.getId();
