@@ -6,10 +6,11 @@
  * 修订记录:
  * @author 钟勋 2017-12-31 22:23 创建
  */
-package org.antframework.ids.client.core;
+package org.antframework.ids.client.support;
 
 import org.antframework.ids.client.Id;
 import org.antframework.ids.client.IdContext;
+import org.antframework.ids.client.core.Ids;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -31,9 +31,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 服务端查询器
+ * 服务端请求器
  */
-public class ServerQuerier {
+public class ServerRequester {
     // 发送http请求的客户端
     private static final CloseableHttpClient HTTP_CLIENT = HttpClients.createDefault();
     // 获取批量id的url
@@ -41,7 +41,7 @@ public class ServerQuerier {
     // 初始化参数
     private IdContext.InitParams initParams;
 
-    public ServerQuerier(IdContext.InitParams initParams) {
+    public ServerRequester(IdContext.InitParams initParams) {
         this.initParams = initParams;
     }
 

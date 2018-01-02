@@ -6,8 +6,9 @@
  * 修订记录:
  * @author 钟勋 2017-11-21 21:38 创建
  */
-package org.antframework.ids.client.core;
+package org.antframework.ids.client.support;
 
+import org.antframework.ids.client.core.PeriodType;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.Calendar;
