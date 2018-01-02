@@ -9,7 +9,6 @@
 package org.antframework.ids.client.core;
 
 import org.antframework.ids.client.Id;
-import org.antframework.ids.client.IdAcquirer;
 import org.antframework.ids.client.IdContext;
 import org.antframework.ids.client.support.FlowStat;
 import org.antframework.ids.client.support.IdStorage;
@@ -22,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * id获取器默认实现
  */
-public class DefaultIdAcquirer implements IdAcquirer {
+public class DefaultIdAcquirer implements ConfigurableIdAcquirer {
     // 从服务端获取id任务线程池
     private ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
             0,
@@ -51,6 +50,11 @@ public class DefaultIdAcquirer implements IdAcquirer {
         flowStat.addCount();
         acquireIfNecessary();
         return idStorage.getId();
+    }
+
+    @Override
+    public void close() {
+        threadPool.shutdown();
     }
 
     // 从服务端获取id（如果有必要）

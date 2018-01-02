@@ -8,15 +8,35 @@
  */
 package org.antframework.ids.client;
 
+import org.antframework.ids.client.core.ConfigurableIdAcquirer;
+import org.antframework.ids.client.core.DefaultIdAcquirer;
+
 /**
  * id上下文
  */
 public class IdContext {
     // 初始化参数
     private InitParams initParams;
+    // id获取器
+    private ConfigurableIdAcquirer idAcquirer;
 
     public IdContext(InitParams initParams) {
         this.initParams = initParams;
+        idAcquirer = new DefaultIdAcquirer(initParams);
+    }
+
+    /**
+     * 获取id获取器
+     */
+    public IdAcquirer getAcquirer() {
+        return idAcquirer;
+    }
+
+    /**
+     * 关闭
+     */
+    public void close() {
+        idAcquirer.close();
     }
 
     /**
