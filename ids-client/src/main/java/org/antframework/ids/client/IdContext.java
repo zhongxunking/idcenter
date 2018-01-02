@@ -10,18 +10,17 @@ package org.antframework.ids.client;
 
 import org.antframework.ids.client.core.ConfigurableIdAcquirer;
 import org.antframework.ids.client.core.DefaultIdAcquirer;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * id上下文
  */
 public class IdContext {
-    // 初始化参数
-    private InitParams initParams;
     // id获取器
     private ConfigurableIdAcquirer idAcquirer;
 
     public IdContext(InitParams initParams) {
-        this.initParams = initParams;
+        initParams.check();
         idAcquirer = new DefaultIdAcquirer(initParams);
     }
 
@@ -53,6 +52,16 @@ public class IdContext {
         private long maxTime;
         // 必填：最小时间（毫秒）
         private long minTime;
+
+        /**
+         * 校验
+         */
+        public void check() {
+            if (StringUtils.isBlank(idCode) || StringUtils.isBlank(serverUrl)
+                    || initAmount <= 0 || maxTime <= 0 || minTime <= 0 || maxTime <= minTime) {
+                throw new IllegalArgumentException("传入id中心客户端的初始化参数不合法");
+            }
+        }
 
         public String getIdCode() {
             return idCode;
