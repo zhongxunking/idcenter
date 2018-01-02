@@ -47,9 +47,11 @@ public class IdContext {
         private String idCode;
         // 必填：服务端地址
         private String serverUrl;
-        // 最大时间（毫秒）
+        // 必填：初始化id数量
+        private int initAmount;
+        // 必填：最大时间（毫秒）
         private long maxTime;
-        // 最小时间（毫秒）
+        // 必填：最小时间（毫秒）
         private long minTime;
 
         public String getIdCode() {
@@ -66,6 +68,14 @@ public class IdContext {
 
         public void setServerUrl(String serverUrl) {
             this.serverUrl = serverUrl;
+        }
+
+        public int getInitAmount() {
+            return initAmount;
+        }
+
+        public void setInitAmount(int initAmount) {
+            this.initAmount = initAmount;
         }
 
         public long getMaxTime() {
