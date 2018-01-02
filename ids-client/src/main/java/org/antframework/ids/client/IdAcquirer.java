@@ -15,6 +15,8 @@ public interface IdAcquirer {
 
     /**
      * 获取id
+     *
+     * @return null 如果无可用的id
      */
     Id getId();
 }
