@@ -12,11 +12,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.antframework.ids</groupId>
-            <artifactId>ids-facade</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.antframework.common</groupId>
             <artifactId>ant-common-util</artifactId>
         </dependency>

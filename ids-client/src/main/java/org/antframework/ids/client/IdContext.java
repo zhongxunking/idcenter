@@ -27,6 +27,10 @@ public class IdContext {
         private String idCode;
         // 必填：服务端地址
         private String serverUrl;
+        // 最大时间（毫秒）
+        private long maxTime;
+        // 最小时间（毫秒）
+        private long minTime;
 
         public String getIdCode() {
             return idCode;
@@ -42,6 +46,22 @@ public class IdContext {
 
         public void setServerUrl(String serverUrl) {
             this.serverUrl = serverUrl;
+        }
+
+        public long getMaxTime() {
+            return maxTime;
+        }
+
+        public void setMaxTime(long maxTime) {
+            this.maxTime = maxTime;
+        }
+
+        public long getMinTime() {
+            return minTime;
+        }
+
+        public void setMinTime(long minTime) {
+            this.minTime = minTime;
         }
     }
 }
