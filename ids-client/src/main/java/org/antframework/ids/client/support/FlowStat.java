@@ -29,9 +29,8 @@ public class FlowStat {
 
     public FlowStat(IdContext.InitParams initParams) {
         this.initParams = initParams;
-        startTime = System.currentTimeMillis();
+        startTime = nextStartTime = System.currentTimeMillis();
         count = new AtomicInteger(0);
-        nextStartTime = System.currentTimeMillis();
         nextCount = new AtomicInteger(0);
     }
 
@@ -61,8 +60,13 @@ public class FlowStat {
      */
     public int calcGap(int remainAmount) {
         long statDuration = System.currentTimeMillis() - startTime;
-        // 如果时钟被回拨
         if (statDuration <= 0) {
+            if (statDuration < 0) {
+                // 如果时钟被回拨，则统计清零
+                startTime = nextStartTime = System.currentTimeMillis();
+                count.set(0);
+                nextCount.set(0);
+            }
             if (remainAmount > 0) {
                 return 0;
             } else {
