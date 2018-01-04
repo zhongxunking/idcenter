@@ -8,24 +8,24 @@
         <version>1.0.0.RELEASE</version>
     </parent>
 
-    <groupId>org.antframework.ids</groupId>
-    <artifactId>ids</artifactId>
+    <groupId>org.antframework.idcenter</groupId>
+    <artifactId>idcenter</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>ids</name>
+    <name>idcenter</name>
     <description>id生成中心</description>
 
     <modules>
-        <module>ids-facade</module>
-        <module>ids-common</module>
-        <module>ids-dal</module>
-        <module>ids-integration</module>
-        <module>ids-biz</module>
-        <module>ids-web</module>
-        <module>ids-assemble</module>
-        <module>ids-client</module>
-        <module>ids-test</module>
+        <module>idcenter-facade</module>
+        <module>idcenter-common</module>
+        <module>idcenter-dal</module>
+        <module>idcenter-integration</module>
+        <module>idcenter-biz</module>
+        <module>idcenter-web</module>
+        <module>idcenter-assemble</module>
+        <module>idcenter-client</module>
+        <module>idcenter-test</module>
     </modules>
 
     <dependencyManagement>
