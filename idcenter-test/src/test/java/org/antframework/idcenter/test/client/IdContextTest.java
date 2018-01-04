@@ -34,11 +34,22 @@ public class IdContextTest {
 
         IdContext idContext = new IdContext(initParams);
         IdAcquirer idAcquirer = idContext.getAcquirer();
-        for (int i = 0; i < 20000; i++) {
-            Id id = idAcquirer.getId();
+
+        int nullCount = 0;
+
+        for (int i = 0; i < 1000000; i++) {
+            for (int j = 0; j < 10; j++) {
+                Id id = idAcquirer.getId();
+                if (id == null) {
+                    nullCount++;
+                }
+            }
             Thread.sleep(20);
             logger.info("----{}----", i);
+            if (nullCount > 0) {
+                logger.error("id出现null次数：{}", nullCount);
+            }
         }
-        int a = 0;
+        idContext.close();
     }
 }
