@@ -58,11 +58,16 @@ public class IdStorage {
 
     /**
      * 获取id数量
+     *
+     * @param allowPeriodError 是否允许周期误差
+     * @return id数量
      */
-    public int getAmount() {
+    public int getAmount(boolean allowPeriodError) {
+        long periodError = allowPeriodError ? this.periodError : 0;
+
         int amount = 0;
         for (Ids ids : idsQueue) {
-            amount += ids.getAmount(0);
+            amount += ids.getAmount(periodError);
         }
         return amount;
     }

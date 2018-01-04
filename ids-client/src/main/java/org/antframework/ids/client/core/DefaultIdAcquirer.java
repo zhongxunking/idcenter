@@ -65,7 +65,7 @@ public class DefaultIdAcquirer implements ConfigurableIdAcquirer {
 
     // 从服务端获取id（如果有必要）
     private void acquireIfNecessary() {
-        int gap = flowStat.calcGap(idStorage.getAmount());
+        int gap = flowStat.calcGap(idStorage.getAmount(true));
         if (gap > 0) {
             threadPool.execute(acquireTask);
         }
@@ -87,7 +87,7 @@ public class DefaultIdAcquirer implements ConfigurableIdAcquirer {
     private class AcquireTask implements Runnable {
         @Override
         public void run() {
-            int gap = flowStat.calcGap(idStorage.getAmount());
+            int gap = flowStat.calcGap(idStorage.getAmount(false));
             if (gap > 0) {
                 acquire(gap);
             }
