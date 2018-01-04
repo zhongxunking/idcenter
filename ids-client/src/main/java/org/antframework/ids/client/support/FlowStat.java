@@ -57,10 +57,10 @@ public class FlowStat {
     /**
      * 计算差量
      *
-     * @param remainAmount 剩余数量
+     * @param remain 剩余数量
      * @return 差量
      */
-    public int calcGap(int remainAmount) {
+    public int calcGap(int remain) {
         long statDuration = System.currentTimeMillis() - startTime;
         if (statDuration <= 0) {
             if (statDuration < 0) {
@@ -69,7 +69,7 @@ public class FlowStat {
                 count.set(0);
                 nextCount.set(0);
             }
-            if (remainAmount > 0) {
+            if (remain > 0) {
                 return 0;
             } else {
                 return initParams.getInitAmount();
@@ -77,13 +77,13 @@ public class FlowStat {
         }
 
         int min = (int) (((double) initParams.getMinTime()) / statDuration * count.get());
-        if (remainAmount > min) {
+        if (remain > min) {
             return 0;
         }
         int max = (int) (((double) initParams.getMaxTime()) / statDuration * count.get());
-        int gap = max - remainAmount;
+        int gap = max - remain;
         // 进行浮动
-        gap -= RANDOM.nextInt(max - min + 1) * (((double) (min - remainAmount)) / min);
+        gap -= RANDOM.nextInt(max - min + 1) * (((double) (min - remain)) / min);
 
         return gap > 0 ? gap : 1;
     }
