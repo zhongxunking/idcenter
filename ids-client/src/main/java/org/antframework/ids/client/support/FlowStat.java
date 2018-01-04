@@ -10,12 +10,14 @@ package org.antframework.ids.client.support;
 
 import org.antframework.ids.client.IdContext;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 流量统计
  */
 public class FlowStat {
+    private static final Random RANDOM = new Random();
     // 初始化参数
     private IdContext.InitParams initParams;
     // 统计开始时间
@@ -80,6 +82,8 @@ public class FlowStat {
         }
         int max = (int) (((double) initParams.getMaxTime()) / statDuration * count.get());
         int gap = max - remainAmount;
+        // 进行浮动
+        gap -= RANDOM.nextInt(max - min + 1) * (((double) (min - remainAmount)) / min);
 
         return gap > 0 ? gap : 1;
     }
