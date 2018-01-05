@@ -45,7 +45,7 @@ public class QueryIderService {
         QueryIderOrder order = context.getOrder();
         QueryIderResult result = context.getResult();
 
-        CommonQueryResult commonQueryResult = serviceEngine.execute(CommonQueryConstant.SERVICE_NAME, order, QueryUtils.buildQueryAttachment(IderDao.class));
+        CommonQueryResult commonQueryResult = serviceEngine.execute(CommonQueryConstant.SERVICE_NAME, order, QueryUtils.buildCommonQueryAttachment(IderDao.class));
         commonQueryResult.convertTo(result, infoConverter);
     }
 
