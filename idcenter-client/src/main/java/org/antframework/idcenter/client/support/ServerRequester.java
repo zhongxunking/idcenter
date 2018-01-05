@@ -16,11 +16,11 @@ import org.antframework.idcenter.client.core.Ids;
 import org.antframework.idcenter.client.core.PeriodType;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class ServerRequester {
     // 发送http请求的客户端
-    private static final CloseableHttpClient HTTP_CLIENT = HttpClients.createDefault();
+    private static final HttpClient HTTP_CLIENT = HttpClients.createDefault();
     // 获取批量id的url
     private static final String ACQUIRE_IDS_SUFFIX_URL = "/id/acquireIds";
     // 初始化参数
