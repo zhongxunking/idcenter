@@ -8,6 +8,7 @@
  */
 package org.antframework.idcenter.client;
 
+import org.antframework.common.util.tostring.ToString;
 import org.antframework.idcenter.client.core.ConfigurableIdAcquirer;
 import org.antframework.idcenter.client.core.DefaultIdAcquirer;
 import org.apache.commons.lang3.StringUtils;
@@ -48,9 +49,9 @@ public class IdContext {
         private String serverUrl;
         // 必填：初始化id数量
         private int initAmount;
-        // 必填：最小时间（毫秒）
+        // 必填：最小预留时间（毫秒）
         private long minTime;
-        // 必填：最大时间（毫秒）
+        // 必填：最大预留时间（毫秒）
         private long maxTime;
 
         /**
@@ -59,7 +60,7 @@ public class IdContext {
         public void check() {
             if (StringUtils.isBlank(idCode) || StringUtils.isBlank(serverUrl)
                     || initAmount <= 0 || minTime <= 0 || maxTime <= 0 || minTime >= maxTime) {
-                throw new IllegalArgumentException("传入id中心客户端的初始化参数不合法");
+                throw new IllegalArgumentException("初始化id中心客户端的参数不合法：" + ToString.toString(this));
             }
         }
 

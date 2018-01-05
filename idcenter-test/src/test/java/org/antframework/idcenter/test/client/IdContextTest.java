@@ -29,8 +29,8 @@ public class IdContextTest {
         initParams.setIdCode("oid");
         initParams.setServerUrl("http://localhost:6210");
         initParams.setInitAmount(100);
-        initParams.setMaxTime(15 * 60 * 1000);
         initParams.setMinTime(10 * 60 * 1000);
+        initParams.setMaxTime(15 * 60 * 1000);
 
         IdContext idContext = new IdContext(initParams);
         IdAcquirer idAcquirer = idContext.getAcquirer();
