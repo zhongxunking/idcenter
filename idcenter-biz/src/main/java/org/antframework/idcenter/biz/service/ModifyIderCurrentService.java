@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.biz.service;
 
-import org.antframework.boot.bekit.AntBekitException;
+import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
@@ -43,13 +43,13 @@ public class ModifyIderCurrentService {
 
         Ider ider = iderDao.findLockByIdCode(order.getIdCode());
         if (ider == null) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
         if (ider.getPeriodType() != PeriodType.NONE && order.getNewCurrentPeriod() == null) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]周期类型为%s，新的当前周期不能为null", ider.getIdCode(), ider.getPeriodType()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]周期类型为%s，新的当前周期不能为null", ider.getIdCode(), ider.getPeriodType()));
         }
         if (ider.getMaxId() != null && order.getNewCurrentId() >= ider.getMaxId()) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的当前id[%d]超过id提供者[%s]允许的最大值[%d]（不包含）", order.getNewCurrentId(), ider.getIdCode(), ider.getMaxId()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的当前id[%d]超过id提供者[%s]允许的最大值[%d]（不包含）", order.getNewCurrentId(), ider.getIdCode(), ider.getMaxId()));
         }
 
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());

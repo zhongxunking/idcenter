@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.biz.service;
 
-import org.antframework.boot.bekit.AntBekitException;
+import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
@@ -41,13 +41,13 @@ public class ModifyIderFactorService {
 
         Ider ider = iderDao.findLockByIdCode(order.getIdCode());
         if (ider == null) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
         if (order.getNewFactor() > ider.getMaxId()) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的因数不能大于id提供者[%s]的最大id[%d]", ider.getIdCode(), ider.getMaxId()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的因数不能大于id提供者[%s]的最大id[%d]", ider.getIdCode(), ider.getMaxId()));
         }
         if (Math.max(order.getNewFactor(), ider.getFactor()) % Math.min(order.getNewFactor(), ider.getFactor()) != 0) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("因数要么成倍增加要么成倍减少，id提供者[%s]当前因数[%d]，期望因数[%d]不符合要求", ider.getIdCode(), ider.getFactor(), order.getNewFactor()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("因数要么成倍增加要么成倍减少，id提供者[%s]当前因数[%d]，期望因数[%d]不符合要求", ider.getIdCode(), ider.getFactor(), order.getNewFactor()));
         }
 
         if (order.getNewFactor() > ider.getFactor()) {

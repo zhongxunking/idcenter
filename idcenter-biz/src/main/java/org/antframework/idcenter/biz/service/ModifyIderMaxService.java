@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.biz.service;
 
-import org.antframework.boot.bekit.AntBekitException;
+import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
@@ -34,7 +34,7 @@ public class ModifyIderMaxService {
 
         Ider ider = iderDao.findLockByIdCode(order.getIdCode());
         if (ider == null) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
         checkNewMaxId(order, ider);
 
@@ -50,18 +50,18 @@ public class ModifyIderMaxService {
         }
         if (order.getNewMaxId() == null) {
             if (ider.getMaxId() % ider.getFactor() != 0) {
-                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "将id最大值改为不限制的前提是：现有id最大值必须是因数的整数倍");
+                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "将id最大值改为不限制的前提是：现有id最大值必须是因数的整数倍");
             }
         } else if (ider.getMaxId() == null) {
             if (order.getNewMaxId() % ider.getFactor() != 0) {
-                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "将id最大值由不限制改为固定大小的前提是：改后的id最大值必须是因数的整数倍");
+                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "将id最大值由不限制改为固定大小的前提是：改后的id最大值必须是因数的整数倍");
             }
         } else {
             if (Math.abs(order.getNewMaxId() - ider.getMaxId()) % ider.getFactor() != 0) {
-                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "id最大值被修改的差值必须是因数的整数倍");
+                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "id最大值被修改的差值必须是因数的整数倍");
             }
             if (order.getNewMaxId() < ider.getFactor()) {
-                throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id最大值不能小于因数[%d]", ider.getFactor()));
+                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id最大值不能小于因数[%d]", ider.getFactor()));
             }
         }
     }

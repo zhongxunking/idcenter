@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.biz.service;
 
-import org.antframework.boot.bekit.AntBekitException;
+import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
@@ -42,7 +42,7 @@ public class AddIderService {
 
         Ider ider = iderDao.findLockByIdCode(order.getIdCode());
         if (ider != null) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]已存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]已存在", order.getIdCode()));
         }
         ider = buildIder(order);
         producerDao.save(buildProducer(ider));

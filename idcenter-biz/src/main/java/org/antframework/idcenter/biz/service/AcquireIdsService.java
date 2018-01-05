@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.biz.service;
 
-import org.antframework.boot.bekit.AntBekitException;
+import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.Status;
 import org.antframework.idcenter.biz.util.ProducerUtils;
@@ -45,7 +45,7 @@ public class AcquireIdsService {
 
         Ider ider = iderDao.findByIdCode(order.getIdCode());
         if (ider == null) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
         }
         context.setAttachmentAttr(Ider.class, ider);
     }
@@ -58,7 +58,7 @@ public class AcquireIdsService {
 
         Producer producer = producerDao.findLockByIdCodeAndIndex(ider.getIdCode(), RANDOM.nextInt(ider.getFactor()));
         if (producer == null) {
-            throw new AntBekitException(Status.FAIL, CommonResultCode.ILLEGAL_STATE.getCode(), String.format("id提供者[%s]的因数被修改，请重试", ider.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.ILLEGAL_STATE.getCode(), String.format("id提供者[%s]的因数被修改，请重试", ider.getIdCode()));
         }
         // 刷新ider（生产者被锁住前因数可能会被修改，在此更新到最新因数）
         ider = iderDao.findByIdCode(ider.getIdCode());
