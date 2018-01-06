@@ -11,6 +11,7 @@ package org.antframework.idcenter.client.core;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -18,7 +19,7 @@ import java.util.Objects;
 /**
  * 周期
  */
-public class Period implements Comparable<Period> {
+public class Period implements Comparable<Period>, Serializable {
     // 周期类型
     private final PeriodType type;
     // 周期时间
