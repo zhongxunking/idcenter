@@ -20,7 +20,7 @@ public class IdsInfo extends AbstractInfo {
     private Period period;
     // 因数
     private int factor;
-    // 开始id
+    // 开始id（包含）
     private long startId;
     // id个数
     private int amount;

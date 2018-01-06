@@ -34,7 +34,7 @@ public class Producer extends AbstractEntity {
     @Column
     private Date currentPeriod;
 
-    // 当前Id
+    // 当前Id（包含）
     @Column
     private Long currentId;
 

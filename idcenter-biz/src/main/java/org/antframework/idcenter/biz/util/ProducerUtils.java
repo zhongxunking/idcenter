@@ -72,6 +72,7 @@ public class ProducerUtils {
      * @return 增加过程中产生的id
      */
     public static List<IdsInfo> grow(Ider ider, Producer producer, long length) {
+        Assert.isTrue(length >= 0, "生产者增加长度必须大于或等于0");
         List<IdsInfo> idsInfos = new ArrayList<>();
 
         long newCurrentId = producer.getCurrentId() + length;

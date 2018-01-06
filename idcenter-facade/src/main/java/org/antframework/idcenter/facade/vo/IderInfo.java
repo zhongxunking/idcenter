@@ -90,7 +90,7 @@ public class IderInfo extends AbstractInfo {
         private Integer index;
         // 当前周期
         private Date currentPeriod;
-        // 当前Id
+        // 当前Id（包含）
         private Long currentId;
 
         public String getIdCode() {

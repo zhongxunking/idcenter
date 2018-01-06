@@ -20,10 +20,10 @@ public class ModifyIderMaxOrder extends AbstractOrder {
     // id编码
     @NotBlank
     private String idCode;
-    // 新的id最大值
+    // 新的id最大值（不包含）
     @Min(1)
     private Long newMaxId;
-    // 新的一次获取id的最大数量
+    // 新的一次获取id的最大数量（包含）
     @Min(1)
     private Integer newMaxAmount;
 
