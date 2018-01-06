@@ -14,7 +14,6 @@ import org.antframework.common.util.facade.AbstractResult;
 import org.antframework.idcenter.client.IdContext;
 import org.antframework.idcenter.client.core.Ids;
 import org.antframework.idcenter.client.core.Period;
-import org.antframework.idcenter.client.core.PeriodType;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -28,7 +27,6 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -82,7 +80,7 @@ public class ServerRequester {
     private List<Ids> toIdsList(List<IdsInfo> idsInfos) {
         List<Ids> idsList = new ArrayList<>();
         for (IdsInfo info : idsInfos) {
-            idsList.add(new Ids(info.getIdCode(), new Period(info.getPeriodType(), info.getPeriod()), info.getFactor(), info.getStartId(), info.getAmount()));
+            idsList.add(new Ids(info.getIdCode(), info.getPeriod(), info.getFactor(), info.getStartId(), info.getAmount()));
         }
         return idsList;
     }
@@ -109,13 +107,11 @@ public class ServerRequester {
     private static class IdsInfo extends AbstractInfo {
         // id编码
         private String idCode;
-        // 周期类型
-        private PeriodType periodType;
+        // 周期
+        private Period period;
         // 因数
         private int factor;
-        // 周期
-        private Date period;
-        // 开始id
+        // 开始id（包含）
         private long startId;
         // id个数
         private int amount;
@@ -128,12 +124,12 @@ public class ServerRequester {
             this.idCode = idCode;
         }
 
-        public PeriodType getPeriodType() {
-            return periodType;
+        public Period getPeriod() {
+            return period;
         }
 
-        public void setPeriodType(PeriodType periodType) {
-            this.periodType = periodType;
+        public void setPeriod(Period period) {
+            this.period = period;
         }
 
         public int getFactor() {
@@ -142,14 +138,6 @@ public class ServerRequester {
 
         public void setFactor(int factor) {
             this.factor = factor;
-        }
-
-        public Date getPeriod() {
-            return period;
-        }
-
-        public void setPeriod(Date period) {
-            this.period = period;
         }
 
         public long getStartId() {
