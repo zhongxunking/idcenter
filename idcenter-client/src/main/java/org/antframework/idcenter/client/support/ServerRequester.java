@@ -77,6 +77,7 @@ public class ServerRequester {
         return httpPost;
     }
 
+    // 转换为Ids
     private List<Ids> toIdsList(List<IdsInfo> idsInfos) {
         List<Ids> idsList = new ArrayList<>();
         for (IdsInfo info : idsInfos) {
