@@ -17,7 +17,7 @@ import org.antframework.idcenter.dal.dao.ProducerDao;
 import org.antframework.idcenter.dal.entity.Ider;
 import org.antframework.idcenter.dal.entity.Producer;
 import org.antframework.idcenter.facade.order.AddIderOrder;
-import org.antframework.idcenter.facade.util.PeriodUtils;
+import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
@@ -60,10 +60,12 @@ public class AddIderService {
 
     // 构建生产者
     private Producer buildProducer(Ider ider) {
+        Period period = new Period(ider.getPeriodType(), new Date());
+
         Producer producer = new Producer();
         producer.setIdCode(ider.getIdCode());
         producer.setIndex(0);
-        producer.setCurrentPeriod(PeriodUtils.parse(ider.getPeriodType(), new Date()));
+        producer.setCurrentPeriod(period.getDate());
         producer.setCurrentId(0L);
 
         return producer;

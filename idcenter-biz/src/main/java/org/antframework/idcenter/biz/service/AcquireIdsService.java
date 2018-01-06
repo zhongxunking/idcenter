@@ -18,7 +18,7 @@ import org.antframework.idcenter.dal.entity.Ider;
 import org.antframework.idcenter.dal.entity.Producer;
 import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
-import org.antframework.idcenter.facade.util.PeriodUtils;
+import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceCheck;
 import org.bekit.service.annotation.service.ServiceExecute;
@@ -77,24 +77,26 @@ public class AcquireIdsService {
 
     // 如果生产者的当前周期小于最新周期，则更新当前周期
     private void modernizeProducer(Ider ider, Producer producer) {
-        Date modernPeriod = PeriodUtils.parse(ider.getPeriodType(), new Date());
-        if (PeriodUtils.compare(modernPeriod, producer.getCurrentPeriod()) > 0) {
+        Period modernPeriod = new Period(ider.getPeriodType(), new Date());
+
+        Period period = new Period(ider.getPeriodType(), producer.getCurrentPeriod());
+        if (period.compareTo(modernPeriod) < 0) {
             int modernStartId = calcModernStartId(ider, producer, modernPeriod);
-            producer.setCurrentPeriod(modernPeriod);
+            producer.setCurrentPeriod(modernPeriod.getDate());
             producer.setCurrentId((long) modernStartId);
         }
     }
 
     // 计算生产者跳跃到最新周期时的开始id
-    private int calcModernStartId(Ider ider, Producer producer, Date modernPeriod) {
+    private int calcModernStartId(Ider ider, Producer producer, Period modernPeriod) {
         int modernStartId = (int) (producer.getCurrentId() % ider.getFactor());
         if (ider.getMaxId() == null) {
             return modernStartId;
         }
         int growPerPeriod = ider.getFactor() - (int) (ider.getMaxId() % ider.getFactor());
-        Date anchorPeriod = producer.getCurrentPeriod();
-        while (anchorPeriod.getTime() < modernPeriod.getTime()) {
-            anchorPeriod = PeriodUtils.grow(ider.getPeriodType(), anchorPeriod, 1);
+        Period anchorPeriod = new Period(ider.getPeriodType(), producer.getCurrentPeriod());
+        while (anchorPeriod.compareTo(modernPeriod) < 0) {
+            anchorPeriod = anchorPeriod.grow(1);
             modernStartId = (modernStartId + growPerPeriod) % ider.getFactor();
         }
         return modernStartId;

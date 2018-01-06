@@ -11,8 +11,8 @@ package org.antframework.idcenter.biz.util;
 import org.antframework.common.util.facade.FacadeUtils;
 import org.antframework.idcenter.dal.entity.Ider;
 import org.antframework.idcenter.dal.entity.Producer;
-import org.antframework.idcenter.facade.util.PeriodUtils;
 import org.antframework.idcenter.facade.vo.IdsInfo;
+import org.antframework.idcenter.facade.vo.Period;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
@@ -36,9 +36,13 @@ public class ProducerUtils {
         if (!StringUtils.equals(producer1.getIdCode(), producer2.getIdCode())) {
             throw new IllegalArgumentException(String.format("待比较的生产者%s和%s不属于同一个id提供者，不能进行比较", producer1.toString(), producer2.toString()));
         }
-        if (PeriodUtils.compare(producer1.getCurrentPeriod(), producer2.getCurrentPeriod()) != 0) {
-            return PeriodUtils.compare(producer1.getCurrentPeriod(), producer2.getCurrentPeriod());
+        // 比较周期大小
+        if (producer1.getCurrentPeriod() != producer2.getCurrentPeriod()) {
+            if (producer1.getCurrentPeriod().compareTo(producer2.getCurrentPeriod()) != 0) {
+                return producer1.getCurrentPeriod().compareTo(producer2.getCurrentPeriod());
+            }
         }
+        // 比较id大小
         if (producer1.getCurrentId() < producer2.getCurrentId()) {
             return -1;
         } else if (producer1.getCurrentId() > producer2.getCurrentId()) {
@@ -89,20 +93,22 @@ public class ProducerUtils {
         if (ider.getMaxId() != null) {
             long anchorMaxId = anchorId / ider.getMaxId() * ider.getMaxId() + ider.getMaxId();
             Assert.isTrue(anchorMaxId >= anchorId, "运算中超过long类型最大值，无法进行计算");
-            anchorEndId = Math.min(anchorMaxId, newCurrentId);
+            anchorEndId = Math.min(anchorMaxId, anchorEndId);
         }
         return FacadeUtils.calcTotalPage(anchorEndId - anchorId, ider.getFactor());
     }
 
     // 构建批量id-info
     private static IdsInfo buildIdsInfo(Ider ider, Producer producer, long anchorId, int periodIdAmount) {
+        Period period = new Period(ider.getPeriodType(), producer.getCurrentPeriod());
+
         IdsInfo info = new IdsInfo();
         BeanUtils.copyProperties(ider, info);
         if (ider.getMaxId() == null) {
-            info.setPeriod(producer.getCurrentPeriod());
+            info.setPeriod(period);
             info.setStartId(anchorId);
         } else {
-            info.setPeriod(PeriodUtils.grow(ider.getPeriodType(), producer.getCurrentPeriod(), (int) (anchorId / ider.getMaxId())));
+            info.setPeriod(period.grow((int) (anchorId / ider.getMaxId())));
             info.setStartId(anchorId % ider.getMaxId());
         }
         info.setAmount(periodIdAmount);
@@ -115,7 +121,9 @@ public class ProducerUtils {
         if (ider.getMaxId() == null) {
             producer.setCurrentId(newCurrentId);
         } else {
-            producer.setCurrentPeriod(PeriodUtils.grow(ider.getPeriodType(), producer.getCurrentPeriod(), (int) (newCurrentId / ider.getMaxId())));
+            Period period = new Period(ider.getPeriodType(), producer.getCurrentPeriod()).grow((int) (newCurrentId / ider.getMaxId()));
+
+            producer.setCurrentPeriod(period.getDate());
             producer.setCurrentId(newCurrentId % ider.getMaxId());
         }
     }

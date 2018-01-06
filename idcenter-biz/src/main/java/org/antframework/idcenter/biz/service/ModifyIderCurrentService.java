@@ -19,7 +19,7 @@ import org.antframework.idcenter.dal.entity.Ider;
 import org.antframework.idcenter.dal.entity.Producer;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.ModifyIderCurrentOrder;
-import org.antframework.idcenter.facade.util.PeriodUtils;
+import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
@@ -52,10 +52,11 @@ public class ModifyIderCurrentService {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的当前id[%d]超过id提供者[%s]允许的最大值[%d]（不包含）", order.getNewCurrentId(), ider.getIdCode(), ider.getMaxId()));
         }
 
+        Period newPeriod = new Period(ider.getPeriodType(), order.getNewCurrentPeriod());
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
         for (int i = 0; i < ider.getFactor(); i++) {
             Producer producer = producers.get(i);
-            producer.setCurrentPeriod(PeriodUtils.parse(ider.getPeriodType(), order.getNewCurrentPeriod()));
+            producer.setCurrentPeriod(newPeriod.getDate());
             producer.setCurrentId(order.getNewCurrentId());
             ProducerUtils.grow(ider, producer, i);
 
