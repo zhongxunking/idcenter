@@ -9,7 +9,7 @@
 package org.antframework.idcenter.facade.result;
 
 import org.antframework.common.util.facade.AbstractResult;
-import org.antframework.idcenter.facade.info.IdsInfo;
+import org.antframework.idcenter.facade.vo.IdsInfo;
 
 import java.util.List;
 

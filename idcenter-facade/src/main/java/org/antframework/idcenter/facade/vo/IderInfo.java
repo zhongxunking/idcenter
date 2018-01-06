@@ -6,7 +6,7 @@
  * 修订记录:
  * @author 钟勋 2017-11-27 20:11 创建
  */
-package org.antframework.idcenter.facade.info;
+package org.antframework.idcenter.facade.vo;
 
 import org.antframework.common.util.facade.AbstractInfo;
 import org.antframework.idcenter.facade.enums.PeriodType;
