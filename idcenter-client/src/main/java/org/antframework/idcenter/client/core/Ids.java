@@ -9,7 +9,6 @@
 package org.antframework.idcenter.client.core;
 
 import org.antframework.idcenter.client.Id;
-import org.antframework.idcenter.client.support.PeriodUtils;
 
 import java.util.Date;
 
@@ -19,22 +18,19 @@ import java.util.Date;
 public class Ids {
     // id编码
     private String idCode;
-    // 周期类型
-    private PeriodType periodType;
+    // 周期
+    private Period period;
     // 因数
     private int factor;
-    // 周期
-    private Date period;
     // 开始id
     private long startId;
     // id个数
     private int amount;
 
-    public Ids(String idCode, PeriodType periodType, int factor, Date period, long startId, int amount) {
+    public Ids(String idCode, Period period, int factor, long startId, int amount) {
         this.idCode = idCode;
-        this.periodType = periodType;
-        this.factor = factor;
         this.period = period;
+        this.factor = factor;
         this.startId = startId;
         this.amount = amount;
     }
@@ -50,7 +46,7 @@ public class Ids {
             return null;
         }
 
-        Id id = new Id(idCode, periodType, period, startId);
+        Id id = new Id(idCode, period, startId);
 
         startId += factor;
         amount--;
@@ -65,8 +61,8 @@ public class Ids {
      * @return id个数
      */
     public int getAmount(long periodError) {
-        Date modernPeriod = PeriodUtils.parse(periodType, new Date(System.currentTimeMillis() - periodError));
-        if (PeriodUtils.compare(period, modernPeriod) < 0) {
+        Period modernPeriod = new Period(period.getType(), new Date(System.currentTimeMillis() - periodError));
+        if (period.compareTo(modernPeriod) < 0) {
             return 0;
         }
         return amount;

@@ -13,6 +13,7 @@ import org.antframework.common.util.facade.AbstractInfo;
 import org.antframework.common.util.facade.AbstractResult;
 import org.antframework.idcenter.client.IdContext;
 import org.antframework.idcenter.client.core.Ids;
+import org.antframework.idcenter.client.core.Period;
 import org.antframework.idcenter.client.core.PeriodType;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
@@ -81,7 +82,7 @@ public class ServerRequester {
     private List<Ids> toIdsList(List<IdsInfo> idsInfos) {
         List<Ids> idsList = new ArrayList<>();
         for (IdsInfo info : idsInfos) {
-            idsList.add(new Ids(info.getIdCode(), info.getPeriodType(), info.getFactor(), info.getPeriod(), info.getStartId(), info.getAmount()));
+            idsList.add(new Ids(info.getIdCode(), new Period(info.getPeriodType(), info.getPeriod()), info.getFactor(), info.getStartId(), info.getAmount()));
         }
         return idsList;
     }

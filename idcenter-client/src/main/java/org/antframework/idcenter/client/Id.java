@@ -8,9 +8,7 @@
  */
 package org.antframework.idcenter.client;
 
-import org.antframework.idcenter.client.core.PeriodType;
-
-import java.util.Date;
+import org.antframework.idcenter.client.core.Period;
 
 /**
  * id
@@ -18,16 +16,13 @@ import java.util.Date;
 public class Id {
     // id编码
     private String idCode;
-    // 周期类型
-    private PeriodType periodType;
     // 周期
-    private Date period;
+    private Period period;
     // id
     private long id;
 
-    public Id(String idCode, PeriodType periodType, Date period, long id) {
+    public Id(String idCode, Period period, long id) {
         this.idCode = idCode;
-        this.periodType = periodType;
         this.period = period;
         this.id = id;
     }
@@ -36,11 +31,7 @@ public class Id {
         return idCode;
     }
 
-    public PeriodType getPeriodType() {
-        return periodType;
-    }
-
-    public Date getPeriod() {
+    public Period getPeriod() {
         return period;
     }
 
