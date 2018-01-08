@@ -81,7 +81,7 @@ public class ProducerUtils {
         while (anchorId < newCurrentId) {
             int periodIdAmount = calcPeriodIdAmount(ider, newCurrentId, anchorId);
             idsInfos.add(buildIdsInfo(ider, producer, anchorId, periodIdAmount));
-            anchorId += periodIdAmount * ider.getFactor();
+            anchorId += ((long) periodIdAmount) * ider.getFactor();
         }
         updateProducer(ider, producer, newCurrentId);
 
