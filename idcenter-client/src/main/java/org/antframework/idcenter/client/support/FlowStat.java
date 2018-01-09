@@ -81,9 +81,15 @@ public class FlowStat {
             return 0;
         }
         int max = (int) (((double) initParams.getMaxTime()) / statDuration * count.get());
+        if (max < min) {
+            // 运算中超出int最大值，无法进行计算
+            return 0;
+        }
         int gap = max - remain;
-        // 进行浮动
-        gap -= RANDOM.nextInt(max - min + 1) * (((double) (min - remain)) / min);
+        if (min > 0) {
+            // 进行浮动
+            gap -= RANDOM.nextInt(max - min + 1) * (((double) (min - remain)) / min);
+        }
 
         return gap > 0 ? gap : 1;
     }
