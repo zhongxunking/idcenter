@@ -61,9 +61,6 @@ public class QueryIderService {
         @Override
         public IderInfo convert(Ider source) {
             IderInfo iderInfo = super.convert(source);
-            if (iderInfo == null) {
-                return null;
-            }
             // 查找id提供者的所有生产者
             List<Producer> producers = producerDao.findByIdCodeOrderByIndexAsc(iderInfo.getIdCode());
             for (Producer producer : producers) {
