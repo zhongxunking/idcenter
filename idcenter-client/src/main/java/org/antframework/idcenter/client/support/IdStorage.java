@@ -14,6 +14,7 @@ import org.antframework.idcenter.client.core.Ids;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * id仓库
@@ -21,8 +22,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class IdStorage {
     // 批量id队列
     private final Queue<Ids> idsQueue = new ConcurrentLinkedQueue<>();
+    // 仓库内id个数
+    private AtomicLong amount = new AtomicLong(0);
     // 允许的周期误差
-    private long periodError;
+    private Long periodError;
 
     public IdStorage(IdContext.InitParams initParams) {
         periodError = initParams.getMaxTime() - initParams.getMinTime();
@@ -43,8 +46,10 @@ public class IdStorage {
             id = ids.getId(periodError);
             if (id == null) {
                 idsQueue.poll();
+                amount.addAndGet(-ids.getAmount(null));
             }
         } while (id == null);
+        amount.addAndGet(-1);
 
         return id;
     }
@@ -54,6 +59,7 @@ public class IdStorage {
      */
     public void addIds(Ids ids) {
         idsQueue.offer(ids);
+        amount.addAndGet(ids.getAmount(null));
     }
 
     /**
@@ -62,12 +68,13 @@ public class IdStorage {
      * @param allowPeriodError 是否允许周期误差
      * @return id数量
      */
-    public int getAmount(boolean allowPeriodError) {
-        long periodError = allowPeriodError ? this.periodError : 0;
-
+    public long getAmount(boolean allowPeriodError) {
+        if (allowPeriodError) {
+            return this.amount.get();
+        }
         int amount = 0;
         for (Ids ids : idsQueue) {
-            amount += ids.getAmount(periodError);
+            amount += ids.getAmount(0L);
         }
         return amount;
     }

@@ -60,7 +60,11 @@ public class FlowStat {
      * @param remain 剩余数量
      * @return 差量
      */
-    public int calcGap(int remain) {
+    public int calcGap(long remain) {
+        if (remain > Integer.MAX_VALUE) {
+            // 如果id剩余数量超过int最大值，则表示id数量充足
+            return 0;
+        }
         long statDuration = System.currentTimeMillis() - startTime;
         if (statDuration <= 0) {
             if (statDuration < 0) {
@@ -85,7 +89,7 @@ public class FlowStat {
             // 运算中超出int最大值，无法进行计算
             return 0;
         }
-        int gap = max - remain;
+        int gap = (int) (max - remain);
         if (min > 0) {
             // 进行浮动
             gap -= RANDOM.nextInt(max - min + 1) * (((double) (min - remain)) / min);

@@ -38,10 +38,10 @@ public class Ids {
     /**
      * 获取一个id
      *
-     * @param periodError 允许的周期误差
+     * @param periodError 允许的周期误差（null表示不管周期是否过期）
      * @return null 如果不存在有效id
      */
-    public Id getId(long periodError) {
+    public Id getId(Long periodError) {
         if (getAmount(periodError) <= 0) {
             return null;
         }
@@ -57,13 +57,15 @@ public class Ids {
     /**
      * 获取id个数
      *
-     * @param periodError 允许的周期误差
+     * @param periodError 允许的周期误差（null表示不管周期是否过期）
      * @return id个数
      */
-    public int getAmount(long periodError) {
-        Period modernPeriod = new Period(period.getType(), new Date(System.currentTimeMillis() - periodError));
-        if (period.compareTo(modernPeriod) < 0) {
-            return 0;
+    public int getAmount(Long periodError) {
+        if (periodError != null) {
+            Period modernPeriod = new Period(period.getType(), new Date(System.currentTimeMillis() - periodError));
+            if (period.compareTo(modernPeriod) < 0) {
+                return 0;
+            }
         }
         return amount;
     }
