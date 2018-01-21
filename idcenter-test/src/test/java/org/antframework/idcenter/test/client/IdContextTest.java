@@ -52,4 +52,29 @@ public class IdContextTest {
         }
         idContext.close();
     }
+
+    @Test
+    public void testIdContextPerformance() {
+        IdContext.InitParams initParams = new IdContext.InitParams();
+        initParams.setIdCode("oid");
+        initParams.setServerUrl("http://localhost:6210");
+        initParams.setInitAmount(100);
+        initParams.setMinTime(10 * 60 * 1000);
+        initParams.setMaxTime(15 * 60 * 1000);
+
+        IdContext idContext = new IdContext(initParams);
+        IdAcquirer idAcquirer = idContext.getAcquirer();
+
+        long startTime = System.currentTimeMillis();
+        int count = 100000000;
+        int nullCount = 0;
+        for (int i = 0; i < count; i++) {
+            Id id = idAcquirer.getId();
+            if (id == null) {
+                nullCount++;
+            }
+        }
+        long timeCost = System.currentTimeMillis() - startTime;
+        System.out.println(String.format("循环次数：%d，id出现null次数：%d，总耗时：%d毫秒，tps：%d", count, nullCount, timeCost, (count - nullCount) * 1000L / timeCost));
+    }
 }
