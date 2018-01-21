@@ -11,7 +11,7 @@ package org.antframework.idcenter.client.support;
 import org.antframework.idcenter.client.IdContext;
 
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 流量统计
@@ -23,17 +23,17 @@ public class FlowStat {
     // 统计开始时间
     private long startTime;
     // id使用量统计
-    private AtomicInteger count;
+    private AtomicLong count;
     // 下一个统计开始时间
     private long nextStartTime;
     // 下一个id使用量统计
-    private AtomicInteger nextCount;
+    private AtomicLong nextCount;
 
     public FlowStat(IdContext.InitParams initParams) {
         this.initParams = initParams;
         startTime = nextStartTime = System.currentTimeMillis();
-        count = new AtomicInteger(0);
-        nextCount = new AtomicInteger(0);
+        count = new AtomicLong(0);
+        nextCount = new AtomicLong(0);
     }
 
     /**
