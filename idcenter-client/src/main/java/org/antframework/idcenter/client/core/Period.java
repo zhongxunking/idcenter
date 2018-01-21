@@ -123,7 +123,7 @@ public class Period implements Comparable<Period>, Serializable {
             case YEAR:
                 return DateFormatUtils.format(date, "yyyy");
             case NONE:
-                return null;
+                return "";
             default:
                 throw new IllegalArgumentException("无法识别的周期类型：" + type);
         }
