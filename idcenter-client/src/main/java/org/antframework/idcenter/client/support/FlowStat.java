@@ -80,21 +80,23 @@ public class FlowStat {
             }
         }
 
-        int min = (int) (((double) initParams.getMinTime()) / statDuration * count.get());
+        long min = (long) (((double) initParams.getMinTime()) / statDuration * count.get());
         if (remain > min) {
             return 0;
         }
-        int max = (int) (((double) initParams.getMaxTime()) / statDuration * count.get());
+        long max = (long) (((double) initParams.getMaxTime()) / statDuration * count.get());
         if (max < min) {
-            // 运算中超出int最大值，无法进行计算
+            // 运算中超出long类型最大值，无法进行计算
             return 0;
         }
-        int gap = (int) (max - remain);
+        long gap = max - remain;
         if (min > 0) {
             // 进行浮动
-            gap -= RANDOM.nextInt(max - min + 1) * (((double) (min - remain)) / min);
+            int minMaxGap = (int) Math.min(max - min + 1, Integer.MAX_VALUE);
+            gap -= RANDOM.nextInt(minMaxGap) * (((double) (min - remain)) / min);
         }
-
-        return gap > 0 ? gap : 1;
+        // 差量不能超过int类型最大值
+        gap = Math.min(gap, Integer.MAX_VALUE);
+        return (int) Math.max(gap, 1);
     }
 }
