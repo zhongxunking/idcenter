@@ -32,9 +32,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Ignore
 public class IdContextPerformanceTest {
     // 并发线程数
-    private static final int THREAD_COUNT = 10;
+    private static final int THREAD_COUNT = 100;
     // 每个任务内循环次数
-    private static final int COUNT_PER_TASK = 100000000;
+    private static final int COUNT_PER_TASK = 10000000;
     // 线程池
     private ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
             THREAD_COUNT,
@@ -102,7 +102,7 @@ public class IdContextPerformanceTest {
             realAmount += ids.getAmount(null);
         }
 
-        System.out.println("id仓库记录余量：" + amount.get() + "，id真正余量：" + realAmount);
+        System.out.println("id仓库记录余量：" + amount.get() + "，id真正余量：" + realAmount + "，idsQueue大小：" + idsQueue.size());
         Assert.assertEquals(realAmount, amount.get());
     }
 
