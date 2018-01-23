@@ -118,16 +118,15 @@ public class IdContextPerformanceTest {
         @Override
         public void run() {
             long startTime = System.currentTimeMillis();
-            int count = 100000000;
             int nullCount = 0;
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < COUNT_PER_TASK; i++) {
                 Id id = idContext.getAcquirer().getId();
                 if (id == null) {
                     nullCount++;
                 }
             }
             long endTime = System.currentTimeMillis();
-            performances[index] = new Performance(index, startTime, endTime, count, nullCount);
+            performances[index] = new Performance(index, startTime, endTime, COUNT_PER_TASK, nullCount);
 
             blockingQueue.offer(new Object());
         }
