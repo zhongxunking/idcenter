@@ -27,7 +27,7 @@ public class IderServiceTest extends AbstractTest {
     @Test
     public void testAcquireIds() throws InterruptedException {
         AcquireIdsOrder order = new AcquireIdsOrder();
-        order.setIdCode("oid");
+        order.setIdCode("uid");
         order.setExpectAmount(1000);
         AcquireIdsResult result = iderService.acquireIds(order);
         assertSuccess(result);

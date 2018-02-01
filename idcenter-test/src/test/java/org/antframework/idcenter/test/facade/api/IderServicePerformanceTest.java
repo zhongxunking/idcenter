@@ -60,7 +60,7 @@ public class IderServicePerformanceTest extends AbstractTest {
         @Override
         public void run() {
             AcquireIdsOrder order = new AcquireIdsOrder();
-            order.setIdCode("oid");
+            order.setIdCode("uid");
             order.setExpectAmount(100);
 
             AcquireIdsResult result = iderService.acquireIds(order);

@@ -35,7 +35,7 @@ public class IdContextTest {
     @Test
     public void testIdContext() throws InterruptedException {
         IdContext.InitParams initParams = new IdContext.InitParams();
-        initParams.setIdCode("oid");
+        initParams.setIdCode("uid");
         initParams.setServerUrl("http://localhost:6210");
         initParams.setInitAmount(100);
         initParams.setMinTime(10 * 60 * 1000);
@@ -65,7 +65,7 @@ public class IdContextTest {
     @Test
     public void testIdContextPerformance() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
         IdContext.InitParams initParams = new IdContext.InitParams();
-        initParams.setIdCode("oid");
+        initParams.setIdCode("uid");
         initParams.setServerUrl("http://localhost:6210");
         initParams.setInitAmount(100);
         initParams.setMinTime(10 * 60 * 1000);

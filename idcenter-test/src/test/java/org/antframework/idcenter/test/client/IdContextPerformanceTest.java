@@ -53,7 +53,7 @@ public class IdContextPerformanceTest {
     @Before
     public void init() {
         IdContext.InitParams initParams = new IdContext.InitParams();
-        initParams.setIdCode("oid");
+        initParams.setIdCode("uid");
         initParams.setServerUrl("http://localhost:6210");
         initParams.setInitAmount(100);
         initParams.setMinTime(10 * 60 * 1000);
