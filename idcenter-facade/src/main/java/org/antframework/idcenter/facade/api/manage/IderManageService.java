@@ -10,6 +10,7 @@ package org.antframework.idcenter.facade.api.manage;
 
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.idcenter.facade.order.*;
+import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIderResult;
 
 /**
@@ -41,6 +42,11 @@ public interface IderManageService {
      * 删除id提供者
      */
     EmptyResult deleteIder(DeleteIderOrder order);
+
+    /**
+     * 查找id提供者
+     */
+    FindIderResult findIder(FindIderOrder order);
 
     /**
      * 查询id提供者

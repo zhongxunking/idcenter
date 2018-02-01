@@ -11,6 +11,7 @@ package org.antframework.idcenter.biz.provider;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.idcenter.facade.api.manage.IderManageService;
 import org.antframework.idcenter.facade.order.*;
+import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIderResult;
 import org.bekit.service.ServiceEngine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,11 @@ public class IderManageServiceProvider implements IderManageService {
     @Override
     public EmptyResult deleteIder(DeleteIderOrder order) {
         return serviceEngine.execute("deleteIderService", order);
+    }
+
+    @Override
+    public FindIderResult findIder(FindIderOrder order) {
+        return serviceEngine.execute("findIderService", order);
     }
 
     @Override
