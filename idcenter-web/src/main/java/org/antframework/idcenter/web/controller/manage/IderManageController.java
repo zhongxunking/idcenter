@@ -8,7 +8,10 @@
  */
 package org.antframework.idcenter.web.controller.manage;
 
-import org.antframework.common.util.facade.*;
+import org.antframework.common.util.facade.AbstractQueryResult;
+import org.antframework.common.util.facade.BizException;
+import org.antframework.common.util.facade.EmptyResult;
+import org.antframework.common.util.facade.Status;
 import org.antframework.idcenter.facade.api.manage.IderManageService;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
@@ -21,7 +24,7 @@ import org.antframework.manager.facade.info.ManagerInfo;
 import org.antframework.manager.facade.info.RelationInfo;
 import org.antframework.manager.facade.order.QueryManagerRelationOrder;
 import org.antframework.manager.facade.result.QueryManagerRelationResult;
-import org.antframework.manager.web.common.ManagerSessionAccessor;
+import org.antframework.manager.web.common.ManagerAssert;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +54,7 @@ public class IderManageController {
      */
     @RequestMapping("/add")
     public EmptyResult add(String idCode, PeriodType periodType, Long maxId, Integer maxAmount) {
-        ManagerSessionAccessor.assertAdmin();
+        ManagerAssert.admin();
         AddIderOrder order = new AddIderOrder();
         order.setIdCode(idCode);
         order.setPeriodType(periodType);
@@ -71,6 +74,7 @@ public class IderManageController {
      */
     @RequestMapping("/modifyMax")
     public EmptyResult modifyMax(String idCode, Long newMaxId, Integer newMaxAmount) {
+        ManagerAssert.adminOrHaveRelation(idCode);
         ModifyIderMaxOrder order = new ModifyIderMaxOrder();
         order.setIdCode(idCode);
         order.setNewMaxId(newMaxId);
@@ -88,6 +92,7 @@ public class IderManageController {
      */
     @RequestMapping("/modifyFactor")
     public EmptyResult modifyFactor(String idCode, int newFactor) {
+        ManagerAssert.adminOrHaveRelation(idCode);
         ModifyIderFactorOrder order = new ModifyIderFactorOrder();
         order.setIdCode(idCode);
         order.setNewFactor(newFactor);
@@ -105,6 +110,7 @@ public class IderManageController {
      */
     @RequestMapping("/modifyCurrent")
     public EmptyResult modifyCurrent(String idCode, Date newCurrentPeriod, long newCurrentId) {
+        ManagerAssert.adminOrHaveRelation(idCode);
         ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
         order.setIdCode(idCode);
         order.setNewCurrentPeriod(newCurrentPeriod);
@@ -121,6 +127,7 @@ public class IderManageController {
      */
     @RequestMapping("/delete")
     public EmptyResult delete(String idCode) {
+        ManagerAssert.admin();
         DeleteIderOrder order = new DeleteIderOrder();
         order.setIdCode(idCode);
 
@@ -137,10 +144,7 @@ public class IderManageController {
      */
     @RequestMapping("/queryManagedIder")
     public QueryManagedIderResult queryManagedIder(int pageNo, int pageSize, String idCode) {
-        ManagerInfo manager = ManagerSessionAccessor.getManager();
-        if (manager == null) {
-            throw new BizException(Status.FAIL, CommonResultCode.ILLEGAL_STATE.getCode(), "未登陆或登陆已过期");
-        }
+        ManagerInfo manager = ManagerAssert.currentManager();
         if (manager.getType() == ManagerType.ADMIN) {
             return forAdmin(pageNo, pageSize, idCode);
         } else {
