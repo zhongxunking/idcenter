@@ -35,7 +35,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setIdCode("uid");
         order.setPeriodType(PeriodType.HOUR);
         order.setMaxId(9000000000L);
-        order.setMaxAmount(10000);
+        order.setMaxAmount(1000000);
 
         EmptyResult result = iderManageService.addIder(order);
         assertSuccess(result);
@@ -46,7 +46,7 @@ public class IderManageServiceTest extends AbstractTest {
         ModifyIderMaxOrder order = new ModifyIderMaxOrder();
         order.setIdCode("uid");
         order.setNewMaxId(9000000000L - 10 * 4);
-        order.setNewMaxAmount(20000);
+        order.setNewMaxAmount(2000000);
 
         EmptyResult result = iderManageService.modifyIderMax(order);
         assertSuccess(result);
