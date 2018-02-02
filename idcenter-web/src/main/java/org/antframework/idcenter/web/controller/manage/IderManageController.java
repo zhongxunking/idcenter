@@ -22,6 +22,7 @@ import org.antframework.manager.facade.api.RelationService;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
 import org.antframework.manager.facade.info.RelationInfo;
+import org.antframework.manager.facade.order.DeleteRelationOrder;
 import org.antframework.manager.facade.order.QueryManagerRelationOrder;
 import org.antframework.manager.facade.result.QueryManagerRelationResult;
 import org.antframework.manager.web.common.ManagerAssert;
@@ -128,9 +129,16 @@ public class IderManageController {
     @RequestMapping("/delete")
     public EmptyResult delete(String idCode) {
         ManagerAssert.admin();
+        // 删除id提供者与管理员的关系
+        DeleteRelationOrder deleteRelationOrder = new DeleteRelationOrder();
+        deleteRelationOrder.setTargetId(idCode);
+        EmptyResult result = relationService.deleteRelation(deleteRelationOrder);
+        if (!result.isSuccess()) {
+            return result;
+        }
+        // 删除id提供者
         DeleteIderOrder order = new DeleteIderOrder();
         order.setIdCode(idCode);
-
         return iderManageService.deleteIder(order);
     }
 
