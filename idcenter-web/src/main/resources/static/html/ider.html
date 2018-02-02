@@ -28,7 +28,7 @@
             tr += "<td>" + info.maxId + "</td>";
             tr += "<td>" + info.maxAmount + "</td>";
             tr += "<td>" + info.factor + "</td>";
-            tr += "<td>" + info.producer + "</td>";
+            tr += "<td>" + info.producerInfos + "</td>";
             tr += "</tr>"
 
             return tr;
@@ -37,26 +37,6 @@
     </script>
 </head>
 <body>
-<div>
-    新增或修改应用：
-    <form id="addOrModifyAppForm" action="/manage/app//addOrModifyApp">
-        <table>
-            <tr>
-                <td align="right">应用编码：</td>
-                <td><input type="text" name="appCode"></td>
-            </tr>
-            <tr>
-                <td align="right">备注：</td>
-                <td><input type="text" name="memo"></td>
-            </tr>
-            <tr>
-                <td align="right"><input type="button" onclick="requestServer('addOrModifyAppForm')" value="提交"></td>
-                <td></td>
-            </tr>
-        </table>
-    </form>
-</div>
-<br/>
 <br/>
 <div>
     <form id="queryForm" action="/manage/ider/queryManagedIder">
@@ -71,5 +51,34 @@
     <button onclick="nextPage()">下一页</button>
     总页数：<span id="totalPage"></span>
 </div>
+<br/>
+<div>
+    新增id提供者：
+    <form id="addIderForm" action="/manage/ider/add">
+        <table>
+            <tr>
+                <td align="right">id编码：</td>
+                <td><input type="text" name="idCode"></td>
+            </tr>
+            <tr>
+                <td align="right">周期类型：</td>
+                <td><input type="text" name="periodType"></td>
+            </tr>
+            <tr>
+                <td align="right">id最大值：</td>
+                <td><input type="text" name="maxId"></td>
+            </tr>
+            <tr>
+                <td align="right">单次获取id最多数量：</td>
+                <td><input type="text" name="maxAmount"></td>
+            </tr>
+            <tr>
+                <td align="right"><input type="button" onclick="requestServer('addIderForm')" value="提交"></td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<br/>
 </body>
 </html>

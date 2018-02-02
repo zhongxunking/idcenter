@@ -171,6 +171,7 @@ public class IderManageController {
         // 构建返回结果
         QueryManagedIderResult result = new QueryManagedIderResult();
         BeanUtils.copyProperties(queryIderResult, result);
+        result.getInfos().addAll(queryIderResult.getInfos());
         return result;
     }
 
