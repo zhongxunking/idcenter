@@ -28,26 +28,10 @@
             tr += "<td>" + info.maxId + "</td>";
             tr += "<td>" + info.maxAmount + "</td>";
             tr += "<td>" + info.factor + "</td>";
-            tr += "<td>" + info.factor + "</td>";
+            tr += "<td>" + info.producer + "</td>";
             tr += "</tr>"
 
             return tr;
-        }
-
-        function deleteEntity(appCode) {
-            $.ajax({
-                url: "/manage/app/deleteApp",
-                data: {
-                    appCode: appCode
-                },
-                success: function (ajaxResult) {
-                    if (ajaxResult.success) {
-                        query();
-                    } else {
-                        alert("删除失败，原因：" + ajaxResult.message);
-                    }
-                }
-            });
         }
 
     </script>
@@ -75,8 +59,8 @@
 <br/>
 <br/>
 <div>
-    <form id="queryForm" action="/manage/app/queryApp">
-        应用编码：<input type="text" name="appCode">
+    <form id="queryForm" action="/manage/ider/queryManagedIder">
+        id编码：<input type="text" name="idCode">
         <input type="button" onclick="pageNo = 1;query();" value="查询">
     </form>
 </div>
