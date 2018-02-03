@@ -31,7 +31,7 @@
 
         function deleteEntity(managerId, targetId) {
             $.ajax({
-                url: "/manager/relation/delete",
+                url: "../manager/relation/delete",
                 data: {
                     managerId: managerId,
                     targetId: targetId
@@ -51,7 +51,7 @@
 <body>
 <br>
 <div>
-    <form id="queryForm" action="/manager/relation/query">
+    <form id="queryForm" action="../manager/relation/query">
         管理员Id：<input type="text" name="managerId">
         id编码：<input type="text" name="targetId">
         <input type="button" onclick="pageNo = 1;query();" value="查询">
@@ -67,7 +67,7 @@
 <br><br>
 <div>
     新增关联：
-    <form id="addForm" action="/manager/relation/add">
+    <form id="addForm" action="../manager/relation/add">
         <table>
             <tr>
                 <td align="right">管理员id：</td>

@@ -41,7 +41,7 @@
 
         function deleteEntity(managerId) {
             $.ajax({
-                url: "/manager/manage/delete",
+                url: "../manager/manage/delete",
                 data: {
                     managerId: managerId
                 },
@@ -79,7 +79,7 @@
 <body>
 <br>
 <div>
-    <form id="queryForm" action="/manager/manage/query">
+    <form id="queryForm" action="../manager/manage/query">
         管理员id：<input type="text" name="managerId">
         类型：
         <select name="type">
@@ -104,7 +104,7 @@
         <td valign="top" width="30%">
             <div>
                 新增管理员：
-                <form id="addForm" action="/manager/manage/add">
+                <form id="addForm" action="../manager/manage/add">
                     <table>
                         <tr>
                             <td align="right">管理员id：</td>
@@ -139,7 +139,7 @@
         <td valign="top" width="30%">
             <div>
                 修改类型：
-                <form id="modifyTypeForm" action="/manager/manage/modifyType">
+                <form id="modifyTypeForm" action="../manager/manage/modifyType">
                     <table>
                         <tr>
                             <td align="right">管理员id：</td>
@@ -167,7 +167,7 @@
         <td valign="top" width="40%">
             <div>
                 修改密码：
-                <form id="modifyPasswordForm" action="/manager/manage/modifyPassword">
+                <form id="modifyPasswordForm" action="../manager/manage/modifyPassword">
                     <table>
                         <tr>
                             <td align="right">管理员id：</td>

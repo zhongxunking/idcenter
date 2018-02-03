@@ -24,13 +24,13 @@
 
         function logout() {
             $.ajax({
-                url: "/manager/main/logout",
+                url: "../manager/main/logout",
                 data: {},
                 async: false,
                 success: function (ajaxResult) {
                     if (ajaxResult.success) {
                         manager = null;
-                        window.location.href = "login.html";
+                        window.top.location.href = "login.html";
                     } else {
                         alert("失败，原因：" + ajaxResult.message);
                     }

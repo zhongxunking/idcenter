@@ -10,7 +10,7 @@ $(document).ready(function () {
 function getCurrentManager() {
     var manager = null;
     $.ajax({
-        url: "/manager/main/current",
+        url: "../manager/main/current",
         data: {},
         async: false,
         success: function (ajaxResult) {
