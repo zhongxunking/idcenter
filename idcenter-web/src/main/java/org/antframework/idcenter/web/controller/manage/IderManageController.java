@@ -106,7 +106,7 @@ public class IderManageController {
      * 修改id提供者当前数据
      *
      * @param idCode           id编码（必填）
-     * @param newCurrentPeriod 新的当前周期（格式：yyyy-MM-dd HH），null表示无周期
+     * @param newCurrentPeriod 新的当前周期（格式：yyyy-MM-dd HH），无周期则传null
      * @param newCurrentId     新的当前id（必填）
      * @return 修改结果
      */
