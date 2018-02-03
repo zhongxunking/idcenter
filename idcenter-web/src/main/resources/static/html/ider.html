@@ -39,9 +39,9 @@
         function producerColumn(producerInfos) {
             var table = "<table width='100%'>";
             table += "<tr>";
-            table += "<th align='left'>序号</th>";
-            table += "<th align='left'>当前周期</th>";
-            table += "<th align='left'>当前id</th>";
+            table += "<th align='left' width='10%'>序号</th>";
+            table += "<th align='left' width='55%'>当前周期</th>";
+            table += "<th align='left' width='45%'>当前id</th>";
             table += "</tr>";
             for (var i = 0; i < producerInfos.length; i++) {
                 table += "<tr>";
@@ -56,16 +56,16 @@
 
         function toPeriodTypeStr(periodType) {
             if (periodType == 'HOUR') {
-                return "时";
+                return "每小时";
             }
             if (periodType == "DAY") {
-                return "天";
+                return "每天";
             }
             if (periodType == "MONTH") {
-                return "月";
+                return "每月";
             }
             if (periodType == "YEAR") {
-                return "年";
+                return "每年";
             }
             if (periodType == "NONE") {
                 return "无";
@@ -74,6 +74,9 @@
         }
 
         function toDateStr(time) {
+            if (time == null) {
+                return null;
+            }
             return new Date(time).format("yyyy-MM-dd hh:mm:ss.S");
         }
 
@@ -193,10 +196,10 @@
                             <td align="right">周期类型：</td>
                             <td>
                                 <select name="periodType">
-                                    <option value="HOUR">时</option>
-                                    <option value="DAY">天</option>
-                                    <option value="MONTH">月</option>
-                                    <option value="YEAR">年</option>
+                                    <option value="HOUR">每小时</option>
+                                    <option value="DAY">每天</option>
+                                    <option value="MONTH">每月</option>
+                                    <option value="YEAR">每年</option>
                                     <option value="NONE">无</option>
                                 </select>
                             </td>
