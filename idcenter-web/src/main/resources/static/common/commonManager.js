@@ -3,7 +3,7 @@ $(document).ready(function () {
     manager = getCurrentManager();
     if (manager == null) {
         alert("未登录，或登录超时，请重新登陆");
-        window.location.href = "login.html";
+        window.top.location.href = "login.html";
     }
 });
 
