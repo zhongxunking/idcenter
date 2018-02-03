@@ -14,8 +14,8 @@
             var tr = "<tr>";
             tr += "<th align='left' width='20%'>id编码</th>"
             tr += "<th align='left' width='5%'>周期类型</th>"
-            tr += "<th align='left' width='17%'>id最大值（不包含）</th>"
-            tr += "<th align='left' width='13%'>单次获取id的最大数量（包含）</th>"
+            tr += "<th align='left' width='17%'>id最大值（不包含）<br/>null表示不限制</th>"
+            tr += "<th align='left' width='13%'>单次获取id的最大数量（包含）<br/>null表示不限制</th>"
             tr += "<th align='left' width='5%'>因数</th>"
             tr += "<th align='left' width='40%'>生产者</th>"
             tr += "</tr>"
@@ -30,13 +30,13 @@
             tr += "<td>" + info.maxId + "</td>";
             tr += "<td>" + info.maxAmount + "</td>";
             tr += "<td>" + info.factor + "</td>";
-            tr += "<td>" + producerColum(info.producerInfos) + "</td>";
+            tr += "<td>" + producerColumn(info.producerInfos) + "</td>";
             tr += "</tr>"
 
             return tr;
         }
 
-        function producerColum(producerInfos) {
+        function producerColumn(producerInfos) {
             var table = "<table width='100%'>";
             table += "<tr>";
             table += "<th align='left'>序号</th>";
@@ -114,11 +114,11 @@
                             <td><input type="text" name="idCode"></td>
                         </tr>
                         <tr>
-                            <td align="right">新的id最大值：</td>
+                            <td align="right">新的id最大值<br/>(不填表示不限制)：</td>
                             <td><input type="text" name="newMaxId"></td>
                         </tr>
                         <tr>
-                            <td align="right">新的单次获取id数量：</td>
+                            <td align="right">新的单次获取id最大数量<br/>(不填表示不限制)：</td>
                             <td><input type="text" name="newMaxAmount"></td>
                         </tr>
                         <tr>
@@ -202,11 +202,11 @@
                             </td>
                         </tr>
                         <tr>
-                            <td align="right">id最大值：</td>
+                            <td align="right">id最大值<br/>不填表示不限制：</td>
                             <td><input type="text" name="maxId"></td>
                         </tr>
                         <tr>
-                            <td align="right">单次获取id最多数量：</td>
+                            <td align="right">单次获取id最多数量<br/>不填表示不限制：</td>
                             <td><input type="text" name="maxAmount"></td>
                         </tr>
                         <tr>
