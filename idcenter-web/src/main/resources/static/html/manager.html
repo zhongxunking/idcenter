@@ -104,19 +104,11 @@
         <td valign="top" width="30%">
             <div>
                 新增管理员：
-                <form id="addManagerForm" action="/manage/manager/addManager">
+                <form id="addForm" action="/manager/manage/add">
                     <table>
                         <tr>
-                            <td align="right">编码：</td>
-                            <td><input type="text" name="managerCode"></td>
-                        </tr>
-                        <tr>
-                            <td align="right">名称：</td>
-                            <td><input type="text" name="name"></td>
-                        </tr>
-                        <tr>
-                            <td align="right">密码：</td>
-                            <td><input type="password" name="password"></td>
+                            <td align="right">管理员id：</td>
+                            <td><input type="text" name="managerId"></td>
                         </tr>
                         <tr>
                             <td align="right">类型：</td>
@@ -128,7 +120,15 @@
                             </td>
                         </tr>
                         <tr>
-                            <td align="right"><input type="button" onclick="requestServer2('addManagerForm')"
+                            <td align="right">名称：</td>
+                            <td><input type="text" name="name"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">密码：</td>
+                            <td><input type="password" name="password"></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><input type="button" onclick="requestServer2('addForm')"
                                                      value="提交"></td>
                             <td></td>
                         </tr>
@@ -139,11 +139,11 @@
         <td valign="top" width="30%">
             <div>
                 修改类型：
-                <form id="modifyManagerTypeForm" action="/manage/manager/modifyManagerType">
+                <form id="modifyTypeForm" action="/manager/manage/modifyType">
                     <table>
                         <tr>
-                            <td align="right">编码：</td>
-                            <td><input type="text" name="managerCode"></td>
+                            <td align="right">管理员id：</td>
+                            <td><input type="text" name="managerId"></td>
                         </tr>
                         <tr>
                             <td align="right">新类型：</td>
@@ -155,7 +155,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td align="right"><input type="button" onclick="requestServer2('modifyManagerTypeForm')"
+                            <td align="right"><input type="button" onclick="requestServer2('modifyTypeForm')"
                                                      value="提交">
                             </td>
                             <td></td>
@@ -167,18 +167,18 @@
         <td valign="top" width="40%">
             <div>
                 修改密码：
-                <form id="modifyManagerPasswordForm" action="/manage/manager/modifyManagerPassword">
+                <form id="modifyPasswordForm" action="/manager/manage/modifyPassword">
                     <table>
                         <tr>
-                            <td align="right">编码：</td>
-                            <td><input type="text" name="managerCode"></td>
+                            <td align="right">管理员id：</td>
+                            <td><input type="text" name="managerId"></td>
                         </tr>
                         <tr>
                             <td align="right">新密码：</td>
                             <td><input type="password" name="newPassword"></td>
                         </tr>
                         <tr>
-                            <td align="right"><input type="button" onclick="requestServer2('modifyManagerPasswordForm')"
+                            <td align="right"><input type="button" onclick="requestServer2('modifyPasswordForm')"
                                                      value="提交">
                             </td>
                             <td></td>
