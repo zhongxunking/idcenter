@@ -5,6 +5,7 @@
     <title>ider管理</title>
     <script type="text/javascript" src="../common/jquery-3.2.1.js"></script>
     <script type="text/javascript" src="../common/commonQuery.js"></script>
+    <script type="text/javascript" src="../common/commonManager.js"></script>
     <link rel="stylesheet" href="../common/common.css" type="text/css">
     <script type="text/javascript">
 
@@ -51,6 +52,14 @@
             table += "</table>";
             return table;
         }
+
+        $(document).ready(function () {
+            if (manager.type == 'ADMIN') {
+                $('#adminDiv').show();
+            } else {
+                $('#adminDiv').hide();
+            }
+        })
     </script>
 </head>
 <body>
@@ -144,6 +153,8 @@
             </td>
         </tr>
     </table>
+</div>
+<div id="adminDiv" style="display:none;">
     <table width="70%">
         <tr>
             <td valign="top">
