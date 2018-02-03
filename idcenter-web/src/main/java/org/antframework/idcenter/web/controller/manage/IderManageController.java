@@ -28,6 +28,7 @@ import org.antframework.manager.facade.result.QueryManagerRelationResult;
 import org.antframework.manager.web.common.ManagerAssert;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -105,12 +106,12 @@ public class IderManageController {
      * 修改id提供者当前数据
      *
      * @param idCode           id编码（必填）
-     * @param newCurrentPeriod 新的当前周期（null表示无周期）
+     * @param newCurrentPeriod 新的当前周期（格式：yyyy-MM-dd HH），null表示无周期
      * @param newCurrentId     新的当前id（必填）
      * @return 修改结果
      */
     @RequestMapping("/modifyCurrent")
-    public EmptyResult modifyCurrent(String idCode, Date newCurrentPeriod, long newCurrentId) {
+    public EmptyResult modifyCurrent(String idCode, @DateTimeFormat(pattern = "yyyy-MM-dd HH") Date newCurrentPeriod, long newCurrentId) {
         ManagerAssert.adminOrHaveRelation(idCode);
         ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
         order.setIdCode(idCode);

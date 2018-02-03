@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>ider管理</title>
     <script type="text/javascript" src="../common/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../common/dateFormat.js"></script>
     <script type="text/javascript" src="../common/commonQuery.js"></script>
     <script type="text/javascript" src="../common/commonManager.js"></script>
     <link rel="stylesheet" href="../common/common.css" type="text/css">
@@ -45,7 +46,7 @@
             for (var i = 0; i < producerInfos.length; i++) {
                 table += "<tr>";
                 table += "<td>" + producerInfos[i].index + "</td>";
-                table += "<td>" + producerInfos[i].currentPeriod + "</td>";
+                table += "<td>" + toDateStr(producerInfos[i].currentPeriod) + "</td>";
                 table += "<td>" + producerInfos[i].currentId + "</td>";
                 table += "</tr>";
             }
@@ -70,6 +71,10 @@
                 return "无";
             }
             alert("无法识别的周期类型：" + periodType);
+        }
+
+        function toDateStr(time) {
+            return new Date(time).format("yyyy-MM-dd hh:mm:ss.S");
         }
 
         $(document).ready(function () {
