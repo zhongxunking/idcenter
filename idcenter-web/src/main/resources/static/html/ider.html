@@ -10,12 +10,12 @@
 
         function createTableHead() {
             var tr = "<tr>";
-            tr += "<th align='left'>id编码</th>"
-            tr += "<th align='left'>周期类型</th>"
-            tr += "<th align='left'>id最大值（不包含）</th>"
-            tr += "<th align='left'>单次获取id的最大数量（包含）</th>"
-            tr += "<th align='left'>因数</th>"
-            tr += "<th align='left'>生产者</th>"
+            tr += "<th align='left' width='20%'>id编码</th>"
+            tr += "<th align='left' width='10%'>周期类型</th>"
+            tr += "<th align='left' width='15%'>id最大值（不包含）</th>"
+            tr += "<th align='left' width='10%'>单次获取id的最大数量（包含）</th>"
+            tr += "<th align='left' width='5%'>因数</th>"
+            tr += "<th align='left' width='40%'>生产者</th>"
             tr += "</tr>"
 
             return tr;
@@ -28,12 +28,29 @@
             tr += "<td>" + info.maxId + "</td>";
             tr += "<td>" + info.maxAmount + "</td>";
             tr += "<td>" + info.factor + "</td>";
-            tr += "<td>" + info.producerInfos + "</td>";
+            tr += "<td>" + producerColum(info.producerInfos) + "</td>";
             tr += "</tr>"
 
             return tr;
         }
 
+        function producerColum(producerInfos) {
+            var table = "<table width='100%'>";
+            table += "<tr>";
+            table += "<th align='left'>序号</th>";
+            table += "<th align='left'>当前周期</th>";
+            table += "<th align='left'>当前id</th>";
+            table += "</tr>";
+            for (var i = 0; i < producerInfos.length; i++) {
+                table += "<tr>";
+                table += "<td>" + producerInfos[i].index + "</td>";
+                table += "<td>" + producerInfos[i].currentPeriod + "</td>";
+                table += "<td>" + producerInfos[i].currentId + "</td>";
+                table += "</tr>";
+            }
+            table += "</table>";
+            return table;
+        }
     </script>
 </head>
 <body>
@@ -53,31 +70,128 @@
 </div>
 <br/>
 <div>
-    新增id提供者：
-    <form id="addIderForm" action="/manage/ider/add">
-        <table>
-            <tr>
-                <td align="right">id编码：</td>
-                <td><input type="text" name="idCode"></td>
-            </tr>
-            <tr>
-                <td align="right">周期类型：</td>
-                <td><input type="text" name="periodType"></td>
-            </tr>
-            <tr>
-                <td align="right">id最大值：</td>
-                <td><input type="text" name="maxId"></td>
-            </tr>
-            <tr>
-                <td align="right">单次获取id最多数量：</td>
-                <td><input type="text" name="maxAmount"></td>
-            </tr>
-            <tr>
-                <td align="right"><input type="button" onclick="requestServer('addIderForm')" value="提交"></td>
-                <td></td>
-            </tr>
-        </table>
-    </form>
+    <table width="90%">
+        <tr>
+            <td valign="top">
+                修改id提供者最大数据：
+                <form id="modifyMaxForm" action="/manage/ider/modifyMax">
+                    <table>
+                        <tr>
+                            <td align="right">id编码：</td>
+                            <td><input type="text" name="idCode"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">新的id最大值：</td>
+                            <td><input type="text" name="newMaxId"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">新的单次获取id数量：</td>
+                            <td><input type="text" name="newMaxAmount"></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><input type="button" onclick="requestServer('modifyMaxForm')" value="提交">
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td valign="top">
+                修改id提供者的因数：
+                <form id="modifyFactorForm" action="/manage/ider/modifyFactor">
+                    <table>
+                        <tr>
+                            <td align="right">id编码：</td>
+                            <td><input type="text" name="idCode"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">新的因数：</td>
+                            <td><input type="text" name="newFactor"></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><input type="button" onclick="requestServer('modifyFactorForm')"
+                                                     value="提交">
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td valign="top">
+                修改id提供者当前数据（危险）：
+                <form id="modifyCurrentForm" action="/manage/ider/modifyCurrent">
+                    <table>
+                        <tr>
+                            <td align="right">id编码：</td>
+                            <td><input type="text" name="idCode"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">新的当前周期：</td>
+                            <td><input type="text" name="newCurrentPeriod"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">新的当前id：</td>
+                            <td><input type="text" name="newCurrentId"></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><input type="button" onclick="requestServer('modifyCurrentForm')"
+                                                     value="提交">
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <table width="70%">
+        <tr>
+            <td valign="top">
+                新增id提供者：
+                <form id="addForm" action="/manage/ider/add">
+                    <table>
+                        <tr>
+                            <td align="right">id编码：</td>
+                            <td><input type="text" name="idCode"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">周期类型：</td>
+                            <td><input type="text" name="periodType"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">id最大值：</td>
+                            <td><input type="text" name="maxId"></td>
+                        </tr>
+                        <tr>
+                            <td align="right">单次获取id最多数量：</td>
+                            <td><input type="text" name="maxAmount"></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><input type="button" onclick="requestServer('addForm')" value="提交">
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td valign="top">
+                删除id提供者（危险）：
+                <form id="deleteForm" action="/manage/ider/delete">
+                    <table>
+                        <tr>
+                            <td align="right">id编码：</td>
+                            <td><input type="text" name="idCode"></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><input type="button" onclick="requestServer('deleteForm')" value="提交">
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
 </div>
 <br/>
 </body>
