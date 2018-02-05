@@ -21,6 +21,8 @@ import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,6 +33,7 @@ import java.util.Date;
  */
 @Service(enableTx = true)
 public class AddIderService {
+    private static final Logger logger = LoggerFactory.getLogger(AddIderService.class);
     @Autowired
     private IderDao iderDao;
     @Autowired
@@ -44,9 +47,14 @@ public class AddIderService {
         if (ider != null) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]已存在", order.getIdCode()));
         }
+
         ider = buildIder(order);
-        producerDao.save(buildProducer(ider));
         iderDao.save(ider);
+        logger.info("新增id提供者：{}", ider);
+
+        Producer producer = buildProducer(ider);
+        producerDao.save(producer);
+        logger.info("新增生产者：{}", producer);
     }
 
     // 构建id提供者
