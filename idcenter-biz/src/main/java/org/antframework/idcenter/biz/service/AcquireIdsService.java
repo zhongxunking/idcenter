@@ -23,6 +23,8 @@ import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceCheck;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -33,6 +35,8 @@ import java.util.Random;
  */
 @Service(enableTx = true)
 public class AcquireIdsService {
+    private static final Logger logger = LoggerFactory.getLogger(AcquireIdsService.class);
+    // 随机
     private static final Random RANDOM = new Random();
     @Autowired
     private IderDao iderDao;
@@ -62,17 +66,20 @@ public class AcquireIdsService {
         }
         // 刷新ider（生产者被锁住前因数可能会被修改，在此更新到最新因数）
         ider = iderDao.findByIdCode(ider.getIdCode());
-        // 现代化生产者
-        modernizeProducer(ider, producer);
+        logger.info("生产id前：id提供者={},生产者={}", ider, producer);
         // 计算生产的id数量
         int amount = order.getExpectAmount();
-        if (ider.getMaxAmount() != null) {
-            amount = Math.min(amount, ider.getMaxAmount());
+        if (ider.getMaxAmount() != null && amount > ider.getMaxAmount()) {
+            logger.warn("期望获取id的数量{}过多，调整到{}", amount, ider.getMaxAmount());
+            amount = ider.getMaxAmount();
         }
+        // 现代化生产者
+        modernizeProducer(ider, producer);
         // 生产id
         result.setIdsInfos(ProducerUtils.produce(ider, producer, amount));
-
+        // 更新生产者
         producerDao.save(producer);
+        logger.info("生产id后：生产者={}", producer);
     }
 
     // 如果生产者的当前周期小于最新周期，则更新当前周期
@@ -84,6 +91,7 @@ public class AcquireIdsService {
             int modernStartId = calcModernStartId(ider, producer, modernPeriod);
             producer.setCurrentPeriod(modernPeriod.getDate());
             producer.setCurrentId((long) modernStartId);
+            logger.info("生产者现代化后：{}", producer);
         }
     }
 
