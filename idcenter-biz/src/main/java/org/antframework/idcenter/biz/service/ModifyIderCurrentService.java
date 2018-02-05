@@ -23,6 +23,8 @@ import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.List;
  */
 @Service(enableTx = true)
 public class ModifyIderCurrentService {
+    private static final Logger logger = LoggerFactory.getLogger(ModifyIderCurrentService.class);
     @Autowired
     private IderDao iderDao;
     @Autowired
@@ -52,15 +55,18 @@ public class ModifyIderCurrentService {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的当前id[%d]超过id提供者[%s]允许的最大值[%d]（不包含）", order.getNewCurrentId(), ider.getIdCode(), ider.getMaxId()));
         }
 
+        logger.info("被修改当前数据的id提供者={}", ider);
         Period newPeriod = new Period(ider.getPeriodType(), order.getNewCurrentPeriod());
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
         for (int i = 0; i < ider.getFactor(); i++) {
             Producer producer = producers.get(i);
+            logger.info("生产者被修改当前数据前：{}", producer);
             producer.setCurrentPeriod(newPeriod.getDate());
             producer.setCurrentId(order.getNewCurrentId());
             ProducerUtils.grow(ider, producer, i);
 
             producerDao.save(producer);
+            logger.info("生产者被修改当前数据后：{}", producer);
         }
     }
 }
