@@ -21,6 +21,8 @@ import org.antframework.idcenter.facade.order.ModifyIderFactorOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.List;
  */
 @Service(enableTx = true)
 public class ModifyIderFactorService {
+    private static final Logger logger = LoggerFactory.getLogger(ModifyIderFactorService.class);
     @Autowired
     private IderDao iderDao;
     @Autowired
@@ -50,6 +53,7 @@ public class ModifyIderFactorService {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("因数要么成倍增加要么成倍减少，id提供者[%s]当前因数[%d]，期望因数[%d]不符合要求", ider.getIdCode(), ider.getFactor(), order.getNewFactor()));
         }
 
+        logger.info("id提供者修改因数前：{}", ider);
         if (order.getNewFactor() > ider.getFactor()) {
             addProducers(ider, order.getNewFactor());
         } else if (order.getNewFactor() < ider.getFactor()) {
@@ -58,6 +62,7 @@ public class ModifyIderFactorService {
 
         ider.setFactor(order.getNewFactor());
         iderDao.save(ider);
+        logger.info("id提供者修改因数后：{}", ider);
     }
 
     // 添加id生产者
@@ -66,6 +71,7 @@ public class ModifyIderFactorService {
         for (int i = ider.getFactor(); i < newFactor; i++) {
             Producer producer = buildProducer(producers.get(i % ider.getFactor()), i, ider);
             producerDao.save(producer);
+            logger.info("源生产者={},新增生产者={}", producers.get(i % ider.getFactor()), producer);
         }
     }
 
@@ -88,15 +94,18 @@ public class ModifyIderFactorService {
             Producer deletingProducer = producers.get(i);
             updateProducer(producers.get(i % newFactor), deletingProducer);
             producerDao.delete(deletingProducer);
+            logger.info("删除生产者：{}", deletingProducer);
         }
     }
 
     // 更新id生产者
     private void updateProducer(Producer producer, Producer deletingProducer) {
+        logger.info("目标生产者更新前：{}", producer);
         if (ProducerUtils.compare(deletingProducer, producer) > 0) {
             producer.setCurrentPeriod(deletingProducer.getCurrentPeriod());
             producer.setCurrentId(deletingProducer.getCurrentId());
             producerDao.save(producer);
         }
+        logger.info("目标生产者更新后：{}", producer);
     }
 }
