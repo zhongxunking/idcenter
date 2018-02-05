@@ -17,6 +17,8 @@ import org.antframework.idcenter.facade.order.DeleteIderOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.List;
  */
 @Service(enableTx = true)
 public class DeleteIderService {
+    private static final Logger logger = LoggerFactory.getLogger(DeleteIderService.class);
     @Autowired
     private IderDao iderDao;
     @Autowired
@@ -43,7 +46,9 @@ public class DeleteIderService {
         List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
         for (Producer producer : producers) {
             producerDao.delete(producer);
+            logger.info("删除生产者：{}", producer);
         }
         iderDao.delete(ider);
+        logger.info("删除id提供者：{}", ider);
     }
 }
