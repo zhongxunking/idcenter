@@ -18,6 +18,8 @@ import org.antframework.idcenter.facade.order.ModifyIderMaxOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Service(enableTx = true)
 public class ModifyIderMaxService {
+    private static final Logger logger = LoggerFactory.getLogger(ModifyIderMaxService.class);
     @Autowired
     private IderDao iderDao;
 
@@ -38,9 +41,11 @@ public class ModifyIderMaxService {
         }
         checkNewMaxId(order, ider);
 
+        logger.info("id提供者修改最大数据前：{}", ider);
         ider.setMaxId(order.getNewMaxId());
         ider.setMaxAmount(order.getNewMaxAmount());
         iderDao.save(ider);
+        logger.info("id提供者修改最大数据后：{}", ider);
     }
 
     // 校验新的id最大值
