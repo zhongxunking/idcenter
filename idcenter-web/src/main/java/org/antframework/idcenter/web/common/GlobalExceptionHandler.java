@@ -27,7 +27,6 @@ public class GlobalExceptionHandler {
     // 处理BizException
     @ExceptionHandler(BizException.class)
     public EmptyResult handleBizException(BizException e) {
-        logger.warn("web层捕获到BizException异常：status={}, code={}, message={}", e.getStatus(), e.getCode(), e.getMessage());
         EmptyResult result = new EmptyResult();
         result.setStatus(e.getStatus());
         result.setCode(e.getCode());
