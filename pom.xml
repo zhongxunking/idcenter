@@ -20,7 +20,6 @@
         <module>idcenter-facade</module>
         <module>idcenter-common</module>
         <module>idcenter-dal</module>
-        <module>idcenter-integration</module>
         <module>idcenter-biz</module>
         <module>idcenter-web</module>
         <module>idcenter-assemble</module>
