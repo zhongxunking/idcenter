@@ -194,7 +194,7 @@ public class IderManageController {
     }
 
     /**
-     * 查找被管理的ider-result
+     * 查询被管理的id提供者result
      */
     public static class QueryManagedIderResult extends AbstractQueryResult<IderInfo> {
     }
