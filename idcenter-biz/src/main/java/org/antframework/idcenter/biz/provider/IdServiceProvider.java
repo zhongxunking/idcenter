@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.biz.provider;
 
-import org.antframework.idcenter.facade.api.IderService;
+import org.antframework.idcenter.facade.api.IdService;
 import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.bekit.service.ServiceEngine;
@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * id提供者服务提供者
+ * id服务提供者
  */
 @Service
-public class IderServiceProvider implements IderService {
+public class IdServiceProvider implements IdService {
     @Autowired
     private ServiceEngine serviceEngine;
 

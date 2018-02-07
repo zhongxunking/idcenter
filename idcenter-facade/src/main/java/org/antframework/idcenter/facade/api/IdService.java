@@ -12,9 +12,9 @@ import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 
 /**
- * id提供者服务
+ * id服务
  */
-public interface IderService {
+public interface IdService {
 
     /**
      * 获取批量id

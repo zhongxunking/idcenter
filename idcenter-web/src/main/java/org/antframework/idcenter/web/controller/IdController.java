@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.web.controller;
 
-import org.antframework.idcenter.facade.api.IderService;
+import org.antframework.idcenter.facade.api.IdService;
 import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/id")
 public class IdController {
     @Autowired
-    private IderService iderService;
+    private IdService idService;
 
     /**
      * 获取批量id
@@ -36,6 +36,6 @@ public class IdController {
         order.setIdCode(idCode);
         order.setExpectAmount(expectAmount);
 
-        return iderService.acquireIds(order);
+        return idService.acquireIds(order);
     }
 }

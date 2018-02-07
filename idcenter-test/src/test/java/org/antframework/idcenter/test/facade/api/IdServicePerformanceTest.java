@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.test.facade.api;
 
-import org.antframework.idcenter.facade.api.IderService;
+import org.antframework.idcenter.facade.api.IdService;
 import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.test.AbstractTest;
@@ -21,10 +21,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * id提供者服务单元测试
+ * id服务单元测试
  */
 @Ignore
-public class IderServicePerformanceTest extends AbstractTest {
+public class IdServicePerformanceTest extends AbstractTest {
     private ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
             1000,
             1000,
@@ -32,7 +32,7 @@ public class IderServicePerformanceTest extends AbstractTest {
             TimeUnit.SECONDS,
             new ArrayBlockingQueue<Runnable>(count));
     @Autowired
-    private IderService iderService;
+    private IdService idService;
     private static int count = 10000;
 
     @Test
@@ -63,7 +63,7 @@ public class IderServicePerformanceTest extends AbstractTest {
             order.setIdCode("uid");
             order.setExpectAmount(100);
 
-            AcquireIdsResult result = iderService.acquireIds(order);
+            AcquireIdsResult result = idService.acquireIds(order);
             assertSuccess(result);
             if (i == count - 1) {
                 long endTime = System.currentTimeMillis();
