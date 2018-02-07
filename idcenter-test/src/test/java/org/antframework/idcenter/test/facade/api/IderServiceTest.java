@@ -6,10 +6,10 @@
  * 修订记录:
  * @author 钟勋 2017-11-22 23:20 创建
  */
-package org.antframework.idcenter.test.facade.api.manage;
+package org.antframework.idcenter.test.facade.api;
 
 import org.antframework.common.util.facade.EmptyResult;
-import org.antframework.idcenter.facade.api.manage.IderService;
+import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;

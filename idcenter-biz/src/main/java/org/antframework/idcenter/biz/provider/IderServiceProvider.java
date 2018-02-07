@@ -9,7 +9,7 @@
 package org.antframework.idcenter.biz.provider;
 
 import org.antframework.common.util.facade.EmptyResult;
-import org.antframework.idcenter.facade.api.manage.IderService;
+import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIderResult;

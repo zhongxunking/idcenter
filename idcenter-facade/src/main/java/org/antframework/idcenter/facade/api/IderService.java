@@ -6,7 +6,7 @@
  * 修订记录:
  * @author 钟勋 2017-11-21 20:56 创建
  */
-package org.antframework.idcenter.facade.api.manage;
+package org.antframework.idcenter.facade.api;
 
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.idcenter.facade.order.*;
