@@ -162,7 +162,7 @@ public class IderManageController {
         QueryIderResult queryIderResult = iderManageService.queryIder(order);
         // 构建返回结果
         QueryManagedIderResult result = new QueryManagedIderResult();
-        BeanUtils.copyProperties(queryIderResult, result);
+        BeanUtils.copyProperties(queryIderResult, result, "infos");
         result.getInfos().addAll(queryIderResult.getInfos());
         return result;
     }
