@@ -18,14 +18,12 @@ import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIderResult;
 import org.antframework.idcenter.facade.vo.IderInfo;
-import org.antframework.manager.facade.api.RelationService;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
 import org.antframework.manager.facade.info.RelationInfo;
-import org.antframework.manager.facade.order.DeleteRelationOrder;
-import org.antframework.manager.facade.order.QueryManagerRelationOrder;
 import org.antframework.manager.facade.result.QueryManagerRelationResult;
 import org.antframework.manager.web.common.ManagerAssert;
+import org.antframework.manager.web.common.Managers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,8 +40,6 @@ import java.util.Date;
 public class IderManageController {
     @Autowired
     private IderManageService iderManageService;
-    @Autowired
-    private RelationService relationService;
 
     /**
      * 新增id提供者
@@ -131,12 +127,7 @@ public class IderManageController {
     public EmptyResult delete(String idCode) {
         ManagerAssert.admin();
         // 删除id提供者与管理员的关系
-        DeleteRelationOrder deleteRelationOrder = new DeleteRelationOrder();
-        deleteRelationOrder.setTargetId(idCode);
-        EmptyResult result = relationService.deleteRelation(deleteRelationOrder);
-        if (!result.isSuccess()) {
-            return result;
-        }
+        Managers.deleteAllRelationsByTarget(idCode);
         // 删除id提供者
         DeleteIderOrder order = new DeleteIderOrder();
         order.setIdCode(idCode);
@@ -157,7 +148,7 @@ public class IderManageController {
         if (manager.getType() == ManagerType.ADMIN) {
             return forAdmin(pageNo, pageSize, idCode);
         } else {
-            return forNormal(queryManagerRelation(pageNo, pageSize, idCode, manager.getManagerId()));
+            return forNormal(Managers.queryManagerRelation(pageNo, pageSize, idCode));
         }
     }
 
@@ -186,21 +177,6 @@ public class IderManageController {
             if (iderInfo != null) {
                 result.addInfo(iderInfo);
             }
-        }
-        return result;
-    }
-
-    // 查找与指定管理员相关的关系
-    private QueryManagerRelationResult queryManagerRelation(int pageNo, int pageSize, String idCode, String managerId) {
-        QueryManagerRelationOrder order = new QueryManagerRelationOrder();
-        order.setPageNo(pageNo);
-        order.setPageSize(pageSize);
-        order.setManagerId(managerId);
-        order.setTargetId(idCode);
-
-        QueryManagerRelationResult result = relationService.queryManagerRelation(order);
-        if (!result.isSuccess()) {
-            throw new BizException(Status.FAIL, result.getCode(), result.getMessage());
         }
         return result;
     }
