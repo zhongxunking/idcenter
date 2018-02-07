@@ -12,7 +12,7 @@ import org.antframework.common.util.facade.AbstractQueryResult;
 import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
-import org.antframework.idcenter.facade.api.manage.IderManageService;
+import org.antframework.idcenter.facade.api.manage.IderService;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
@@ -39,7 +39,7 @@ import java.util.Date;
 @RequestMapping("/manage/ider")
 public class IderManageController {
     @Autowired
-    private IderManageService iderManageService;
+    private IderService iderService;
 
     /**
      * 新增id提供者
@@ -59,7 +59,7 @@ public class IderManageController {
         order.setMaxId(maxId);
         order.setMaxAmount(maxAmount);
 
-        return iderManageService.addIder(order);
+        return iderService.addIder(order);
     }
 
     /**
@@ -78,7 +78,7 @@ public class IderManageController {
         order.setNewMaxId(newMaxId);
         order.setNewMaxAmount(newMaxAmount);
 
-        return iderManageService.modifyIderMax(order);
+        return iderService.modifyIderMax(order);
     }
 
     /**
@@ -95,7 +95,7 @@ public class IderManageController {
         order.setIdCode(idCode);
         order.setNewFactor(newFactor);
 
-        return iderManageService.modifyIderFactor(order);
+        return iderService.modifyIderFactor(order);
     }
 
     /**
@@ -114,7 +114,7 @@ public class IderManageController {
         order.setNewCurrentPeriod(newCurrentPeriod);
         order.setNewCurrentId(newCurrentId);
 
-        return iderManageService.modifyIderCurrent(order);
+        return iderService.modifyIderCurrent(order);
     }
 
     /**
@@ -131,7 +131,7 @@ public class IderManageController {
         // 删除id提供者
         DeleteIderOrder order = new DeleteIderOrder();
         order.setIdCode(idCode);
-        return iderManageService.deleteIder(order);
+        return iderService.deleteIder(order);
     }
 
     /**
@@ -159,7 +159,7 @@ public class IderManageController {
         order.setPageSize(pageSize);
         order.setIdCode(idCode);
         order.setPeriodType(null);
-        QueryIderResult queryIderResult = iderManageService.queryIder(order);
+        QueryIderResult queryIderResult = iderService.queryIder(order);
         // 构建返回结果
         QueryManagedIderResult result = new QueryManagedIderResult();
         BeanUtils.copyProperties(queryIderResult, result, "infos");
@@ -186,7 +186,7 @@ public class IderManageController {
         FindIderOrder order = new FindIderOrder();
         order.setIdCode(idCode);
 
-        FindIderResult result = iderManageService.findIder(order);
+        FindIderResult result = iderService.findIder(order);
         if (!result.isSuccess()) {
             throw new BizException(Status.FAIL, result.getCode(), result.getMessage());
         }

@@ -14,9 +14,9 @@ import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIderResult;
 
 /**
- * id提供者管理服务
+ * id提供者服务
  */
-public interface IderManageService {
+public interface IderService {
 
     /**
      * 新增id提供者

@@ -9,7 +9,7 @@
 package org.antframework.idcenter.biz.provider;
 
 import org.antframework.common.util.facade.EmptyResult;
-import org.antframework.idcenter.facade.api.manage.IderManageService;
+import org.antframework.idcenter.facade.api.manage.IderService;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIderResult;
@@ -18,10 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * id提供者管理服务提供者
+ * id提供者服务提供者
  */
 @Service
-public class IderManageServiceProvider implements IderManageService {
+public class IderServiceProvider implements IderService {
     @Autowired
     private ServiceEngine serviceEngine;
 

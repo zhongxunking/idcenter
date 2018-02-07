@@ -9,7 +9,7 @@
 package org.antframework.idcenter.test.facade.api.manage;
 
 import org.antframework.common.util.facade.EmptyResult;
-import org.antframework.idcenter.facade.api.manage.IderManageService;
+import org.antframework.idcenter.facade.api.manage.IderService;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
@@ -22,12 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 /**
- * id提供者管理服务单元测试
+ * id提供者服务单元测试
  */
 @Ignore
-public class IderManageServiceTest extends AbstractTest {
+public class IderServiceTest extends AbstractTest {
     @Autowired
-    private IderManageService iderManageService;
+    private IderService iderService;
 
     @Test
     public void testAddIder() {
@@ -37,7 +37,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setMaxId(9000000000L);
         order.setMaxAmount(1000000);
 
-        EmptyResult result = iderManageService.addIder(order);
+        EmptyResult result = iderService.addIder(order);
         assertSuccess(result);
     }
 
@@ -48,7 +48,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setNewMaxId(9000000000L - 10 * 4);
         order.setNewMaxAmount(2000000);
 
-        EmptyResult result = iderManageService.modifyIderMax(order);
+        EmptyResult result = iderService.modifyIderMax(order);
         assertSuccess(result);
     }
 
@@ -58,7 +58,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setIdCode("uid");
         order.setNewFactor(4);
 
-        EmptyResult result = iderManageService.modifyIderFactor(order);
+        EmptyResult result = iderService.modifyIderFactor(order);
         assertSuccess(result);
     }
 
@@ -69,7 +69,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setNewCurrentPeriod(new Date());
         order.setNewCurrentId(100);
 
-        EmptyResult result = iderManageService.modifyIderCurrent(order);
+        EmptyResult result = iderService.modifyIderCurrent(order);
         assertSuccess(result);
     }
 
@@ -78,7 +78,7 @@ public class IderManageServiceTest extends AbstractTest {
         DeleteIderOrder order = new DeleteIderOrder();
         order.setIdCode("uid");
 
-        EmptyResult result = iderManageService.deleteIder(order);
+        EmptyResult result = iderService.deleteIder(order);
         assertSuccess(result);
     }
 
@@ -87,7 +87,7 @@ public class IderManageServiceTest extends AbstractTest {
         FindIderOrder order = new FindIderOrder();
         order.setIdCode("uid");
 
-        FindIderResult result = iderManageService.findIder(order);
+        FindIderResult result = iderService.findIder(order);
         assertSuccess(result);
     }
 
@@ -97,7 +97,7 @@ public class IderManageServiceTest extends AbstractTest {
         order.setPageNo(1);
         order.setPageSize(10);
 
-        QueryIderResult result = iderManageService.queryIder(order);
+        QueryIderResult result = iderService.queryIder(order);
         assertSuccess(result);
     }
 }
