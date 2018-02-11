@@ -61,7 +61,7 @@ current_id：当前id，标识本生产者在当前周期下生产到了哪个id
 3. 服务端在启动时会在"/var/apps/"下创建日志文件，请确保服务端对该目录拥有写权限。
 
 ### 2. 启动服务端：
-1. 启动命令模板：
+启动命令模板：
 ```
 java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="环境编码" --spring.datasource.url="数据库连接" --spring.datasource.username="数据库用户名" --spring.datasource.password="数据库密码"
 ```
@@ -74,7 +74,7 @@ java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="onl
 
 登录链接模板：http://IP地址:6210/html/login.html （比如我本地开发时的登录链接：http://localhost:6210/html/login.html ）
 #### 1. 第一次使用时会让你设置一个超级管理员：
-<img width="500" height="350" src="https://note.youdao.com/yws/api/personal/file/WEB10c31f64f12088d4b5603ba5bf6b6d83?method=download&shareKey=7ebdea09354d98897dfbb4635622ae43"></img>
+<img width="600" height="400" src="https://note.youdao.com/yws/api/personal/file/WEB10c31f64f12088d4b5603ba5bf6b6d83?method=download&shareKey=7ebdea09354d98897dfbb4635622ae43"></img>
 #### 2. 然后进行登录进入管理页面：
 ![](https://note.youdao.com/yws/api/personal/file/WEB7fd296e1ce54adcc48d4d337745aa92d?method=download&shareKey=c45a09631757854961a196291bdab140)
 
