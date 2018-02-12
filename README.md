@@ -8,7 +8,7 @@
 > * 客户端：jdk1.8
 
 
-> 注意：本框架已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
+> 注意：id中心已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
 
 ## 1. 整体设计
 > 本id中心的整体设计和[美团的Leaf系统](https://tech.meituan.com/MT_Leaf.html)大体是一致的，本人也是先阅读了美团leaf系统的文章，并根据自己的思考和优化，开发出了id中心。建议读者先看看美团Leaf系统相关文章。
