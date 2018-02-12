@@ -7,6 +7,9 @@
 > * 服务端：jdk1.8
 > * 客户端：jdk1.8
 
+
+> 注意：本框架已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
+
 ## 1. 整体设计
 > 本id中心的整体设计和[美团的Leaf系统](https://tech.meituan.com/MT_Leaf.html)大体是一致的，本人也是先阅读了美团leaf系统的文章，并根据自己的思考和优化，开发出了id中心。建议读者先看看美团Leaf系统相关文章。
 
@@ -21,16 +24,16 @@ id提供者主要表结构：
 | Field       | Type         | Null | Key | Default | Extra          |
 +-------------+--------------+------+-----+---------+----------------+
 | id_code     | varchar(128) | YES  | UNI | NULL    |                |
+| period_type | varchar(40)  | YES  |     | NULL    |                |
 | max_id      | bigint(20)   | YES  |     | NULL    |                |
 | max_amount  | int(11)      | YES  |     | NULL    |                |
-| period_type | varchar(40)  | YES  |     | NULL    |                |
 | factor      | int(11)      | YES  |     | NULL    |                |
 +-------------+--------------+------+-----+---------+----------------+
 重要字段说明
 id_code：id编码，每种id的唯一标识。
+period_type：周期类型（小时、天、月、年、无）
 max_id：id在一个周期内允许的最大值（不包含），null表示不限制。
 max_amount：客户端一次请求允许获取的最多id数量（包含），null表示不限制。
-period_type：周期类型（小时、天、月、年、无）
 factor：该id提供者具有的生产者数量。
 ```
 ```
@@ -52,10 +55,10 @@ current_id：当前id，标识本生产者在当前周期下生产到了哪个id
 ### 2. 客户端
 使用方通过客户端获取id。客户端会从id余量中获取一个id返回给使用方，并且根据最近一段时间内id使用频率，评估当前id余量是否足够客户端运行一段时间。如果id余量不够，则客户端异步请求服务端获取一批id放入id余量中。客户端在id余量不够时最多有一个线程异步请求服务端，所以基本上客户端没有资源损耗。
 ### 3. 整体设计图
-![](https://note.youdao.com/yws/api/personal/file/WEB0019fe8ac6dd3a14d33f09c493d83162?method=download&shareKey=26cc4f555ac5bfc2770dc26935a29068)
+![](https://note.youdao.com/yws/api/personal/file/WEB21517303ba4dba3ce73b76e4c338e1b8?method=download&shareKey=77b353a4a710cef174402c89d6586da3)
 
 ## 2. 服务端部署
-### 1. [下载服务端]()。说明：
+### 1. [下载服务端](https://repo.maven.apache.org/maven2/org/antframework/idcenter/idcenter-assemble/1.1.0.RELEASE/idcenter-assemble-1.1.0.RELEASE-exec.jar)。说明：
 1. 服务端使用的springboot，直接命令启动下载好的jar包即可，无需部署tomcat。
 2. 服务端使用hibernate自动生成表结构，无需导入sql。
 3. 服务端在启动时会在"/var/apps/"下创建日志文件，请确保服务端对该目录拥有写权限。
@@ -89,7 +92,7 @@ java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="onl
 </dependency>
 ```
 ### 2. 使用客户端
-客户端就是Java类，直接new就可以，只是需要传给它相应参数。
+客户端就是Java类，直接new就可以，只是需要传给它相应参数。一个应用可以创建多个客户端，每个客户端之间不受影响。
 ```
 IdContext.InitParams initParams = new IdContext.InitParams();
 initParams.setIdCode("common-uid"); // id编码
@@ -101,7 +104,9 @@ initParams.setMaxTime(15 * 60 * 1000);  // 最大预留时间（毫秒）
 IdContext idContext = new IdContext(initParams);    // 创建客户端
 
 // 客户端创建成功后就可以直接获取id
-Id id = idContext.getAcquirer().getId();
+Id id1 = idContext.getAcquirer().getId();
+Id id2 = idContext.getAcquirer().getId();
+// 。。。
 
 // 当要关闭系统时，调用下面方法关闭客户端
 idContext.close();
