@@ -1,7 +1,7 @@
-# id中心
+# 分布式id生产-idcenter
 
 1. 简介
-> 生成全局唯一的id（流水号），是很多公司都需要解决的问题。如果还是采用时间戳+随机数形式生成，在并发量大时，很有可能会生成重复的id。重复id的危害就是会导致一系列问题，比如幂等性。本id中心专门用来高效的生成全局唯一id，分为服务端和客户端，每个客户端的tps可达到150万，而且服务端无压力。
+> 生成全局唯一的id（流水号），是很多公司都需要解决的问题。如果还是采用时间戳+随机数形式生成，在并发量大时，很有可能会生成重复的id。重复id的危害就是会导致一系列问题，比如幂等性。idcenter专门用来高效的生成全局唯一id，分为服务端和客户端，每个客户端的tps可达到150万，而且服务端无压力。
 
 2. 环境要求：
 > * 服务端：jdk1.8
@@ -11,9 +11,9 @@
 > 注意：id中心已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
 
 ## 1. 整体设计
-> 本id中心的整体设计和[美团的Leaf系统](https://tech.meituan.com/MT_Leaf.html)大体是一致的，本人也是先阅读了美团leaf系统的文章，并根据自己的思考和优化，开发出了id中心。建议读者先看看美团Leaf系统相关文章。
+> idcenter的整体设计和[美团的Leaf系统](https://tech.meituan.com/MT_Leaf.html)大体是一致的，本人也是先阅读了美团leaf系统的文章，并根据自己的思考和优化，开发出了idcenter。建议读者先看看美团Leaf系统相关文章。
 
-id中心分为服务端和客户端。服务端和客户端是通过http请求进行交互。
+idcenter分为服务端和客户端。服务端和客户端是通过http请求进行交互。
 
 ### 1. 服务端
 服务端存储管理各类id的提供者，id提供者具有周期概念（每个小时（天、月、年）算一个周期或无周期），当时间更替到下个周期时，id自动重置到0（如果周期类型为“无”，则id不会被重置）。每个id提供者可以设置多个生产者，每个生产者独立的生产id，这样可成倍的提高服务端效率。当服务端接收到客户端请求时，id提供者会随机选择一个生产者，生产一批id给客户端。
@@ -53,7 +53,7 @@ current_period：当前周期，标识本生产者当前生产到了哪个周期
 current_id：当前id，标识本生产者在当前周期下生产到了哪个id
 ```
 ### 2. 客户端
-使用方通过客户端获取id。客户端会从id余量中获取一个id返回给使用方，并且根据最近一段时间内id使用频率，评估当前id余量是否足够客户端运行一段时间。如果id余量不够，则客户端异步请求服务端获取一批id放入id余量中。客户端在id余量不够时最多有一个线程异步请求服务端，所以基本上客户端没有资源损耗。
+使用方通过客户端获取id。客户端会从客户端内的id余量中获取一个id返回给使用方，并且根据最近一段时间内id使用频率，评估当前id余量是否足够客户端运行一段时间。如果id余量不够，则客户端异步请求服务端获取一批id放入id余量中。客户端在id余量不够时最多有一个线程异步请求服务端，所以基本上客户端没有资源损耗。
 ### 3. 整体设计图
 ![](https://note.youdao.com/yws/api/personal/file/WEB21517303ba4dba3ce73b76e4c338e1b8?method=download&shareKey=77b353a4a710cef174402c89d6586da3)
 
@@ -73,7 +73,7 @@ java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="环
 java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="online" --spring.datasource.url="jdbc:mysql://localhost:3306/idcenter-dev?useUnicode=true&characterEncoding=utf-8" --spring.datasource.username="root" --spring.datasource.password="root"
 ```
 ### 3. 后台管理
-后台中管理员有两种：超级管理员、普通管理员。超级管理员可以管理所有id提供者，也可以管理其他管理员；普通管理员只能管理分配给他的id。
+后台中管理员有两种：超级管理员、普通管理员。超级管理员可以管理所有id提供者，也可以管理其他管理员；普通管理员只能管理分配给他的id提供者。
 
 登录链接模板：http://IP地址:6210/html/login.html （比如我本地开发时的登录链接：http://localhost:6210/html/login.html ）
 #### 1. 第一次使用时会让你设置一个超级管理员：
@@ -98,9 +98,11 @@ IdContext.InitParams initParams = new IdContext.InitParams();
 initParams.setIdCode("common-uid"); // id编码
 initParams.setServerUrl("http://localhost:6210");   // 服务端地址
 initParams.setInitAmount(1000); // 初始化时获取的id数量
-initParams.setMinTime(10 * 60 * 1000);  // 最小预留时间（毫秒）
-initParams.setMaxTime(15 * 60 * 1000);  // 最大预留时间（毫秒）
-// 最大预留时间-最小预留时间就是客户端请求服务端的平均间隔时间
+initParams.setMinTime(10 * 60 * 1000);  // 最小预留时间（毫秒，服务端不可用时客户端能够维持的最小时间）
+initParams.setMaxTime(15 * 60 * 1000);  // 最大预留时间（毫秒，服务端不可用时客户端能够维持的最大时间）
+// 最大预留时间减去最小预留时间的差值就是客户端请求服务端的平均间隔时间，
+// 这个差值也是从客户端获取的id的周期误差时间，建议合理设置。比如差值为5分钟应该是适合绝大多数公司的。
+
 IdContext idContext = new IdContext(initParams);    // 创建客户端
 
 // 客户端创建成功后就可以直接获取id
