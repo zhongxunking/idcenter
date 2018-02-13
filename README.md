@@ -1,4 +1,4 @@
-# 分布式id生产-idcenter
+# 分布式id生成-idcenter
 
 1. 简介
 > 生成全局唯一的id（流水号），是很多公司都需要解决的问题。如果还是采用时间戳+随机数形式生成，在并发量大时，很有可能会生成重复的id。重复id的危害就是会导致一系列问题，比如幂等性。idcenter专门用来高效的生成全局唯一id，分为服务端和客户端，每个客户端的tps可达到150万，而且服务端无压力。
@@ -108,7 +108,7 @@ IdContext idContext = new IdContext(initParams);    // 创建客户端
 // 客户端创建成功后就可以直接获取id
 Id id1 = idContext.getAcquirer().getId();
 Id id2 = idContext.getAcquirer().getId();
-// 。。。
+// 以上获取到的是最原始的id形式，使用方可以根据需要将id格式化为自己需要的格式
 
 // 当要关闭系统时，调用下面方法关闭客户端
 idContext.close();
