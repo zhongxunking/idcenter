@@ -82,6 +82,7 @@ java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="onl
 ![](https://note.youdao.com/yws/api/personal/file/WEB7fd296e1ce54adcc48d4d337745aa92d?method=download&shareKey=c45a09631757854961a196291bdab140)
 
 ## 3. 集成客户端
+> 客户端进行了并发控制，并发情况下不会出现问题。客户端不管是单线程还是多线程tps都可以达到150万以上。
 
 ### 1. 引入客户端依赖
 ```
