@@ -3,16 +3,17 @@
 1. 简介
 > 生成全局唯一的id（流水号），是很多公司都需要解决的问题。如果还是采用时间戳+随机数形式生成，在并发量大时，很有可能会生成重复的id。重复id的危害就是会导致一系列问题，比如幂等性。idcenter专门用来高效的生成全局唯一id，分为服务端和客户端，每个客户端的tps可达到150万，而且服务端无压力。
 
-2. 环境要求：
+2. 环境要求
 > * 服务端：jdk1.8
 > * 客户端：jdk1.8
 
 
 > 注意：id中心已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
 
-## 1. 整体设计
-> idcenter的整体设计和[美团的Leaf系统](https://tech.meituan.com/MT_Leaf.html)大体是一致的，本人也是先阅读了美团leaf系统的文章，并根据自己的思考和优化，开发出了idcenter。建议读者先看看美团Leaf系统相关文章。
+3. 感谢
+> 感谢[美团的Leaf系统](https://tech.meituan.com/MT_Leaf.html)设计思路介绍，里面介绍了几种全局id生成技术，建议读者先阅读它。idcenter借鉴了leaf的一些设计思路，同时也进行了优化。
 
+## 1. 整体设计
 idcenter分为服务端和客户端。服务端和客户端是通过http请求进行交互。
 
 ### 1. 服务端
