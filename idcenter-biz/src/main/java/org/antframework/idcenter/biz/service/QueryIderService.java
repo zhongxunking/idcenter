@@ -8,8 +8,7 @@
  */
 package org.antframework.idcenter.biz.service;
 
-import org.antframework.boot.bekit.CommonQueryConstant;
-import org.antframework.boot.bekit.CommonQueryResult;
+import org.antframework.boot.bekit.CommonQueries;
 import org.antframework.idcenter.biz.service.converter.IderInfoConverter;
 import org.antframework.idcenter.biz.util.QueryUtils;
 import org.antframework.idcenter.dal.dao.IderDao;
@@ -36,7 +35,7 @@ public class QueryIderService {
         QueryIderOrder order = context.getOrder();
         QueryIderResult result = context.getResult();
 
-        CommonQueryResult commonQueryResult = serviceEngine.execute(CommonQueryConstant.SERVICE_NAME, order, QueryUtils.buildCommonQueryAttachment(IderDao.class));
+        CommonQueries.CommonQueryResult commonQueryResult = serviceEngine.execute(CommonQueries.SERVICE_NAME, order, QueryUtils.buildCommonQueryAttachment(IderDao.class));
         commonQueryResult.convertTo(result, infoConverter);
     }
 }

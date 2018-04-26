@@ -20,7 +20,7 @@ import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
-import org.bekit.service.annotation.service.ServiceCheck;
+import org.bekit.service.annotation.service.ServiceBefore;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
 import org.slf4j.Logger;
@@ -43,8 +43,8 @@ public class AcquireIdsService {
     @Autowired
     private ProducerDao producerDao;
 
-    @ServiceCheck
-    public void check(ServiceContext<AcquireIdsOrder, AcquireIdsResult> context) {
+    @ServiceBefore
+    public void before(ServiceContext<AcquireIdsOrder, AcquireIdsResult> context) {
         AcquireIdsOrder order = context.getOrder();
 
         Ider ider = iderDao.findByIdCode(order.getIdCode());
