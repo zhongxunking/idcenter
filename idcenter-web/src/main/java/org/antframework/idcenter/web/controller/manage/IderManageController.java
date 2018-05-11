@@ -21,7 +21,7 @@ import org.antframework.idcenter.facade.vo.IderInfo;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
 import org.antframework.manager.facade.info.RelationInfo;
-import org.antframework.manager.facade.result.QueryManagerRelationResult;
+import org.antframework.manager.facade.result.QueryManagerRelationsResult;
 import org.antframework.manager.web.common.ManagerAssert;
 import org.antframework.manager.web.common.Managers;
 import org.springframework.beans.BeanUtils;
@@ -148,7 +148,7 @@ public class IderManageController {
         if (manager.getType() == ManagerType.ADMIN) {
             return forAdmin(pageNo, pageSize, idCode);
         } else {
-            return forNormal(Managers.queryManagerRelation(pageNo, pageSize, idCode));
+            return forNormal(Managers.queryManagerRelations(pageNo, pageSize, idCode));
         }
     }
 
@@ -168,11 +168,11 @@ public class IderManageController {
     }
 
     // 查询普通管理员管理的id提供者
-    private QueryManagedIdersResult forNormal(QueryManagerRelationResult relationResult) {
+    private QueryManagedIdersResult forNormal(QueryManagerRelationsResult relationsResult) {
         QueryManagedIdersResult result = new QueryManagedIdersResult();
-        BeanUtils.copyProperties(relationResult, result, "infos");
+        BeanUtils.copyProperties(relationsResult, result, "infos");
         // 根据关系查找id提供者
-        for (RelationInfo relationInfo : relationResult.getInfos()) {
+        for (RelationInfo relationInfo : relationsResult.getInfos()) {
             IderInfo iderInfo = findIder(relationInfo.getTargetId());
             if (iderInfo != null) {
                 result.addInfo(iderInfo);
