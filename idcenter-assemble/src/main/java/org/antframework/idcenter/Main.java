@@ -15,7 +15,7 @@ import org.springframework.boot.SpringApplication;
 /**
  * 程序启动入口
  */
-@AntBootApplication(appCode = "idcenter")
+@AntBootApplication(appId = "idcenter")
 public class Main {
     public static void main(String[] args) {
         Apps.setProfileIfAbsent("dev");
