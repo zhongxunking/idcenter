@@ -142,8 +142,8 @@ public class IderManageController {
      * @param idCode   id编码（选填）
      * @return 查询结果
      */
-    @RequestMapping("/queryManagedIder")
-    public QueryManagedIderResult queryManagedIder(int pageNo, int pageSize, String idCode) {
+    @RequestMapping("/queryManagedIders")
+    public QueryManagedIdersResult queryManagedIders(int pageNo, int pageSize, String idCode) {
         ManagerInfo manager = ManagerAssert.currentManager();
         if (manager.getType() == ManagerType.ADMIN) {
             return forAdmin(pageNo, pageSize, idCode);
@@ -153,7 +153,7 @@ public class IderManageController {
     }
 
     // 查询所有的id提供者
-    private QueryManagedIderResult forAdmin(int pageNo, int pageSize, String idCode) {
+    private QueryManagedIdersResult forAdmin(int pageNo, int pageSize, String idCode) {
         QueryIdersOrder order = new QueryIdersOrder();
         order.setPageNo(pageNo);
         order.setPageSize(pageSize);
@@ -161,15 +161,15 @@ public class IderManageController {
         order.setPeriodType(null);
         QueryIdersResult queryIdersResult = iderService.queryIders(order);
         // 构建返回结果
-        QueryManagedIderResult result = new QueryManagedIderResult();
+        QueryManagedIdersResult result = new QueryManagedIdersResult();
         BeanUtils.copyProperties(queryIdersResult, result, "infos");
         result.getInfos().addAll(queryIdersResult.getInfos());
         return result;
     }
 
     // 查询普通管理员管理的id提供者
-    private QueryManagedIderResult forNormal(QueryManagerRelationResult relationResult) {
-        QueryManagedIderResult result = new QueryManagedIderResult();
+    private QueryManagedIdersResult forNormal(QueryManagerRelationResult relationResult) {
+        QueryManagedIdersResult result = new QueryManagedIdersResult();
         BeanUtils.copyProperties(relationResult, result, "infos");
         // 根据关系查找id提供者
         for (RelationInfo relationInfo : relationResult.getInfos()) {
@@ -196,6 +196,6 @@ public class IderManageController {
     /**
      * 查询被管理的id提供者result
      */
-    public static class QueryManagedIderResult extends AbstractQueryResult<IderInfo> {
+    public static class QueryManagedIdersResult extends AbstractQueryResult<IderInfo> {
     }
 }
