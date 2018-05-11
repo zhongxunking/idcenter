@@ -13,7 +13,7 @@ import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
-import org.antframework.idcenter.facade.result.QueryIderResult;
+import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.antframework.idcenter.test.AbstractTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -92,12 +92,12 @@ public class IderServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testQueryIder() {
-        QueryIderOrder order = new QueryIderOrder();
+    public void testQueryIders() {
+        QueryIdersOrder order = new QueryIdersOrder();
         order.setPageNo(1);
         order.setPageSize(10);
 
-        QueryIderResult result = iderService.queryIder(order);
+        QueryIdersResult result = iderService.queryIders(order);
         assertSuccess(result);
     }
 }

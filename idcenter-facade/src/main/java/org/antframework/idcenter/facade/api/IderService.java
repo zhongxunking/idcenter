@@ -11,7 +11,7 @@ package org.antframework.idcenter.facade.api;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
-import org.antframework.idcenter.facade.result.QueryIderResult;
+import org.antframework.idcenter.facade.result.QueryIdersResult;
 
 /**
  * id提供者服务
@@ -51,5 +51,5 @@ public interface IderService {
     /**
      * 查询id提供者
      */
-    QueryIderResult queryIder(QueryIderOrder order);
+    QueryIdersResult queryIders(QueryIdersOrder order);
 }

@@ -12,7 +12,7 @@ import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
-import org.antframework.idcenter.facade.result.QueryIderResult;
+import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.bekit.service.ServiceEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +56,7 @@ public class IderServiceProvider implements IderService {
     }
 
     @Override
-    public QueryIderResult queryIder(QueryIderOrder order) {
-        return serviceEngine.execute("queryIderService", order);
+    public QueryIdersResult queryIders(QueryIdersOrder order) {
+        return serviceEngine.execute("queryIdersService", order);
     }
 }

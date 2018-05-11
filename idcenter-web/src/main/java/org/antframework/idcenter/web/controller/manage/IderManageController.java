@@ -16,7 +16,7 @@ import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
-import org.antframework.idcenter.facade.result.QueryIderResult;
+import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.antframework.idcenter.facade.vo.IderInfo;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
@@ -154,16 +154,16 @@ public class IderManageController {
 
     // 查询所有的id提供者
     private QueryManagedIderResult forAdmin(int pageNo, int pageSize, String idCode) {
-        QueryIderOrder order = new QueryIderOrder();
+        QueryIdersOrder order = new QueryIdersOrder();
         order.setPageNo(pageNo);
         order.setPageSize(pageSize);
         order.setIdCode(idCode);
         order.setPeriodType(null);
-        QueryIderResult queryIderResult = iderService.queryIder(order);
+        QueryIdersResult queryIdersResult = iderService.queryIders(order);
         // 构建返回结果
         QueryManagedIderResult result = new QueryManagedIderResult();
-        BeanUtils.copyProperties(queryIderResult, result, "infos");
-        result.getInfos().addAll(queryIderResult.getInfos());
+        BeanUtils.copyProperties(queryIdersResult, result, "infos");
+        result.getInfos().addAll(queryIdersResult.getInfos());
         return result;
     }
 

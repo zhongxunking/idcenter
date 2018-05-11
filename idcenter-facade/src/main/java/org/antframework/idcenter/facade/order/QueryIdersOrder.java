@@ -16,7 +16,7 @@ import org.antframework.idcenter.facade.enums.PeriodType;
 /**
  * 查询id提供者order
  */
-public class QueryIderOrder extends AbstractQueryOrder {
+public class QueryIdersOrder extends AbstractQueryOrder {
     // id编码
     @QueryLike
     private String idCode;

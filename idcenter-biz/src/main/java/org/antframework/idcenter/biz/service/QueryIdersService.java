@@ -12,8 +12,8 @@ import org.antframework.boot.bekit.CommonQueries;
 import org.antframework.idcenter.biz.service.converter.IderInfoConverter;
 import org.antframework.idcenter.biz.util.QueryUtils;
 import org.antframework.idcenter.dal.dao.IderDao;
-import org.antframework.idcenter.facade.order.QueryIderOrder;
-import org.antframework.idcenter.facade.result.QueryIderResult;
+import org.antframework.idcenter.facade.order.QueryIdersOrder;
+import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.bekit.service.ServiceEngine;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
@@ -24,16 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 查询id提供者服务
  */
 @Service
-public class QueryIderService {
+public class QueryIdersService {
     @Autowired
     private ServiceEngine serviceEngine;
     @Autowired
     private IderInfoConverter infoConverter;
 
     @ServiceExecute
-    public void execute(ServiceContext<QueryIderOrder, QueryIderResult> context) {
-        QueryIderOrder order = context.getOrder();
-        QueryIderResult result = context.getResult();
+    public void execute(ServiceContext<QueryIdersOrder, QueryIdersResult> context) {
+        QueryIdersOrder order = context.getOrder();
+        QueryIdersResult result = context.getResult();
 
         CommonQueries.CommonQueryResult commonQueryResult = serviceEngine.execute(CommonQueries.SERVICE_NAME, order, QueryUtils.buildCommonQueryAttachment(IderDao.class));
         commonQueryResult.convertTo(result, infoConverter);

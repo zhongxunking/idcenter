@@ -14,5 +14,5 @@ import org.antframework.idcenter.facade.vo.IderInfo;
 /**
  * 查询id提供者result
  */
-public class QueryIderResult extends AbstractQueryResult<IderInfo> {
+public class QueryIdersResult extends AbstractQueryResult<IderInfo> {
 }
