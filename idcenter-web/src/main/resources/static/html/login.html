@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>id中心</title>
+    <script src="../common/import.js"></script>
+</head>
+<body>
+<div id="loginApp">
+    <manager-login :title-html="titleHtml" :init-admin-path="initAdminPath" :main-path="mainPath"></manager-login>
+</div>
+<script>
+    const loginApp = new Vue({
+        el: '#loginApp',
+        data: {
+            titleHtml: `
+                <span style="font-size: xx-large;">id中心</span>
+            `,
+            initAdminPath: 'initAdmin.html',
+            mainPath: 'main.html'
+        }
+    });
+</script>
+</body>
+</html>
