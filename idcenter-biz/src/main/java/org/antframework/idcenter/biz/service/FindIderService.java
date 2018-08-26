@@ -35,7 +35,7 @@ public class FindIderService {
 
         Ider ider = iderDao.findByIdCode(order.getIdCode());
         if (ider != null) {
-            result.setIderInfo(infoConverter.convert(ider));
+            result.setIder(infoConverter.convert(ider));
         }
     }
 }

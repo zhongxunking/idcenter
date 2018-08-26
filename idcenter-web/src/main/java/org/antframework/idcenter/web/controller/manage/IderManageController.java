@@ -173,9 +173,9 @@ public class IderManageController {
         BeanUtils.copyProperties(relationsResult, result, "infos");
         // 根据关系查找id提供者
         for (RelationInfo relationInfo : relationsResult.getInfos()) {
-            IderInfo iderInfo = findIder(relationInfo.getTargetId());
-            if (iderInfo != null) {
-                result.addInfo(iderInfo);
+            IderInfo ider = findIder(relationInfo.getTargetId());
+            if (ider != null) {
+                result.addInfo(ider);
             }
         }
         return result;
@@ -190,7 +190,7 @@ public class IderManageController {
         if (!result.isSuccess()) {
             throw new BizException(Status.FAIL, result.getCode(), result.getMessage());
         }
-        return result.getIderInfo();
+        return result.getIder();
     }
 
     /**

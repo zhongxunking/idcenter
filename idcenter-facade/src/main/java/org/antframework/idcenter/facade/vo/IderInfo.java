@@ -30,7 +30,7 @@ public class IderInfo extends AbstractInfo {
     // 因数（生产者数量）
     private Integer factor;
     // 生产者info
-    private List<ProducerInfo> producerInfos = new ArrayList<>();
+    private List<ProducerInfo> producers = new ArrayList<>();
 
     public String getIdCode() {
         return idCode;
@@ -72,12 +72,12 @@ public class IderInfo extends AbstractInfo {
         this.factor = factor;
     }
 
-    public List<ProducerInfo> getProducerInfos() {
-        return producerInfos;
+    public List<ProducerInfo> getProducers() {
+        return producers;
     }
 
-    public void addProducerInfo(ProducerInfo producerInfo) {
-        producerInfos.add(producerInfo);
+    public void addProducer(ProducerInfo producerInfo) {
+        producers.add(producerInfo);
     }
 
     /**

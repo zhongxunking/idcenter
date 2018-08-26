@@ -40,7 +40,7 @@ public class IderInfoConverter extends FacadeUtils.DefaultConverter<Ider, IderIn
         // 查找id提供者的所有生产者
         List<Producer> producers = producerDao.findByIdCodeOrderByIndexAsc(iderInfo.getIdCode());
         for (Producer producer : producers) {
-            iderInfo.addProducerInfo(PRODUCER_INFO_CONVERTER.convert(producer));
+            iderInfo.addProducer(PRODUCER_INFO_CONVERTER.convert(producer));
         }
         return iderInfo;
     }

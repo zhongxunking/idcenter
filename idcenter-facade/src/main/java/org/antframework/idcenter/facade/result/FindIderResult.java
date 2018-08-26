@@ -16,13 +16,13 @@ import org.antframework.idcenter.facade.vo.IderInfo;
  */
 public class FindIderResult extends AbstractResult {
     // id提供者info
-    private IderInfo iderInfo;
+    private IderInfo ider;
 
-    public IderInfo getIderInfo() {
-        return iderInfo;
+    public IderInfo getIder() {
+        return ider;
     }
 
-    public void setIderInfo(IderInfo iderInfo) {
-        this.iderInfo = iderInfo;
+    public void setIder(IderInfo ider) {
+        this.ider = ider;
     }
 }

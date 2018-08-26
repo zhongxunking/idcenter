@@ -50,9 +50,9 @@ const IdersAdminTemplate = `
                 <el-input v-else v-model="row.editingFactor" size="small" placeholder="请输入生产者数量"></el-input>
             </template>
         </el-table-column>
-        <el-table-column prop="producerInfos" label="生产者" header-align="center" width="380">
+        <el-table-column prop="producers" label="生产者" header-align="center" width="380">
             <template slot-scope="{ row }">
-                <el-table :data="row.producerInfos" border stripe>
+                <el-table :data="row.producers" border stripe>
                     <el-table-column prop="index" label="序号" width="50px"></el-table-column>
                     <el-table-column prop="currentPeriod" label="当前周期">
                         <template slot-scope="{ row }">
