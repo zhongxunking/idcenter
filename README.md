@@ -59,7 +59,7 @@ current_id：当前id，标识本生产者在当前周期下生产到了哪个id
 ![](https://note.youdao.com/yws/api/personal/file/WEB21517303ba4dba3ce73b76e4c338e1b8?method=download&shareKey=77b353a4a710cef174402c89d6586da3)
 
 ## 2. 服务端部署
-### 1. [下载服务端](https://repo.maven.apache.org/maven2/org/antframework/idcenter/idcenter-assemble/1.1.0.RELEASE/idcenter-assemble-1.1.0.RELEASE-exec.jar)。说明：
+### 1. [下载服务端](https://repo.maven.apache.org/maven2/org/antframework/idcenter/idcenter-assemble/1.2.0.RELEASE/idcenter-assemble-1.2.0.RELEASE-exec.jar)。说明：
 1. 服务端使用的springboot，直接命令启动下载好的jar包即可，无需部署tomcat。
 2. 服务端使用hibernate自动生成表结构，无需导入sql。
 3. 服务端在启动时会在"/var/apps/"下创建日志文件，请确保服务端对该目录拥有写权限。
@@ -67,11 +67,11 @@ current_id：当前id，标识本生产者在当前周期下生产到了哪个id
 ### 2. 启动服务端：
 启动命令模板：
 ```
-java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="环境编码" --spring.datasource.url="数据库连接" --spring.datasource.username="数据库用户名" --spring.datasource.password="数据库密码"
+java -jar idcenter-assemble-1.2.0.RELEASE-exec.jar --spring.profiles.active="环境编码" --spring.datasource.url="数据库连接" --spring.datasource.username="数据库用户名" --spring.datasource.password="数据库密码"
 ```
 比如：
 ```
-java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="online" --spring.datasource.url="jdbc:mysql://localhost:3306/idcenter-dev?useUnicode=true&characterEncoding=utf-8" --spring.datasource.username="root" --spring.datasource.password="root"
+java -jar idcenter-assemble-1.2.0.RELEASE-exec.jar --spring.profiles.active="online" --spring.datasource.url="jdbc:mysql://localhost:3306/idcenter-dev?useUnicode=true&characterEncoding=utf-8" --spring.datasource.username="root" --spring.datasource.password="root"
 ```
 ### 3. 后台管理
 后台中管理员有两种：超级管理员、普通管理员。超级管理员可以管理所有id提供者，也可以管理其他管理员；普通管理员只能管理分配给他的id提供者。
@@ -90,7 +90,7 @@ java -jar idcenter-assemble-1.1.0.RELEASE-exec.jar --spring.profiles.active="onl
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
     <artifactId>idcenter-client</artifactId>
-    <version>1.1.0.RELEASE</version>
+    <version>1.2.0.RELEASE</version>
 </dependency>
 ```
 ### 2. 使用客户端
