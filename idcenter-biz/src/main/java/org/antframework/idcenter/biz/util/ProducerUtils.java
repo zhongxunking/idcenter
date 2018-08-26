@@ -73,19 +73,19 @@ public class ProducerUtils {
      */
     public static List<IdsInfo> grow(Ider ider, Producer producer, long length) {
         Assert.isTrue(length >= 0, "生产者增加长度必须大于或等于0");
-        List<IdsInfo> idsInfos = new ArrayList<>();
+        List<IdsInfo> idses = new ArrayList<>();
 
         long newCurrentId = producer.getCurrentId() + length;
         Assert.isTrue(newCurrentId >= producer.getCurrentId(), "运算中超过long类型最大值，无法进行计算");
         long anchorId = producer.getCurrentId();
         while (anchorId < newCurrentId) {
             int periodIdAmount = calcPeriodIdAmount(ider, newCurrentId, anchorId);
-            idsInfos.add(buildIdsInfo(ider, producer, anchorId, periodIdAmount));
+            idses.add(buildIdsInfo(ider, producer, anchorId, periodIdAmount));
             anchorId += ((long) periodIdAmount) * ider.getFactor();
         }
         updateProducer(ider, producer, newCurrentId);
 
-        return idsInfos;
+        return idses;
     }
 
     // 计算anchorId所在周期内产生的id数量

@@ -76,7 +76,7 @@ public class AcquireIdsService {
         // 现代化生产者
         modernizeProducer(ider, producer);
         // 生产id
-        result.setIdsInfos(ProducerUtils.produce(ider, producer, amount));
+        result.setIdses(ProducerUtils.produce(ider, producer, amount));
         // 更新生产者
         producerDao.save(producer);
         logger.info("生产id后：生产者={}", producer);

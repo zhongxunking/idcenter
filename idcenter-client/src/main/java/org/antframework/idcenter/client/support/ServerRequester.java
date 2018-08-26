@@ -60,7 +60,7 @@ public class ServerRequester {
             if (!result.isSuccess()) {
                 throw new RuntimeException("从id中心获取批量id失败：" + result.getMessage());
             }
-            return toIdsList(result.getIdsInfos());
+            return extractIdses(result.getIdses());
         } catch (IOException e) {
             return ExceptionUtils.rethrow(e);
         }
@@ -77,13 +77,13 @@ public class ServerRequester {
         return httpPost;
     }
 
-    // 转换为Ids
-    private List<Ids> toIdsList(List<IdsInfo> idsInfos) {
-        List<Ids> idsList = new ArrayList<>();
-        for (IdsInfo info : idsInfos) {
-            idsList.add(new Ids(info.getIdCode(), info.getPeriod(), info.getFactor(), info.getStartId(), info.getAmount()));
+    // 提取Ids
+    private List<Ids> extractIdses(List<IdsInfo> idses) {
+        List<Ids> extractedIdses = new ArrayList<>();
+        for (IdsInfo info : idses) {
+            extractedIdses.add(new Ids(info.getIdCode(), info.getPeriod(), info.getFactor(), info.getStartId(), info.getAmount()));
         }
-        return idsList;
+        return extractedIdses;
     }
 
     /**
@@ -91,14 +91,14 @@ public class ServerRequester {
      */
     private static class AcquireIdsResult extends AbstractResult {
         // 获取到的批量id
-        private List<IdsInfo> idsInfos;
+        private List<IdsInfo> idses;
 
-        public List<IdsInfo> getIdsInfos() {
-            return idsInfos;
+        public List<IdsInfo> getIdses() {
+            return idses;
         }
 
-        public void setIdsInfos(List<IdsInfo> idsInfos) {
-            this.idsInfos = idsInfos;
+        public void setIdses(List<IdsInfo> idses) {
+            this.idses = idses;
         }
     }
 

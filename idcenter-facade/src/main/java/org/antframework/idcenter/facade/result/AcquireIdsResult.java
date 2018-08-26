@@ -18,13 +18,13 @@ import java.util.List;
  */
 public class AcquireIdsResult extends AbstractResult {
     // 获取到的批量id
-    private List<IdsInfo> idsInfos;
+    private List<IdsInfo> idses;
 
-    public List<IdsInfo> getIdsInfos() {
-        return idsInfos;
+    public List<IdsInfo> getIdses() {
+        return idses;
     }
 
-    public void setIdsInfos(List<IdsInfo> idsInfos) {
-        this.idsInfos = idsInfos;
+    public void setIdses(List<IdsInfo> idses) {
+        this.idses = idses;
     }
 }

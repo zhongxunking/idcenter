@@ -9,9 +9,8 @@
 package org.antframework.idcenter.web.controller.manage;
 
 import org.antframework.common.util.facade.AbstractQueryResult;
-import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.EmptyResult;
-import org.antframework.common.util.facade.Status;
+import org.antframework.common.util.facade.FacadeUtils;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
@@ -187,9 +186,7 @@ public class IderManageController {
         order.setIdCode(idCode);
 
         FindIderResult result = iderService.findIder(order);
-        if (!result.isSuccess()) {
-            throw new BizException(Status.FAIL, result.getCode(), result.getMessage());
-        }
+        FacadeUtils.assertSuccess(result);
         return result.getIder();
     }
 
