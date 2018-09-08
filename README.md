@@ -17,7 +17,10 @@
 ## 1. 整体设计
 idcenter分为服务端和客户端，服务端和客户端是通过http请求进行交互。
 
-### 1.1 服务端
+### 1.1 整体设计图
+<img src="https://note.youdao.com/yws/api/personal/file/WEBfc5bbb9a03165af0546003f2f430c422?method=download&shareKey=89ba0f4d979d157a46b5b07507925d80" width=700 />
+
+### 1.2 服务端
 服务端存储管理不同业务线需要的id，对id进行统一管理。接收客户端获取id的请求，并返回一批id给客户端。
 
 id分为两部分：id所在的时间周期+id值。id具有周期概念（每个小时（天、月、年）算一个周期或无周期），当时间更替到下个周期时，id值自动重置到0（如果周期类型为“无周期”，则id值不会被重置）。每个id（id所在的时间周期+id值）是唯一的。
@@ -58,11 +61,8 @@ current_period：当前周期，标识本生产者当前生产到了哪个周期
 current_id：当前id，标识本生产者在当前周期下生产到了哪个id
 ```
 
-### 1.2 客户端
+### 1.3 客户端
 客户端刚启动时会尝试从服务端获取一批id，并缓存起来，供后续使用方获取id。使用方获取id时，客户端会从缓存的id存量中获取一个全新的id返回给使用方。并且客户端会根据最近一段时间内id使用频率，自动评估当前剩余的id存量是否足够客户端运行一段时间；如果id存量不够，则客户端会异步请求服务端获取一批id，并缓缓存起来。
-
-### 1.3 整体设计图
-<img src="https://note.youdao.com/yws/api/personal/file/WEBfc5bbb9a03165af0546003f2f430c422?method=download&shareKey=89ba0f4d979d157a46b5b07507925d80" width=700 />
 
 ## 2. 服务端部署
 [下载服务端](https://repo.maven.apache.org/maven2/org/antframework/idcenter/idcenter-assemble/1.2.0.RELEASE/idcenter-assemble-1.2.0.RELEASE-exec.jar)。以下是集群部署架构图：<br/>
