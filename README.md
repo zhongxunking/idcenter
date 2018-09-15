@@ -11,7 +11,11 @@
 
 > 注意：本系统已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
 
-3. 技术交流和支持
+3. 演示环境
+> 地址：http://idcenter.antframework.org:6210 <br/>
+> 账号：admin 密码：123
+
+4. 技术交流和支持
 > 欢迎加我微信（zhong_xun_），进行技术交流和支持。如果本项目对你有帮助，欢迎Star和Fork。
 
 ## 1. 整体设计
