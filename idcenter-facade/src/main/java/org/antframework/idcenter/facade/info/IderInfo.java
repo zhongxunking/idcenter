@@ -4,47 +4,35 @@
 
 /*
  * 修订记录:
- * @author 钟勋 2017-11-21 00:42 创建
+ * @author 钟勋 2017-11-27 20:11 创建
  */
-package org.antframework.idcenter.dal.entity;
+package org.antframework.idcenter.facade.info;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.antframework.boot.jpa.AbstractEntity;
+import org.antframework.common.util.facade.AbstractInfo;
 import org.antframework.common.util.id.PeriodType;
 
-import javax.persistence.*;
+import java.util.List;
 
 /**
- * id提供者
+ * id提供者info
  */
-@Entity
-@Table(uniqueConstraints = @UniqueConstraint(name = "uk_iderId", columnNames = "iderId"))
 @Getter
 @Setter
-public class Ider extends AbstractEntity {
+public class IderInfo extends AbstractInfo {
     // id提供者的id（id编码）
-    @Column(length = 128)
     private String iderId;
-
     // id提供者的名称
-    @Column
     private String iderName;
-
     // 周期类型
-    @Column(length = 64)
-    @Enumerated(EnumType.STRING)
     private PeriodType periodType;
-
     // 一个周期内id最大值（不包含），null表示不限制
-    @Column
     private Long maxId;
-
     // 单次获取id的最大数量（包含），null表示不限制
-    @Column
     private Integer maxAmount;
-
     // 因数（生产者数量）
-    @Column
     private Integer factor;
+    // 生产者
+    private List<IdProducerInfo> idProducers;
 }
