@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.dal.dao;
 
-import org.antframework.idcenter.dal.entity.Producer;
+import org.antframework.idcenter.dal.entity.IdProducer;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.repository.RepositoryDefinition;
 
@@ -18,18 +18,18 @@ import java.util.List;
 /**
  * id生产者dao
  */
-@RepositoryDefinition(domainClass = Producer.class, idClass = Long.class)
-public interface ProducerDao {
+@RepositoryDefinition(domainClass = IdProducer.class, idClass = Long.class)
+public interface IdProducerDao {
 
-    void save(Producer producer);
+    void save(IdProducer idProducer);
 
-    void delete(Producer producer);
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<Producer> findLockByIdCodeOrderByIndexAsc(String idCode);
+    void delete(IdProducer idProducer);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Producer findLockByIdCodeAndIndex(String idCode, Integer index);
+    IdProducer findLockByIderIdAndIndex(String iderId, Integer index);
 
-    List<Producer> findByIdCodeOrderByIndexAsc(String idCode);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    List<IdProducer> findLockByIderIdOrderByIndexAsc(String iderId);
+
+    List<IdProducer> findByIderIdOrderByIndexAsc(String iderId);
 }

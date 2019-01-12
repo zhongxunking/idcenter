@@ -8,25 +8,31 @@
  */
 package org.antframework.idcenter.dal.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.boot.jpa.AbstractEntity;
 import org.antframework.idcenter.facade.enums.PeriodType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 /**
  * id提供者
  */
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "uk_iderId", columnNames = "iderId"))
+@Getter
+@Setter
 public class Ider extends AbstractEntity {
-    // id编码
-    @Column(unique = true, length = 128)
-    private String idCode;
+    // id提供者的id（id编码）
+    @Column(length = 128)
+    private String iderId;
+
+    // id提供者的名称
+    @Column
+    private String iderName;
 
     // 周期类型
-    @Column(length = 40)
+    @Column(length = 64)
     @Enumerated(EnumType.STRING)
     private PeriodType periodType;
 
@@ -34,51 +40,11 @@ public class Ider extends AbstractEntity {
     @Column
     private Long maxId;
 
-    // 一次获取id的最大数量（包含），null表示不限制
+    // 单次获取id的最大数量（包含），null表示不限制
     @Column
     private Integer maxAmount;
 
     // 因数（生产者数量）
     @Column
     private Integer factor;
-
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
-
-    public PeriodType getPeriodType() {
-        return periodType;
-    }
-
-    public void setPeriodType(PeriodType periodType) {
-        this.periodType = periodType;
-    }
-
-    public Long getMaxId() {
-        return maxId;
-    }
-
-    public void setMaxId(Long maxId) {
-        this.maxId = maxId;
-    }
-
-    public Integer getMaxAmount() {
-        return maxAmount;
-    }
-
-    public void setMaxAmount(Integer maxAmount) {
-        this.maxAmount = maxAmount;
-    }
-
-    public Integer getFactor() {
-        return factor;
-    }
-
-    public void setFactor(Integer factor) {
-        this.factor = factor;
-    }
 }

@@ -29,9 +29,9 @@ public interface IderDao {
     void delete(Ider ider);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Ider findLockByIdCode(String idCode);
+    Ider findLockByIderId(String iderId);
 
-    Ider findByIdCode(String idCode);
+    Ider findByIderId(String iderId);
 
     Page<Ider> query(Collection<QueryParam> queryParams, Pageable pageable);
 }
