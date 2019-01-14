@@ -12,12 +12,12 @@ import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
+import org.antframework.common.util.id.Period;
+import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
-import org.antframework.idcenter.dal.dao.ProducerDao;
+import org.antframework.idcenter.dal.entity.IdProducer;
 import org.antframework.idcenter.dal.entity.Ider;
-import org.antframework.idcenter.dal.entity.Producer;
 import org.antframework.idcenter.facade.order.AddIderOrder;
-import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
@@ -37,24 +37,24 @@ public class AddIderService {
     @Autowired
     private IderDao iderDao;
     @Autowired
-    private ProducerDao producerDao;
+    private IdProducerDao idProducerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<AddIderOrder, EmptyResult> context) {
         AddIderOrder order = context.getOrder();
 
-        Ider ider = iderDao.findLockByIdCode(order.getIdCode());
+        Ider ider = iderDao.findLockByIderId(order.getIderId());
         if (ider != null) {
-            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]已存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]已存在", order.getIderId()));
         }
 
         ider = buildIder(order);
         iderDao.save(ider);
         logger.info("新增id提供者：{}", ider);
 
-        Producer producer = buildProducer(ider);
-        producerDao.save(producer);
-        logger.info("新增生产者：{}", producer);
+        IdProducer idProducer = buildIdProducer(ider);
+        idProducerDao.save(idProducer);
+        logger.info("新增id生产者：{}", idProducer);
     }
 
     // 构建id提供者
@@ -66,16 +66,16 @@ public class AddIderService {
         return ider;
     }
 
-    // 构建生产者
-    private Producer buildProducer(Ider ider) {
+    // 构建id生产者
+    private IdProducer buildIdProducer(Ider ider) {
         Period period = new Period(ider.getPeriodType(), new Date());
 
-        Producer producer = new Producer();
-        producer.setIdCode(ider.getIdCode());
-        producer.setIndex(0);
-        producer.setCurrentPeriod(period.getDate());
-        producer.setCurrentId(0L);
+        IdProducer idProducer = new IdProducer();
+        idProducer.setIderId(ider.getIderId());
+        idProducer.setIndex(0);
+        idProducer.setCurrentPeriod(period.getDate());
+        idProducer.setCurrentId(0L);
 
-        return producer;
+        return idProducer;
     }
 }

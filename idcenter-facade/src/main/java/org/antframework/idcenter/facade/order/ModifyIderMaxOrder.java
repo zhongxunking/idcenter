@@ -8,6 +8,8 @@
  */
 package org.antframework.idcenter.facade.order;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractOrder;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -16,38 +18,16 @@ import javax.validation.constraints.Min;
 /**
  * 修改id提供者的最大数据order
  */
+@Getter
+@Setter
 public class ModifyIderMaxOrder extends AbstractOrder {
-    // id编码
+    // id提供者的id（id编码）
     @NotBlank
-    private String idCode;
-    // 新的id最大值（不包含）
+    private String iderId;
+    // 新的一个周期内id最大值（不包含），null表示不限制
     @Min(1)
     private Long newMaxId;
-    // 新的一次获取id的最大数量（包含）
+    // 新的单次获取id的最大数量（包含），null表示不限制
     @Min(1)
     private Integer newMaxAmount;
-
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
-
-    public Long getNewMaxId() {
-        return newMaxId;
-    }
-
-    public void setNewMaxId(Long newMaxId) {
-        this.newMaxId = newMaxId;
-    }
-
-    public Integer getNewMaxAmount() {
-        return newMaxAmount;
-    }
-
-    public void setNewMaxAmount(Integer newMaxAmount) {
-        this.newMaxAmount = newMaxAmount;
-    }
 }

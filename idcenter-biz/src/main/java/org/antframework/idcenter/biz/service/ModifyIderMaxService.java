@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Objects;
+
 /**
  * 修改id提供者的最大数据服务
  */
@@ -35,9 +37,9 @@ public class ModifyIderMaxService {
     public void execute(ServiceContext<ModifyIderMaxOrder, EmptyResult> context) {
         ModifyIderMaxOrder order = context.getOrder();
 
-        Ider ider = iderDao.findLockByIdCode(order.getIdCode());
+        Ider ider = iderDao.findLockByIderId(order.getIderId());
         if (ider == null) {
-            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIderId()));
         }
         checkNewMaxId(order, ider);
 
@@ -50,7 +52,7 @@ public class ModifyIderMaxService {
 
     // 校验新的id最大值
     private void checkNewMaxId(ModifyIderMaxOrder order, Ider ider) {
-        if (order.getNewMaxId() == ider.getMaxId()) {
+        if (Objects.equals(order.getNewMaxId(), ider.getMaxId())) {
             return;
         }
         if (order.getNewMaxId() == null) {
@@ -66,7 +68,7 @@ public class ModifyIderMaxService {
                 throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "id最大值被修改的差值必须是因数的整数倍");
             }
             if (order.getNewMaxId() < ider.getFactor()) {
-                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id最大值不能小于因数[%d]", ider.getFactor()));
+                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的id最大值[%d]不能小于因数[%d]", order.getNewMaxId(), ider.getFactor()));
             }
         }
     }
