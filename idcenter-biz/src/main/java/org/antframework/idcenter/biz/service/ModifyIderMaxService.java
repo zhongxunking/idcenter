@@ -43,11 +43,11 @@ public class ModifyIderMaxService {
         }
         checkNewMaxId(order, ider);
 
-        logger.info("id提供者修改最大数据前：{}", ider);
+        logger.info("id提供者被修改最大数据前：{}", ider);
         ider.setMaxId(order.getNewMaxId());
         ider.setMaxAmount(order.getNewMaxAmount());
         iderDao.save(ider);
-        logger.info("id提供者修改最大数据后：{}", ider);
+        logger.info("id提供者被修改最大数据后：{}", ider);
     }
 
     // 校验新的id最大值

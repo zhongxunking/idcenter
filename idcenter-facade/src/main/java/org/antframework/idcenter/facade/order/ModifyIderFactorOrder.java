@@ -8,35 +8,25 @@
  */
 package org.antframework.idcenter.facade.order;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractOrder;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * 修改id提供者的因数order
  */
+@Getter
+@Setter
 public class ModifyIderFactorOrder extends AbstractOrder {
-    // id编码
+    // id提供者的id（id编码）
     @NotBlank
-    private String idCode;
-    // 新的因数
+    private String iderId;
+    // 新的因数（生产者数量）
     @Min(1)
-    private int newFactor;
-
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
-
-    public int getNewFactor() {
-        return newFactor;
-    }
-
-    public void setNewFactor(int newFactor) {
-        this.newFactor = newFactor;
-    }
+    @NotNull
+    private Integer newFactor;
 }
