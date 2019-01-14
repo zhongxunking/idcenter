@@ -55,7 +55,7 @@ public class ModifyIderFactorService {
 
         logger.info("id提供者被修改因数前：{}", ider);
         IdProducer maxIdProducer = null;
-        for (IdProducer idProducer : idProducerDao.findLockByIderIdOrderByIndexAsc(order.getIderId())) {
+        for (IdProducer idProducer : idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId())) {
             if (maxIdProducer == null || ProducerUtils.compare(idProducer, maxIdProducer) > 0) {
                 maxIdProducer = idProducer;
             }

@@ -8,46 +8,28 @@
  */
 package org.antframework.idcenter.facade.order;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractOrder;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
  * 修改id提供者当前数据Order
  */
+@Getter
+@Setter
 public class ModifyIderCurrentOrder extends AbstractOrder {
-    // id编码
+    // id提供者的id（id编码）
     @NotBlank
-    private String idCode;
+    private String iderId;
     // 新的当前周期
     private Date newCurrentPeriod;
-    // 新的当前Id
+    // 新的当前Id（未使用）
     @Min(0)
-    private long newCurrentId;
-
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
-
-    public Date getNewCurrentPeriod() {
-        return newCurrentPeriod;
-    }
-
-    public void setNewCurrentPeriod(Date newCurrentPeriod) {
-        this.newCurrentPeriod = newCurrentPeriod;
-    }
-
-    public long getNewCurrentId() {
-        return newCurrentId;
-    }
-
-    public void setNewCurrentId(long newCurrentId) {
-        this.newCurrentId = newCurrentId;
-    }
+    @NotNull
+    private Long newCurrentId;
 }
