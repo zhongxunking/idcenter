@@ -8,6 +8,8 @@
  */
 package org.antframework.idcenter.facade.order;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractOrder;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -16,27 +18,12 @@ import javax.validation.constraints.Min;
 /**
  * 获取批量id-order
  */
+@Getter
+@Setter
 public class AcquireIdsOrder extends AbstractOrder {
-    // id编码
+    // id提供者的id（id编码）
     @NotBlank
-    private String idCode;
-    // 期望获取到的id个数
+    private String iderId;
     @Min(1)
     private int expectAmount;
-
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
-
-    public int getExpectAmount() {
-        return expectAmount;
-    }
-
-    public void setExpectAmount(int expectAmount) {
-        this.expectAmount = expectAmount;
-    }
 }

@@ -10,6 +10,7 @@ package org.antframework.idcenter.facade.api;
 
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.idcenter.facade.order.*;
+import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIdersResult;
 
@@ -42,6 +43,11 @@ public interface IderService {
      * 删除id提供者
      */
     EmptyResult deleteIder(DeleteIderOrder order);
+
+    /**
+     * 获取批量id
+     */
+    AcquireIdsResult acquireIds(AcquireIdsOrder order);
 
     /**
      * 查找id提供者

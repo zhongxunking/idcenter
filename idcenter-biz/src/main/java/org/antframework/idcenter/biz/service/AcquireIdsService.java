@@ -11,14 +11,14 @@ package org.antframework.idcenter.biz.service;
 import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.Status;
+import org.antframework.common.util.id.Period;
 import org.antframework.idcenter.biz.util.ProducerUtils;
+import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
-import org.antframework.idcenter.dal.dao.ProducerDao;
+import org.antframework.idcenter.dal.entity.IdProducer;
 import org.antframework.idcenter.dal.entity.Ider;
-import org.antframework.idcenter.dal.entity.Producer;
 import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
-import org.antframework.idcenter.facade.vo.Period;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceBefore;
 import org.bekit.service.annotation.service.ServiceExecute;
@@ -36,20 +36,20 @@ import java.util.Random;
 @Service(enableTx = true)
 public class AcquireIdsService {
     private static final Logger logger = LoggerFactory.getLogger(AcquireIdsService.class);
-    // 随机
+    // 随机数生成器
     private static final Random RANDOM = new Random();
     @Autowired
     private IderDao iderDao;
     @Autowired
-    private ProducerDao producerDao;
+    private IdProducerDao idProducerDao;
 
     @ServiceBefore
     public void before(ServiceContext<AcquireIdsOrder, AcquireIdsResult> context) {
         AcquireIdsOrder order = context.getOrder();
 
-        Ider ider = iderDao.findByIdCode(order.getIdCode());
+        Ider ider = iderDao.findByIderId(order.getIderId());
         if (ider == null) {
-            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIdCode()));
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIderId()));
         }
         context.setAttachmentAttr(Ider.class, ider);
     }
@@ -59,50 +59,51 @@ public class AcquireIdsService {
         AcquireIdsOrder order = context.getOrder();
         AcquireIdsResult result = context.getResult();
         Ider ider = context.getAttachmentAttr(Ider.class);
-
-        Producer producer = producerDao.findLockByIdCodeAndIndex(ider.getIdCode(), RANDOM.nextInt(ider.getFactor()));
-        if (producer == null) {
-            throw new BizException(Status.FAIL, CommonResultCode.ILLEGAL_STATE.getCode(), String.format("id提供者[%s]的因数被修改，请重试", ider.getIdCode()));
+        // 随机选择一个id生产者
+        IdProducer idProducer = idProducerDao.findLockByIderIdAndIndex(ider.getIderId(), RANDOM.nextInt(ider.getFactor()));
+        if (idProducer == null) {
+            throw new BizException(Status.FAIL, CommonResultCode.ILLEGAL_STATE.getCode(), String.format("id提供者[%s]的因数被修改，请重试", ider.getIderId()));
         }
-        // 刷新ider（生产者被锁住前因数可能会被修改，在此更新到最新因数）
-        ider = iderDao.findByIdCode(ider.getIdCode());
-        logger.info("生产id前：id提供者={},生产者={}", ider, producer);
+        // 刷新ider（id生产者被锁住前因数可能会被修改，在此更新到最新因数）
+        ider = iderDao.findByIderId(ider.getIderId());
+        logger.info("被获取id的id提供者：{}", ider);
+        logger.info("生产id前的id生产者：{}", idProducer);
         // 计算生产的id数量
         int amount = order.getExpectAmount();
         if (ider.getMaxAmount() != null && amount > ider.getMaxAmount()) {
-            logger.warn("期望获取id的数量{}过多，调整到{}", amount, ider.getMaxAmount());
+            logger.warn("期望获取id的数量[{}]过多，调整到[{}]", amount, ider.getMaxAmount());
             amount = ider.getMaxAmount();
         }
-        // 现代化生产者
-        modernizeProducer(ider, producer);
+        // 现代化id生产者
+        modernizeIdProducer(ider, idProducer);
         // 生产id
-        result.setIdses(ProducerUtils.produce(ider, producer, amount));
-        // 更新生产者
-        producerDao.save(producer);
-        logger.info("生产id后：生产者={}", producer);
+        result.setIdses(ProducerUtils.produce(ider, idProducer, amount));
+        // 更新id生产者
+        idProducerDao.save(idProducer);
+        logger.info("生产id后的id生产者：{}", idProducer);
     }
 
-    // 如果生产者的当前周期小于最新周期，则更新当前周期
-    private void modernizeProducer(Ider ider, Producer producer) {
+    // 如果id生产者的当前周期小于最新周期，则更新当前周期
+    private void modernizeIdProducer(Ider ider, IdProducer idProducer) {
         Period modernPeriod = new Period(ider.getPeriodType(), new Date());
 
-        Period period = new Period(ider.getPeriodType(), producer.getCurrentPeriod());
+        Period period = new Period(ider.getPeriodType(), idProducer.getCurrentPeriod());
         if (period.compareTo(modernPeriod) < 0) {
-            int modernStartId = calcModernStartId(ider, producer, modernPeriod);
-            producer.setCurrentPeriod(modernPeriod.getDate());
-            producer.setCurrentId((long) modernStartId);
-            logger.info("生产者现代化后：{}", producer);
+            int modernStartId = calcModernStartId(ider, idProducer, modernPeriod);
+            idProducer.setCurrentPeriod(modernPeriod.getDate());
+            idProducer.setCurrentId((long) modernStartId);
+            logger.info("被现代化后的id生产者：{}", idProducer);
         }
     }
 
     // 计算生产者跳跃到最新周期时的开始id
-    private int calcModernStartId(Ider ider, Producer producer, Period modernPeriod) {
-        int modernStartId = (int) (producer.getCurrentId() % ider.getFactor());
+    private int calcModernStartId(Ider ider, IdProducer idProducer, Period modernPeriod) {
+        int modernStartId = (int) (idProducer.getCurrentId() % ider.getFactor());
         if (ider.getMaxId() == null) {
             return modernStartId;
         }
         int growPerPeriod = ider.getFactor() - (int) (ider.getMaxId() % ider.getFactor());
-        Period anchorPeriod = new Period(ider.getPeriodType(), producer.getCurrentPeriod());
+        Period anchorPeriod = new Period(ider.getPeriodType(), idProducer.getCurrentPeriod());
         while (anchorPeriod.compareTo(modernPeriod) < 0) {
             anchorPeriod = anchorPeriod.grow(1);
             modernStartId = (modernStartId + growPerPeriod) % ider.getFactor();

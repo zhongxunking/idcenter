@@ -15,6 +15,7 @@ import org.antframework.idcenter.biz.util.QueryUtils;
 import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.order.*;
+import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.bekit.service.ServiceEngine;
@@ -54,6 +55,11 @@ public class IderServiceProvider implements IderService {
     @Override
     public EmptyResult deleteIder(DeleteIderOrder order) {
         return serviceEngine.execute("deleteIderService", order);
+    }
+
+    @Override
+    public AcquireIdsResult acquireIds(AcquireIdsOrder order) {
+        return serviceEngine.execute("acquireIdsService", order);
     }
 
     @Override

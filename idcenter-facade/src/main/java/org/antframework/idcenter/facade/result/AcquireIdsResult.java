@@ -8,23 +8,19 @@
  */
 package org.antframework.idcenter.facade.result;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractResult;
-import org.antframework.idcenter.facade.vo.IdsInfo;
+import org.antframework.idcenter.facade.vo.Ids;
 
 import java.util.List;
 
 /**
  * 获取批量id-result
  */
+@Getter
+@Setter
 public class AcquireIdsResult extends AbstractResult {
     // 获取到的批量id
-    private List<IdsInfo> idses;
-
-    public List<IdsInfo> getIdses() {
-        return idses;
-    }
-
-    public void setIdses(List<IdsInfo> idses) {
-        this.idses = idses;
-    }
+    private List<Ids> idses;
 }
