@@ -9,10 +9,10 @@
 package org.antframework.idcenter.biz.service;
 
 import org.antframework.common.util.facade.EmptyResult;
+import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
-import org.antframework.idcenter.dal.dao.ProducerDao;
+import org.antframework.idcenter.dal.entity.IdProducer;
 import org.antframework.idcenter.dal.entity.Ider;
-import org.antframework.idcenter.dal.entity.Producer;
 import org.antframework.idcenter.facade.order.DeleteIderOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
@@ -32,22 +32,23 @@ public class DeleteIderService {
     @Autowired
     private IderDao iderDao;
     @Autowired
-    private ProducerDao producerDao;
+    private IdProducerDao idProducerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<DeleteIderOrder, EmptyResult> context) {
         DeleteIderOrder order = context.getOrder();
 
-        Ider ider = iderDao.findLockByIdCode(order.getIdCode());
+        Ider ider = iderDao.findLockByIderId(order.getIderId());
         if (ider == null) {
             return;
         }
-
-        List<Producer> producers = producerDao.findLockByIdCodeOrderByIndexAsc(ider.getIdCode());
-        for (Producer producer : producers) {
-            producerDao.delete(producer);
-            logger.info("删除生产者：{}", producer);
+        // 删除id生产者
+        List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(order.getIderId());
+        for (IdProducer idProducer : idProducers) {
+            logger.info("删除id生产者：{}", idProducer);
+            idProducerDao.delete(idProducer);
         }
+        // 删除id提供者
         iderDao.delete(ider);
         logger.info("删除id提供者：{}", ider);
     }

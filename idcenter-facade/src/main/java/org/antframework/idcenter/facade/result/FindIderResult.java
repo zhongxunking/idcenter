@@ -8,21 +8,17 @@
  */
 package org.antframework.idcenter.facade.result;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractResult;
-import org.antframework.idcenter.facade.vo.IderInfo;
+import org.antframework.idcenter.facade.info.IderInfo;
 
 /**
  * 查找id提供者result
  */
+@Getter
+@Setter
 public class FindIderResult extends AbstractResult {
-    // id提供者info
+    // id提供者
     private IderInfo ider;
-
-    public IderInfo getIder() {
-        return ider;
-    }
-
-    public void setIder(IderInfo ider) {
-        this.ider = ider;
-    }
 }

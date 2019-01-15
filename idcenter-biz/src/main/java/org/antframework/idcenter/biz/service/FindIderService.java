@@ -33,7 +33,7 @@ public class FindIderService {
         FindIderOrder order = context.getOrder();
         FindIderResult result = context.getResult();
 
-        Ider ider = iderDao.findByIdCode(order.getIdCode());
+        Ider ider = iderDao.findByIderId(order.getIderId());
         if (ider != null) {
             result.setIder(infoConverter.convert(ider));
         }

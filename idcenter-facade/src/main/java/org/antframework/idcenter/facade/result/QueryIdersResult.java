@@ -9,7 +9,7 @@
 package org.antframework.idcenter.facade.result;
 
 import org.antframework.common.util.facade.AbstractQueryResult;
-import org.antframework.idcenter.facade.vo.IderInfo;
+import org.antframework.idcenter.facade.info.IderInfo;
 
 /**
  * 查询id提供者result

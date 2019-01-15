@@ -8,22 +8,18 @@
  */
 package org.antframework.idcenter.facade.order;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractOrder;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * 查找id提供者order
  */
+@Getter
+@Setter
 public class FindIderOrder extends AbstractOrder {
-    // id编码
+    // id提供者的id（id编码）
     @NotBlank
-    private String idCode;
-
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
+    private String iderId;
 }

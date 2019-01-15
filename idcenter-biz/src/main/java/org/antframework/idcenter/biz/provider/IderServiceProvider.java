@@ -8,7 +8,11 @@
  */
 package org.antframework.idcenter.biz.provider;
 
+import org.antframework.boot.bekit.CommonQueries;
 import org.antframework.common.util.facade.EmptyResult;
+import org.antframework.idcenter.biz.service.converter.IderInfoConverter;
+import org.antframework.idcenter.biz.util.QueryUtils;
+import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
@@ -24,6 +28,8 @@ import org.springframework.stereotype.Service;
 public class IderServiceProvider implements IderService {
     @Autowired
     private ServiceEngine serviceEngine;
+    @Autowired
+    private IderInfoConverter infoConverter;
 
     @Override
     public EmptyResult addIder(AddIderOrder order) {
@@ -57,6 +63,7 @@ public class IderServiceProvider implements IderService {
 
     @Override
     public QueryIdersResult queryIders(QueryIdersOrder order) {
-        return serviceEngine.execute("queryIdersService", order);
+        CommonQueries.CommonQueryResult result = serviceEngine.execute(CommonQueries.SERVICE_NAME, order, QueryUtils.buildCommonQueryAttachment(IderDao.class));
+        return result.convertTo(QueryIdersResult.class, infoConverter);
     }
 }

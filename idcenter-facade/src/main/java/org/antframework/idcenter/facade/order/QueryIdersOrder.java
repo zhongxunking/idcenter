@@ -8,35 +8,23 @@
  */
 package org.antframework.idcenter.facade.order;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractQueryOrder;
+import org.antframework.common.util.id.PeriodType;
 import org.antframework.common.util.query.annotation.operator.QueryEQ;
 import org.antframework.common.util.query.annotation.operator.QueryLike;
-import org.antframework.idcenter.facade.enums.PeriodType;
 
 /**
  * 查询id提供者order
  */
+@Getter
+@Setter
 public class QueryIdersOrder extends AbstractQueryOrder {
-    // id编码
+    // id提供者的id（id编码）
     @QueryLike
-    private String idCode;
+    private String iderId;
     // 周期类型
     @QueryEQ
     private PeriodType periodType;
-
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
-
-    public PeriodType getPeriodType() {
-        return periodType;
-    }
-
-    public void setPeriodType(PeriodType periodType) {
-        this.periodType = periodType;
-    }
 }
