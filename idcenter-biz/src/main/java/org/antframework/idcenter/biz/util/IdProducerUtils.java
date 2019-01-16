@@ -100,8 +100,8 @@ public class IdProducerUtils {
         Period period = new Period(ider.getPeriodType(), idProducer.getCurrentPeriod());
         long startId = anchorId;
         if (ider.getMaxId() != null) {
-            period = period.grow((int) (anchorId / ider.getMaxId()));
-            startId = anchorId % ider.getMaxId();
+            period = period.grow((int) (startId / ider.getMaxId()));
+            startId = startId % ider.getMaxId();
         }
         return new Ids(period, ider.getFactor(), startId, idAmount);
     }
