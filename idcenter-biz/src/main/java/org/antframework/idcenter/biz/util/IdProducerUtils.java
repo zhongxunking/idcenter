@@ -73,6 +73,7 @@ public class IdProducerUtils {
 
         long newCurrentId = idProducer.getCurrentId() + length;
         Assert.isTrue(newCurrentId >= idProducer.getCurrentId(), "运算中超过long类型最大值，无法进行计算");
+        Assert.isTrue(newCurrentId + ider.getFactor() >= newCurrentId, "运算中超过long类型最大值，无法进行计算");
         long anchorId = idProducer.getCurrentId();
         while (anchorId < newCurrentId) {
             int idAmount = calcIdAmountOfPeriod(ider, newCurrentId, anchorId);
