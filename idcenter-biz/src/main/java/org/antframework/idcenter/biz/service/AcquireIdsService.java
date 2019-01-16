@@ -12,7 +12,7 @@ import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.Status;
 import org.antframework.common.util.id.Period;
-import org.antframework.idcenter.biz.util.ProducerUtils;
+import org.antframework.idcenter.biz.util.IdProducerUtils;
 import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.dal.entity.IdProducer;
@@ -77,7 +77,7 @@ public class AcquireIdsService {
         // 现代化id生产者
         modernizeIdProducer(ider, idProducer);
         // 生产id
-        result.setIdses(ProducerUtils.produce(ider, idProducer, amount));
+        result.setIdses(IdProducerUtils.produce(ider, idProducer, amount));
         // 更新id生产者
         idProducerDao.save(idProducer);
         logger.info("生产id后的id生产者：{}", idProducer);

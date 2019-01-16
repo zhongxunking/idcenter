@@ -12,7 +12,7 @@ import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
-import org.antframework.idcenter.biz.util.ProducerUtils;
+import org.antframework.idcenter.biz.util.IdProducerUtils;
 import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.dal.entity.IdProducer;
@@ -56,7 +56,7 @@ public class ModifyIderFactorService {
         logger.info("id提供者被修改因数前：{}", ider);
         IdProducer maxIdProducer = null;
         for (IdProducer idProducer : idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId())) {
-            if (maxIdProducer == null || ProducerUtils.compare(idProducer, maxIdProducer) > 0) {
+            if (maxIdProducer == null || IdProducerUtils.compare(idProducer, maxIdProducer) > 0) {
                 maxIdProducer = idProducer;
             }
             logger.info("删除id提供者：{}", idProducer);
@@ -79,7 +79,7 @@ public class ModifyIderFactorService {
         idProducer.setIndex(index);
         idProducer.setCurrentPeriod(source.getCurrentPeriod());
         idProducer.setCurrentId(source.getCurrentId());
-        ProducerUtils.grow(ider, idProducer, index);
+        IdProducerUtils.grow(ider, idProducer, index);
 
         return idProducer;
     }

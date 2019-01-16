@@ -14,7 +14,7 @@ import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
 import org.antframework.common.util.id.Period;
 import org.antframework.common.util.id.PeriodType;
-import org.antframework.idcenter.biz.util.ProducerUtils;
+import org.antframework.idcenter.biz.util.IdProducerUtils;
 import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.dal.entity.IdProducer;
@@ -63,7 +63,7 @@ public class ModifyIderCurrentService {
             logger.info("id生产者被修改当前数据前：{}", idProducer);
             idProducer.setCurrentPeriod(newPeriod.getDate());
             idProducer.setCurrentId(order.getNewCurrentId());
-            ProducerUtils.grow(ider, idProducer, i);
+            IdProducerUtils.grow(ider, idProducer, i);
 
             idProducerDao.save(idProducer);
             logger.info("id生产者被修改当前数据后：{}", idProducer);
