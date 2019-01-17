@@ -40,6 +40,11 @@ public interface IderService {
     EmptyResult modifyIderCurrent(ModifyIderCurrentOrder order);
 
     /**
+     * 修改id提供者的名称
+     */
+    EmptyResult modifyIderName(ModifyIderNameOrder order);
+
+    /**
      * 删除id提供者
      */
     EmptyResult deleteIder(DeleteIderOrder order);

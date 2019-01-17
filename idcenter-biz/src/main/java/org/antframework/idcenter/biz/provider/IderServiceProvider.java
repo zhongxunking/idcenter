@@ -53,6 +53,11 @@ public class IderServiceProvider implements IderService {
     }
 
     @Override
+    public EmptyResult modifyIderName(ModifyIderNameOrder order) {
+        return serviceEngine.execute("modifyIderNameService", order);
+    }
+
+    @Override
     public EmptyResult deleteIder(DeleteIderOrder order) {
         return serviceEngine.execute("deleteIderService", order);
     }
