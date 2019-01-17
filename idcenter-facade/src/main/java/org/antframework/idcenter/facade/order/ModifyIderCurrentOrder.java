@@ -26,7 +26,7 @@ public class ModifyIderCurrentOrder extends AbstractOrder {
     // id提供者的id（id编码）
     @NotBlank
     private String iderId;
-    // 新的当前周期
+    // 新的当前周期（null表示无周期）
     private Date newCurrentPeriod;
     // 新的当前Id（未使用）
     @Min(0)

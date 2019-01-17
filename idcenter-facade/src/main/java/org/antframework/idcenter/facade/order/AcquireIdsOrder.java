@@ -14,6 +14,7 @@ import org.antframework.common.util.facade.AbstractOrder;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * 获取批量id-order
@@ -24,6 +25,8 @@ public class AcquireIdsOrder extends AbstractOrder {
     // id提供者的id（id编码）
     @NotBlank
     private String iderId;
+    // 期望的数量
     @Min(1)
-    private int expectAmount;
+    @NotNull
+    private Integer expectAmount;
 }

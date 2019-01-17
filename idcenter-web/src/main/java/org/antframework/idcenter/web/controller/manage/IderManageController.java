@@ -11,18 +11,16 @@ package org.antframework.idcenter.web.controller.manage;
 import org.antframework.common.util.facade.AbstractQueryResult;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.FacadeUtils;
+import org.antframework.common.util.id.PeriodType;
 import org.antframework.idcenter.facade.api.IderService;
-import org.antframework.idcenter.facade.enums.PeriodType;
+import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIdersResult;
-import org.antframework.idcenter.facade.vo.IderInfo;
+import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
-import org.antframework.manager.facade.info.RelationInfo;
-import org.antframework.manager.facade.result.QueryManagerRelationsResult;
-import org.antframework.manager.web.common.ManagerAssert;
-import org.antframework.manager.web.common.Managers;
+import org.antframework.manager.web.Managers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,17 +41,19 @@ public class IderManageController {
     /**
      * 新增id提供者
      *
-     * @param idCode     id编码（必填）
-     * @param periodType 周期类型（必填）
-     * @param maxId      id最大值（null表示不限制）
-     * @param maxAmount  单次获取id最多数量（null表示不限制）
+     * @param iderId     id提供者的id（id编码）
+     * @param iderName   id提供者的名称
+     * @param periodType 周期类型
+     * @param maxId      一个周期内id最大值（不包含），null表示不限制
+     * @param maxAmount  单次获取id的最大数量（包含），null表示不限制
      * @return 新增结果
      */
-    @RequestMapping("/add")
-    public EmptyResult add(String idCode, PeriodType periodType, Long maxId, Integer maxAmount) {
-        ManagerAssert.admin();
+    @RequestMapping("/addIder")
+    public EmptyResult addIder(String iderId, String iderName, PeriodType periodType, Long maxId, Integer maxAmount) {
+        Managers.admin();
         AddIderOrder order = new AddIderOrder();
-        order.setIdCode(idCode);
+        order.setIderId(iderId);
+        order.setIderName(iderName);
         order.setPeriodType(periodType);
         order.setMaxId(maxId);
         order.setMaxAmount(maxAmount);
@@ -64,16 +64,16 @@ public class IderManageController {
     /**
      * 修改id提供者的最大数据
      *
-     * @param idCode       id编码（必填）
-     * @param newMaxId     新的id最大值（null表示不限制）
-     * @param newMaxAmount 新的单次获取id数量（null表示不限制）
+     * @param iderId       id提供者的id（id编码）
+     * @param newMaxId     新的一个周期内id最大值（不包含），null表示不限制
+     * @param newMaxAmount 新的单次获取id的最大数量（包含），null表示不限制
      * @return 修改结果
      */
-    @RequestMapping("/modifyMax")
-    public EmptyResult modifyMax(String idCode, Long newMaxId, Integer newMaxAmount) {
-        ManagerAssert.adminOrHaveRelation(idCode);
+    @RequestMapping("/modifyIderMax")
+    public EmptyResult modifyIderMax(String iderId, Long newMaxId, Integer newMaxAmount) {
+        ManagerIders.adminOrHaveIder(iderId);
         ModifyIderMaxOrder order = new ModifyIderMaxOrder();
-        order.setIdCode(idCode);
+        order.setIderId(iderId);
         order.setNewMaxId(newMaxId);
         order.setNewMaxAmount(newMaxAmount);
 
@@ -83,15 +83,15 @@ public class IderManageController {
     /**
      * 修改id提供者的因数
      *
-     * @param idCode    id编码（必填）
-     * @param newFactor 新的因数（必填）
+     * @param iderId    id提供者的id（id编码）
+     * @param newFactor 新的因数（生产者数量）
      * @return 修改结果
      */
-    @RequestMapping("/modifyFactor")
-    public EmptyResult modifyFactor(String idCode, int newFactor) {
-        ManagerAssert.adminOrHaveRelation(idCode);
+    @RequestMapping("/modifyIderFactor")
+    public EmptyResult modifyIderFactor(String iderId, Integer newFactor) {
+        ManagerIders.adminOrHaveIder(iderId);
         ModifyIderFactorOrder order = new ModifyIderFactorOrder();
-        order.setIdCode(idCode);
+        order.setIderId(iderId);
         order.setNewFactor(newFactor);
 
         return iderService.modifyIderFactor(order);
@@ -100,16 +100,16 @@ public class IderManageController {
     /**
      * 修改id提供者的当前数据
      *
-     * @param idCode           id编码（必填）
-     * @param newCurrentPeriod 新的当前周期（格式：yyyyMMddHH），无周期则传null
-     * @param newCurrentId     新的当前id（必填）
+     * @param iderId           id提供者的id（id编码）
+     * @param newCurrentPeriod 新的当前周期（格式：yyyyMMddHH），null表示无周期
+     * @param newCurrentId     新的当前Id（未使用）
      * @return 修改结果
      */
-    @RequestMapping("/modifyCurrent")
-    public EmptyResult modifyCurrent(String idCode, @DateTimeFormat(pattern = "yyyyMMddHH") Date newCurrentPeriod, long newCurrentId) {
-        ManagerAssert.adminOrHaveRelation(idCode);
+    @RequestMapping("/modifyIderCurrent")
+    public EmptyResult modifyIderCurrent(String iderId, @DateTimeFormat(pattern = "yyyyMMddHH") Date newCurrentPeriod, Long newCurrentId) {
+        ManagerIders.adminOrHaveIder(iderId);
         ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
-        order.setIdCode(idCode);
+        order.setIderId(iderId);
         order.setNewCurrentPeriod(newCurrentPeriod);
         order.setNewCurrentId(newCurrentId);
 
@@ -119,44 +119,60 @@ public class IderManageController {
     /**
      * 删除id提供者
      *
-     * @param idCode id编码（必填）
+     * @param iderId id提供者的id（id编码）
      * @return 删除结果
      */
-    @RequestMapping("/delete")
-    public EmptyResult delete(String idCode) {
-        ManagerAssert.admin();
-        // 删除id提供者与管理员的关系
-        Managers.deleteAllRelationsByTarget(idCode);
-        // 删除id提供者
+    @RequestMapping("/deleteIder")
+    public EmptyResult deleteIder(String iderId) {
+        Managers.admin();
+        // 删除与该id提供者有关的管理权限
+        ManagerIders.deletesByIder(iderId);
+
         DeleteIderOrder order = new DeleteIderOrder();
-        order.setIdCode(idCode);
+        order.setIderId(iderId);
+
         return iderService.deleteIder(order);
+    }
+
+    /**
+     * 查找id提供者
+     *
+     * @param iderId id提供者的id（id编码）
+     * @return 查找结果
+     */
+    @RequestMapping("/findIder")
+    public FindIderResult findIder(String iderId) {
+        ManagerIders.adminOrHaveIder(iderId);
+        FindIderOrder order = new FindIderOrder();
+        order.setIderId(iderId);
+
+        return iderService.findIder(order);
     }
 
     /**
      * 查询被管理的id提供者
      *
-     * @param pageNo   页码（必填）
-     * @param pageSize 每页大小（必填）
-     * @param idCode   id编码（选填）
+     * @param pageNo   页码
+     * @param pageSize 每页大小
+     * @param iderId   id提供者的id（id编码）
      * @return 查询结果
      */
     @RequestMapping("/queryManagedIders")
-    public QueryManagedIdersResult queryManagedIders(int pageNo, int pageSize, String idCode) {
-        ManagerInfo manager = ManagerAssert.currentManager();
+    public QueryManagedIdersResult queryManagedIders(int pageNo, int pageSize, String iderId) {
+        ManagerInfo manager = Managers.currentManager();
         if (manager.getType() == ManagerType.ADMIN) {
-            return forAdmin(pageNo, pageSize, idCode);
+            return forAdmin(pageNo, pageSize, iderId);
         } else {
-            return forNormal(Managers.queryManagerRelations(pageNo, pageSize, idCode));
+            return forNormal(ManagerIders.queryManagedIders(pageNo, pageSize, iderId));
         }
     }
 
     // 查询所有的id提供者
-    private QueryManagedIdersResult forAdmin(int pageNo, int pageSize, String idCode) {
+    private QueryManagedIdersResult forAdmin(int pageNo, int pageSize, String iderId) {
         QueryIdersOrder order = new QueryIdersOrder();
         order.setPageNo(pageNo);
         order.setPageSize(pageSize);
-        order.setIdCode(idCode);
+        order.setIderId(iderId);
         order.setPeriodType(null);
         QueryIdersResult queryIdersResult = iderService.queryIders(order);
         // 构建返回结果
@@ -167,27 +183,18 @@ public class IderManageController {
     }
 
     // 查询普通管理员管理的id提供者
-    private QueryManagedIdersResult forNormal(QueryManagerRelationsResult relationsResult) {
+    private QueryManagedIdersResult forNormal(AbstractQueryResult<String> iderIdsResult) {
         QueryManagedIdersResult result = new QueryManagedIdersResult();
-        BeanUtils.copyProperties(relationsResult, result, "infos");
+        BeanUtils.copyProperties(iderIdsResult, result, "infos");
         // 根据关系查找id提供者
-        for (RelationInfo relationInfo : relationsResult.getInfos()) {
-            IderInfo ider = findIder(relationInfo.getTargetId());
-            if (ider != null) {
-                result.addInfo(ider);
+        for (String iderId : iderIdsResult.getInfos()) {
+            FindIderResult findIderResult = findIder(iderId);
+            FacadeUtils.assertSuccess(findIderResult);
+            if (findIderResult.getIder() != null) {
+                result.addInfo(findIderResult.getIder());
             }
         }
         return result;
-    }
-
-    // 查找id提供者
-    private IderInfo findIder(String idCode) {
-        FindIderOrder order = new FindIderOrder();
-        order.setIdCode(idCode);
-
-        FindIderResult result = iderService.findIder(order);
-        FacadeUtils.assertSuccess(result);
-        return result.getIder();
     }
 
     /**

@@ -19,6 +19,6 @@ import org.antframework.idcenter.facade.info.IderInfo;
 @Getter
 @Setter
 public class FindIderResult extends AbstractResult {
-    // id提供者
+    // id提供者（null表示不存在该id提供者）
     private IderInfo ider;
 }
