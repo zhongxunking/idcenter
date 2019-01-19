@@ -25,6 +25,11 @@ public interface IderService {
     EmptyResult addIder(AddIderOrder order);
 
     /**
+     * 修改id提供者的名称
+     */
+    EmptyResult modifyIderName(ModifyIderNameOrder order);
+
+    /**
      * 修改id提供者的最大数据
      */
     EmptyResult modifyIderMax(ModifyIderMaxOrder order);
@@ -38,11 +43,6 @@ public interface IderService {
      * 修改id提供者当前数据
      */
     EmptyResult modifyIderCurrent(ModifyIderCurrentOrder order);
-
-    /**
-     * 修改id提供者的名称
-     */
-    EmptyResult modifyIderName(ModifyIderNameOrder order);
 
     /**
      * 删除id提供者

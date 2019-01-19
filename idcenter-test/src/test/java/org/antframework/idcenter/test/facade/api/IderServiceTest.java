@@ -44,6 +44,16 @@ public class IderServiceTest extends AbstractTest {
     }
 
     @Test
+    public void testModifyIderName() {
+        ModifyIderNameOrder order = new ModifyIderNameOrder();
+        order.setIderId("userId");
+        order.setNewIderName("用户id2");
+
+        EmptyResult result = iderService.modifyIderName(order);
+        assertSuccess(result);
+    }
+
+    @Test
     public void testModifyIderMax() {
         ModifyIderMaxOrder order = new ModifyIderMaxOrder();
         order.setIderId("userId");
@@ -72,16 +82,6 @@ public class IderServiceTest extends AbstractTest {
         order.setNewCurrentId(100L);
 
         EmptyResult result = iderService.modifyIderCurrent(order);
-        assertSuccess(result);
-    }
-
-    @Test
-    public void testModifyIderName() {
-        ModifyIderNameOrder order = new ModifyIderNameOrder();
-        order.setIderId("userId");
-        order.setNewIderName("用户id2");
-
-        EmptyResult result = iderService.modifyIderName(order);
         assertSuccess(result);
     }
 

@@ -38,6 +38,11 @@ public class IderServiceProvider implements IderService {
     }
 
     @Override
+    public EmptyResult modifyIderName(ModifyIderNameOrder order) {
+        return serviceEngine.execute("modifyIderNameService", order);
+    }
+
+    @Override
     public EmptyResult modifyIderMax(ModifyIderMaxOrder order) {
         return serviceEngine.execute("modifyIderMaxService", order);
     }
@@ -50,11 +55,6 @@ public class IderServiceProvider implements IderService {
     @Override
     public EmptyResult modifyIderCurrent(ModifyIderCurrentOrder order) {
         return serviceEngine.execute("modifyIderCurrentService", order);
-    }
-
-    @Override
-    public EmptyResult modifyIderName(ModifyIderNameOrder order) {
-        return serviceEngine.execute("modifyIderNameService", order);
     }
 
     @Override
