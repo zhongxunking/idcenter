@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,10 +64,12 @@ public class ModifyIderFactorService {
                 maxIdProducer = idProducer;
             }
         }
+        Date maxCurrentPeriod = maxIdProducer.getCurrentPeriod();
+        Long maxCurrentId = maxIdProducer.getCurrentId();
         // 设置新的id生产者
         for (int i = 0; i < order.getNewFactor(); i++) {
             IdProducer idProducer = i < idProducers.size() ? idProducers.get(i) : new IdProducer();
-            resetIdProducer(idProducer, maxIdProducer, i, ider);
+            resetIdProducer(idProducer, ider, i, maxCurrentPeriod, maxCurrentId);
             idProducerDao.save(idProducer);
             logger.info("新的id提供者：{}", idProducer);
         }
@@ -83,11 +86,11 @@ public class ModifyIderFactorService {
     }
 
     // 重置id生产者
-    private void resetIdProducer(IdProducer target, IdProducer source, int index, Ider ider) {
-        target.setIderId(source.getIderId());
-        target.setIndex(index);
-        target.setCurrentPeriod(source.getCurrentPeriod());
-        target.setCurrentId(source.getCurrentId());
-        IdProducerUtils.grow(ider, target, index);
+    private void resetIdProducer(IdProducer idProducer, Ider ider, int index, Date maxCurrentPeriod, Long maxCurrentId) {
+        idProducer.setIderId(ider.getIderId());
+        idProducer.setIndex(index);
+        idProducer.setCurrentPeriod(maxCurrentPeriod);
+        idProducer.setCurrentId(maxCurrentId);
+        IdProducerUtils.grow(ider, idProducer, index);
     }
 }
