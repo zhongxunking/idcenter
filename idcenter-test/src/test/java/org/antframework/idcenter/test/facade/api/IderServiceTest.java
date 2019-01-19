@@ -9,9 +9,10 @@
 package org.antframework.idcenter.test.facade.api;
 
 import org.antframework.common.util.facade.EmptyResult;
+import org.antframework.common.util.id.PeriodType;
 import org.antframework.idcenter.facade.api.IderService;
-import org.antframework.idcenter.facade.enums.PeriodType;
 import org.antframework.idcenter.facade.order.*;
+import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.antframework.idcenter.test.AbstractTest;
@@ -32,7 +33,8 @@ public class IderServiceTest extends AbstractTest {
     @Test
     public void testAddIder() {
         AddIderOrder order = new AddIderOrder();
-        order.setIdCode("uid");
+        order.setIderId("userId");
+        order.setIderName("用户id");
         order.setPeriodType(PeriodType.HOUR);
         order.setMaxId(9000000000L);
         order.setMaxAmount(1000000);
@@ -44,8 +46,8 @@ public class IderServiceTest extends AbstractTest {
     @Test
     public void testModifyIderMax() {
         ModifyIderMaxOrder order = new ModifyIderMaxOrder();
-        order.setIdCode("uid");
-        order.setNewMaxId(9000000000L - 10 * 4);
+        order.setIderId("userId");
+        order.setNewMaxId(9000000000L - 100 * 4);
         order.setNewMaxAmount(2000000);
 
         EmptyResult result = iderService.modifyIderMax(order);
@@ -55,7 +57,7 @@ public class IderServiceTest extends AbstractTest {
     @Test
     public void testModifyIderFactor() {
         ModifyIderFactorOrder order = new ModifyIderFactorOrder();
-        order.setIdCode("uid");
+        order.setIderId("userId");
         order.setNewFactor(4);
 
         EmptyResult result = iderService.modifyIderFactor(order);
@@ -65,27 +67,47 @@ public class IderServiceTest extends AbstractTest {
     @Test
     public void testModifyIderCurrent() {
         ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
-        order.setIdCode("uid");
+        order.setIderId("userId");
         order.setNewCurrentPeriod(new Date());
-        order.setNewCurrentId(100);
+        order.setNewCurrentId(100L);
 
         EmptyResult result = iderService.modifyIderCurrent(order);
         assertSuccess(result);
     }
 
     @Test
+    public void testModifyIderName() {
+        ModifyIderNameOrder order = new ModifyIderNameOrder();
+        order.setIderId("userId");
+        order.setNewIderName("用户id2");
+
+        EmptyResult result = iderService.modifyIderName(order);
+        assertSuccess(result);
+    }
+
+    @Test
     public void testDeleteIder() {
         DeleteIderOrder order = new DeleteIderOrder();
-        order.setIdCode("uid");
+        order.setIderId("userId");
 
         EmptyResult result = iderService.deleteIder(order);
         assertSuccess(result);
     }
 
     @Test
+    public void testAcquireIds() {
+        AcquireIdsOrder order = new AcquireIdsOrder();
+        order.setIderId("userId");
+        order.setExpectAmount(1000);
+
+        AcquireIdsResult result = iderService.acquireIds(order);
+        assertSuccess(result);
+    }
+
+    @Test
     public void testFindIder() {
         FindIderOrder order = new FindIderOrder();
-        order.setIdCode("uid");
+        order.setIderId("userId");
 
         FindIderResult result = iderService.findIder(order);
         assertSuccess(result);
