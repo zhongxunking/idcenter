@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,35 +53,41 @@ public class ModifyIderFactorService {
         if (Objects.equals(order.getNewFactor(), ider.getFactor())) {
             return;
         }
-
         logger.info("id提供者被修改因数前：{}", ider);
+        List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId());
+        // 计算进度最靠前的id生产者
         IdProducer maxIdProducer = null;
-        for (IdProducer idProducer : idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId())) {
+        for (IdProducer idProducer : idProducers) {
+            logger.info("现有的id生产者：{}", idProducer);
             if (maxIdProducer == null || IdProducerUtils.compare(idProducer, maxIdProducer) > 0) {
                 maxIdProducer = idProducer;
             }
-            logger.info("删除id提供者：{}", idProducer);
-            idProducerDao.delete(idProducer);
         }
+        // 设置新的id生产者
         for (int i = 0; i < order.getNewFactor(); i++) {
-            IdProducer idProducer = buildIdProducer(maxIdProducer, i, ider);
+            IdProducer idProducer = i < idProducers.size() ? idProducers.get(i) : new IdProducer();
+            resetIdProducer(idProducer, maxIdProducer, i, ider);
             idProducerDao.save(idProducer);
-            logger.info("新增id提供者：{}", idProducer);
+            logger.info("新的id提供者：{}", idProducer);
         }
+        // 删除多余的id生产者
+        for (int i = order.getNewFactor(); i < idProducers.size(); i++) {
+            IdProducer idProducer = idProducers.get(i);
+            idProducerDao.delete(idProducer);
+            logger.info("删除id提供者：{}", idProducer);
+        }
+        // 修改因数
         ider.setFactor(order.getNewFactor());
         iderDao.save(ider);
         logger.info("id提供者被修改因数后：{}", ider);
     }
 
-    // 构建id生产者
-    private IdProducer buildIdProducer(IdProducer source, int index, Ider ider) {
-        IdProducer idProducer = new IdProducer();
-        idProducer.setIderId(source.getIderId());
-        idProducer.setIndex(index);
-        idProducer.setCurrentPeriod(source.getCurrentPeriod());
-        idProducer.setCurrentId(source.getCurrentId());
-        IdProducerUtils.grow(ider, idProducer, index);
-
-        return idProducer;
+    // 重置id生产者
+    private void resetIdProducer(IdProducer target, IdProducer source, int index, Ider ider) {
+        target.setIderId(source.getIderId());
+        target.setIndex(index);
+        target.setCurrentPeriod(source.getCurrentPeriod());
+        target.setCurrentId(source.getCurrentId());
+        IdProducerUtils.grow(ider, target, index);
     }
 }
