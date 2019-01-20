@@ -63,6 +63,23 @@ public class IderManageController {
     }
 
     /**
+     * 修改id提供者的名称
+     *
+     * @param iderId      id提供者的id（id编码）
+     * @param newIderName 新的id提供者的名称
+     * @return 修改结果
+     */
+    @RequestMapping("/modifyIderName")
+    public EmptyResult modifyIderName(String iderId, String newIderName) {
+        ManagerIders.adminOrHaveIder(iderId);
+        ModifyIderNameOrder order = new ModifyIderNameOrder();
+        order.setIderId(iderId);
+        order.setNewIderName(newIderName);
+
+        return iderService.modifyIderName(order);
+    }
+
+    /**
      * 修改id提供者的最大数据
      *
      * @param iderId       id提供者的id（id编码）
@@ -150,23 +167,6 @@ public class IderManageController {
         } catch (ParseException e) {
             return ExceptionUtils.rethrow(e);
         }
-    }
-
-    /**
-     * 修改id提供者的名称
-     *
-     * @param iderId      id提供者的id（id编码）
-     * @param newIderName 新的id提供者的名称
-     * @return 修改结果
-     */
-    @RequestMapping("/modifyIderName")
-    public EmptyResult modifyIderName(String iderId, String newIderName) {
-        ManagerIders.adminOrHaveIder(iderId);
-        ModifyIderNameOrder order = new ModifyIderNameOrder();
-        order.setIderId(iderId);
-        order.setNewIderName(newIderName);
-
-        return iderService.modifyIderName(order);
     }
 
     /**
