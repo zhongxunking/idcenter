@@ -22,7 +22,7 @@
             </el-form>
         </el-col>
     </el-row>
-    <el-table :data="iders" v-loading="idersLoading" border stripe>
+    <el-table :data="iders" v-loading="idersLoading" border>
         <el-table-column prop="iderId" label="id编码"></el-table-column>
         <el-table-column prop="iderName" label="名称">
             <template slot-scope="{ row }">
@@ -118,7 +118,7 @@
             <el-pagination :total="totalIders" :current-page.sync="queryIdersForm.pageNo" :page-size.sync="queryIdersForm.pageSize" @current-change="queryIders" layout="total,prev,pager,next" small background></el-pagination>
         </el-col>
     </el-row>
-    <el-dialog :visible.sync="addIderDialogVisible" :before-close="closeAddIderDialog" title="新增id提供者" width="40%">
+    <el-dialog :visible.sync="addIderDialogVisible" :before-close="closeAddIderDialog" title="新增id提供者" width="60%">
         <el-form ref="addIderForm" :model="addIderForm" label-width="30%">
             <el-form-item label="id编码" prop="iderId" :rules="[{required:true, message:'请输入id编码', trigger:'blur'}]">
                 <el-input v-model="addIderForm.iderId" clearable placeholder="请输入id编码" style="width: 90%"></el-input>
@@ -232,16 +232,21 @@
                     ider.savePopoverShowing = false;
 
                     const theThis = this;
-                    // 修改名称
-                    axios.post('../manage/ider/modifyIderName', {
-                        iderId: ider.iderId,
-                        newIderName: ider.editingIderName
-                    }).then(function (result) {
-                        if (!result.success) {
-                            Vue.prototype.$message.error(result.message);
+                    if (ider.editingIderName !== ider.iderName) {
+                        // 修改名称
+                        axios.post('../manage/ider/modifyIderName', {
+                            iderId: ider.iderId,
+                            newIderName: ider.editingIderName
+                        }).then(function (result) {
+                            if (!result.success) {
+                                Vue.prototype.$message.error(result.message);
+                                return;
+                            }
+                            Vue.prototype.$message.success(result.message);
                             theThis.queryIders();
-                            return;
-                        }
+                        });
+                    }
+                    if (ider.editingMaxId !== ider.maxId || ider.editingMaxAmount !== ider.maxAmount) {
                         // 修改max
                         axios.post('../manage/ider/modifyIderMax', {
                             iderId: ider.iderId,
@@ -250,23 +255,26 @@
                         }).then(function (result) {
                             if (!result.success) {
                                 Vue.prototype.$message.error(result.message);
-                                theThis.queryIders();
                                 return;
                             }
-                            // 修改factor
-                            axios.post('../manage/ider/modifyIderFactor', {
-                                iderId: ider.iderId,
-                                newFactor: ider.editingFactor
-                            }).then(function (result) {
-                                if (result.success) {
-                                    Vue.prototype.$message.success(result.message);
-                                } else {
-                                    Vue.prototype.$message.error(result.message);
-                                }
-                                theThis.queryIders();
-                            });
+                            Vue.prototype.$message.success(result.message);
+                            theThis.queryIders();
                         });
-                    });
+                    }
+                    if (ider.editingFactor !== ider.factor) {
+                        // 修改factor
+                        axios.post('../manage/ider/modifyIderFactor', {
+                            iderId: ider.iderId,
+                            newFactor: ider.editingFactor
+                        }).then(function (result) {
+                            if (!result.success) {
+                                Vue.prototype.$message.error(result.message);
+                                return;
+                            }
+                            Vue.prototype.$message.success(result.message);
+                            theThis.queryIders();
+                        });
+                    }
                 },
                 deleteIder: function (ider) {
                     const theThis = this;

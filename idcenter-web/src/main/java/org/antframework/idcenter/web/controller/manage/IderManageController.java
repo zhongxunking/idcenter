@@ -162,6 +162,9 @@ public class IderManageController {
             default:
                 throw new IllegalStateException("无法识别的周期类型：" + periodType);
         }
+        if (periodStr.length() != pattern.length()) {
+            throw new IllegalArgumentException("输入的当前周期长度不合法");
+        }
         try {
             return DateUtils.parseDate(periodStr, pattern);
         } catch (ParseException e) {
