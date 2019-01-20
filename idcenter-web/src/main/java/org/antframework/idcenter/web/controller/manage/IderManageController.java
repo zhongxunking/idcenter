@@ -8,10 +8,9 @@
  */
 package org.antframework.idcenter.web.controller.manage;
 
-import org.antframework.common.util.facade.AbstractQueryResult;
-import org.antframework.common.util.facade.EmptyResult;
-import org.antframework.common.util.facade.FacadeUtils;
+import org.antframework.common.util.facade.*;
 import org.antframework.common.util.id.PeriodType;
+import org.antframework.idcenter.biz.util.IderUtils;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.facade.order.*;
@@ -21,12 +20,14 @@ import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
 import org.antframework.manager.web.Managers;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -101,19 +102,54 @@ public class IderManageController {
      * 修改id提供者的当前数据
      *
      * @param iderId           id提供者的id（id编码）
-     * @param newCurrentPeriod 新的当前周期（格式：yyyyMMddHH），null表示无周期
+     * @param newCurrentPeriod 新的当前周期
      * @param newCurrentId     新的当前Id（未使用）
      * @return 修改结果
      */
     @RequestMapping("/modifyIderCurrent")
-    public EmptyResult modifyIderCurrent(String iderId, @DateTimeFormat(pattern = "yyyyMMddHH") Date newCurrentPeriod, Long newCurrentId) {
+    public EmptyResult modifyIderCurrent(String iderId, String newCurrentPeriod, Long newCurrentId) {
         ManagerIders.adminOrHaveIder(iderId);
+        // 解析出新的当前周期
+        IderInfo ider = IderUtils.findIder(iderId);
+        if (ider == null) {
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", iderId));
+        }
+        Date newCurrentPeriodDate = parseCurrentPeriod(ider.getPeriodType(), newCurrentPeriod);
+        // 修改当前数据
         ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
         order.setIderId(iderId);
-        order.setNewCurrentPeriod(newCurrentPeriod);
+        order.setNewCurrentPeriod(newCurrentPeriodDate);
         order.setNewCurrentId(newCurrentId);
 
         return iderService.modifyIderCurrent(order);
+    }
+
+    // 解析出当前周期
+    private Date parseCurrentPeriod(PeriodType periodType, String periodStr) {
+        String pattern;
+        switch (periodType) {
+            case HOUR:
+                pattern = "yyyyMMddHH";
+                break;
+            case DAY:
+                pattern = "yyyyMMdd";
+                break;
+            case MONTH:
+                pattern = "yyyyMM";
+                break;
+            case YEAR:
+                pattern = "yyyy";
+                break;
+            case NONE:
+                return null;
+            default:
+                throw new IllegalStateException("无法识别的周期类型：" + periodType);
+        }
+        try {
+            return DateUtils.parseDate(periodStr, pattern);
+        } catch (ParseException e) {
+            return ExceptionUtils.rethrow(e);
+        }
     }
 
     /**
