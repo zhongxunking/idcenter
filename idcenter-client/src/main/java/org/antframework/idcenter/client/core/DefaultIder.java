@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * id提供者默认实现
  */
 public class DefaultIder implements Ider {
     private static final Logger logger = LoggerFactory.getLogger(DefaultIder.class);
