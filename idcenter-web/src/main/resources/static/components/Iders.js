@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>id提供者</title>
-    <script src="../common/import.js"></script>
-</head>
-<body>
-<div id="idersApp">
+// id提供者管理组件
+const IdersTemplate = `
+<div>
     <el-row>
         <el-col>
             <el-form :v-model="queryIdersForm" :inline="true" size="small">
@@ -118,7 +112,7 @@
             <el-pagination :total="totalIders" :current-page.sync="queryIdersForm.pageNo" :page-size.sync="queryIdersForm.pageSize" @current-change="queryIders" layout="total,prev,pager,next" small background></el-pagination>
         </el-col>
     </el-row>
-    <el-dialog :visible.sync="addIderDialogVisible" :before-close="closeAddIderDialog" title="新增id提供者" width="60%">
+    <el-dialog :visible.sync="addIderDialogVisible" :before-close="closeAddIderDialog" title="新增id提供者" width="40%">
         <el-form ref="addIderForm" :model="addIderForm" label-width="30%">
             <el-form-item label="id编码" prop="iderId" :rules="[{required:true, message:'请输入id编码', trigger:'blur'}]">
                 <el-input v-model="addIderForm.iderId" clearable placeholder="请输入id编码" style="width: 90%"></el-input>
@@ -162,227 +156,232 @@
         </div>
     </el-dialog>
 </div>
-<script>
-    GET_CURRENT_MANAGER(function (manager) {
-        const idersApp = new Vue({
-            el: '#idersApp',
-            data: {
-                manager: manager,
-                queryIdersForm: {
-                    pageNo: 1,
-                    pageSize: 10,
-                    iderId: null
-                },
-                idersLoading: false,
-                totalIders: 0,
-                iders: [],
-                addIderDialogVisible: false,
-                addIderForm: {
-                    iderId: null,
-                    iderName: null,
-                    periodType: null,
-                    maxId: null,
-                    maxAmount: null
-                },
-                modifyCurrentDialogVisible: false,
-                modifyCurrentForm: {
-                    ider: null,
-                    newCurrentPeriod: null,
-                    newCurrentId: null
-                }
+`;
+
+const Iders = {
+    template: IdersTemplate,
+    data: function () {
+        return {
+            manager: CURRENT_MANAGER,
+            queryIdersForm: {
+                pageNo: 1,
+                pageSize: 10,
+                iderId: null
             },
-            created: function () {
-                this.queryIders();
+            idersLoading: false,
+            totalIders: 0,
+            iders: [],
+            addIderDialogVisible: false,
+            addIderForm: {
+                iderId: null,
+                iderName: null,
+                periodType: null,
+                maxId: null,
+                maxAmount: null
             },
-            methods: {
-                queryIders: function () {
-                    this.idersLoading = true;
-
-                    const theThis = this;
-                    axios.get('../manage/ider/queryManagedIders', {params: this.queryIdersForm})
-                        .then(function (result) {
-                            theThis.idersLoading = false;
-                            if (!result.success) {
-                                Vue.prototype.$message.error(result.message);
-                            }
-                            theThis.totalIders = result.totalCount;
-                            theThis.iders = result.infos;
-                            theThis.iders.forEach(function (ider) {
-                                Vue.set(ider, 'editing', false);
-                                Vue.set(ider, 'editingIderName', null);
-                                Vue.set(ider, 'editingMaxId', null);
-                                Vue.set(ider, 'editingMaxAmount', null);
-                                Vue.set(ider, 'editingFactor', null);
-                                Vue.set(ider, 'savePopoverShowing', false);
-
-                                ider.idProducers.forEach(function (idProducer) {
-                                    idProducer.ider = ider;
-                                });
-                            });
-                        });
-                },
-                startEditing: function (ider) {
-                    ider.editing = true;
-                    ider.editingIderName = ider.iderName;
-                    ider.editingMaxId = ider.maxId;
-                    ider.editingMaxAmount = ider.maxAmount;
-                    ider.editingFactor = ider.factor;
-                },
-                saveEditing: function (ider) {
-                    ider.savePopoverShowing = false;
-
-                    const theThis = this;
-                    if (ider.editingIderName !== ider.iderName) {
-                        // 修改名称
-                        axios.post('../manage/ider/modifyIderName', {
-                            iderId: ider.iderId,
-                            newIderName: ider.editingIderName
-                        }).then(function (result) {
-                            if (!result.success) {
-                                Vue.prototype.$message.error(result.message);
-                                return;
-                            }
-                            Vue.prototype.$message.success(result.message);
-                            theThis.queryIders();
-                        });
-                    }
-                    if (ider.editingMaxId !== ider.maxId || ider.editingMaxAmount !== ider.maxAmount) {
-                        // 修改max
-                        axios.post('../manage/ider/modifyIderMax', {
-                            iderId: ider.iderId,
-                            newMaxId: ider.editingMaxId,
-                            newMaxAmount: ider.editingMaxAmount
-                        }).then(function (result) {
-                            if (!result.success) {
-                                Vue.prototype.$message.error(result.message);
-                                return;
-                            }
-                            Vue.prototype.$message.success(result.message);
-                            theThis.queryIders();
-                        });
-                    }
-                    if (ider.editingFactor !== ider.factor) {
-                        // 修改factor
-                        axios.post('../manage/ider/modifyIderFactor', {
-                            iderId: ider.iderId,
-                            newFactor: ider.editingFactor
-                        }).then(function (result) {
-                            if (!result.success) {
-                                Vue.prototype.$message.error(result.message);
-                                return;
-                            }
-                            Vue.prototype.$message.success(result.message);
-                            theThis.queryIders();
-                        });
-                    }
-                },
-                deleteIder: function (ider) {
-                    const theThis = this;
-                    Vue.prototype.$confirm('确定删除id提供者？', '警告', {type: 'warning'})
-                        .then(function () {
-                            axios.post('../manage/ider/deleteIder', {iderId: ider.iderId})
-                                .then(function (result) {
-                                    if (!result.success) {
-                                        Vue.prototype.$message.error(result.message);
-                                        return;
-                                    }
-                                    Vue.prototype.$message.success(result.message);
-                                    theThis.queryIders();
-                                });
-                        });
-                },
-                addIder: function () {
-                    const theThis = this;
-                    this.$refs.addIderForm.validate(function (valid) {
-                        if (!valid) {
-                            return;
-                        }
-                        axios.post('../manage/ider/addIder', theThis.addIderForm)
-                            .then(function (result) {
-                                if (!result.success) {
-                                    Vue.prototype.$message.error(result.message);
-                                    return;
-                                }
-                                Vue.prototype.$message.success(result.message);
-                                theThis.closeAddIderDialog();
-                                theThis.queryIders();
-                            });
-                    });
-                },
-                closeAddIderDialog: function () {
-                    this.$refs.addIderForm.clearValidate();
-                    this.addIderDialogVisible = false;
-                    this.addIderForm.iderId = null;
-                    this.addIderForm.iderName = null;
-                    this.addIderForm.periodType = null;
-                    this.addIderForm.maxId = null;
-                    this.addIderForm.maxAmount = null;
-                },
-                startModifyCurrent: function (ider) {
-                    this.modifyCurrentDialogVisible = true;
-                    this.modifyCurrentForm.ider = ider;
-                    this.modifyCurrentForm.newCurrentPeriod = null;
-                    this.modifyCurrentForm.newCurrentId = null;
-                },
-                modifyCurrent: function () {
-                    const theThis = this;
-                    this.$refs.modifyCurrentForm.validate(function (valid) {
-                        if (!valid) {
-                            return;
-                        }
-                        axios.post('../manage/ider/modifyIderCurrent', {
-                            iderId: theThis.modifyCurrentForm.ider.iderId,
-                            newCurrentPeriod: theThis.modifyCurrentForm.newCurrentPeriod,
-                            newCurrentId: theThis.modifyCurrentForm.newCurrentId
-                        }).then(function (result) {
-                            if (!result.success) {
-                                Vue.prototype.$message.error(result.message);
-                                return;
-                            }
-                            Vue.prototype.$message.success(result.message);
-                            theThis.closeModifyCurrentDialog();
-                            theThis.queryIders();
-                        });
-                    });
-                },
-                closeModifyCurrentDialog: function () {
-                    this.$refs.modifyCurrentForm.clearValidate();
-                    this.modifyCurrentDialogVisible = false;
-                    this.modifyCurrentForm.ider = null;
-                    this.modifyCurrentForm.newCurrentPeriod = null;
-                    this.modifyCurrentForm.newCurrentId = null;
-                },
-                modifyCurrentPeriodEnable: function () {
-                    if (!this.modifyCurrentForm.ider) {
-                        return true;
-                    }
-                    return this.modifyCurrentForm.ider.periodType !== 'NONE';
-                },
-                toShowingCurrentPeriod: function (idProducer) {
-                    let format = this.getPeriodFormat(idProducer.ider.periodType);
-                    if (!format) {
-                        return null;
-                    }
-                    let currentPeriod = new Date(idProducer.currentPeriod);
-                    return currentPeriod.format(format);
-                },
-                getPeriodFormat: function (periodType) {
-                    switch (periodType) {
-                        case 'HOUR':
-                            return 'yyyyMMddhh';
-                        case 'DAY':
-                            return 'yyyyMMdd';
-                        case 'MONTH':
-                            return 'yyyyMM';
-                        case 'YEAR':
-                            return 'yyyy';
-                        default:
-                            return null;
-                    }
-                }
+            modifyCurrentDialogVisible: false,
+            modifyCurrentForm: {
+                ider: null,
+                newCurrentPeriod: null,
+                newCurrentId: null
             }
-        });
-    });
-</script>
-</body>
-</html>
+        };
+    },
+    created: function () {
+        this.queryIders();
+    },
+    methods: {
+        queryIders: function () {
+            this.idersLoading = true;
+
+            const theThis = this;
+            axios.get('../manage/ider/queryManagedIders', {params: this.queryIdersForm})
+                .then(function (result) {
+                    theThis.idersLoading = false;
+                    if (!result.success) {
+                        Vue.prototype.$message.error(result.message);
+                    }
+                    theThis.totalIders = result.totalCount;
+                    theThis.iders = result.infos;
+                    theThis.iders.forEach(function (ider) {
+                        Vue.set(ider, 'editing', false);
+                        Vue.set(ider, 'editingIderName', null);
+                        Vue.set(ider, 'editingMaxId', null);
+                        Vue.set(ider, 'editingMaxAmount', null);
+                        Vue.set(ider, 'editingFactor', null);
+                        Vue.set(ider, 'savePopoverShowing', false);
+
+                        ider.idProducers.forEach(function (idProducer) {
+                            idProducer.ider = ider;
+                        });
+                    });
+                });
+        },
+        startEditing: function (ider) {
+            ider.editing = true;
+            ider.editingIderName = ider.iderName;
+            ider.editingMaxId = ider.maxId;
+            ider.editingMaxAmount = ider.maxAmount;
+            ider.editingFactor = ider.factor;
+        },
+        saveEditing: function (ider) {
+            ider.savePopoverShowing = false;
+
+            const theThis = this;
+            let haveChange;
+            if (ider.editingIderName !== ider.iderName) {
+                haveChange = true;
+                // 修改名称
+                axios.post('../manage/ider/modifyIderName', {
+                    iderId: ider.iderId,
+                    newIderName: ider.editingIderName
+                }).then(function (result) {
+                    if (!result.success) {
+                        Vue.prototype.$message.error(result.message);
+                        return;
+                    }
+                    Vue.prototype.$message.success(result.message);
+                    theThis.queryIders();
+                });
+            }
+            if (ider.editingMaxId !== ider.maxId || ider.editingMaxAmount !== ider.maxAmount) {
+                haveChange = true;
+                // 修改max
+                axios.post('../manage/ider/modifyIderMax', {
+                    iderId: ider.iderId,
+                    newMaxId: ider.editingMaxId,
+                    newMaxAmount: ider.editingMaxAmount
+                }).then(function (result) {
+                    if (!result.success) {
+                        Vue.prototype.$message.error(result.message);
+                        return;
+                    }
+                    Vue.prototype.$message.success(result.message);
+                    theThis.queryIders();
+                });
+            }
+            if (ider.editingFactor !== ider.factor) {
+                haveChange = true;
+                // 修改factor
+                axios.post('../manage/ider/modifyIderFactor', {
+                    iderId: ider.iderId,
+                    newFactor: ider.editingFactor
+                }).then(function (result) {
+                    if (!result.success) {
+                        Vue.prototype.$message.error(result.message);
+                        return;
+                    }
+                    Vue.prototype.$message.success(result.message);
+                    theThis.queryIders();
+                });
+            }
+            if (!haveChange) {
+                Vue.prototype.$message.error("无任何修改");
+            }
+        },
+        deleteIder: function (ider) {
+            const theThis = this;
+            Vue.prototype.$confirm('确定删除id提供者？', '警告', {type: 'warning'})
+                .then(function () {
+                    axios.post('../manage/ider/deleteIder', {iderId: ider.iderId})
+                        .then(function (result) {
+                            if (!result.success) {
+                                Vue.prototype.$message.error(result.message);
+                                return;
+                            }
+                            Vue.prototype.$message.success(result.message);
+                            theThis.queryIders();
+                        });
+                });
+        },
+        addIder: function () {
+            const theThis = this;
+            this.$refs.addIderForm.validate(function (valid) {
+                if (!valid) {
+                    return;
+                }
+                axios.post('../manage/ider/addIder', theThis.addIderForm)
+                    .then(function (result) {
+                        if (!result.success) {
+                            Vue.prototype.$message.error(result.message);
+                            return;
+                        }
+                        Vue.prototype.$message.success(result.message);
+                        theThis.closeAddIderDialog();
+                        theThis.queryIders();
+                    });
+            });
+        },
+        closeAddIderDialog: function () {
+            this.$refs.addIderForm.clearValidate();
+            this.addIderDialogVisible = false;
+            this.addIderForm.iderId = null;
+            this.addIderForm.iderName = null;
+            this.addIderForm.periodType = null;
+            this.addIderForm.maxId = null;
+            this.addIderForm.maxAmount = null;
+        },
+        startModifyCurrent: function (ider) {
+            this.modifyCurrentDialogVisible = true;
+            this.modifyCurrentForm.ider = ider;
+            this.modifyCurrentForm.newCurrentPeriod = null;
+            this.modifyCurrentForm.newCurrentId = null;
+        },
+        modifyCurrent: function () {
+            const theThis = this;
+            this.$refs.modifyCurrentForm.validate(function (valid) {
+                if (!valid) {
+                    return;
+                }
+                axios.post('../manage/ider/modifyIderCurrent', {
+                    iderId: theThis.modifyCurrentForm.ider.iderId,
+                    newCurrentPeriod: theThis.modifyCurrentForm.newCurrentPeriod,
+                    newCurrentId: theThis.modifyCurrentForm.newCurrentId
+                }).then(function (result) {
+                    if (!result.success) {
+                        Vue.prototype.$message.error(result.message);
+                        return;
+                    }
+                    Vue.prototype.$message.success(result.message);
+                    theThis.closeModifyCurrentDialog();
+                    theThis.queryIders();
+                });
+            });
+        },
+        closeModifyCurrentDialog: function () {
+            this.$refs.modifyCurrentForm.clearValidate();
+            this.modifyCurrentDialogVisible = false;
+            this.modifyCurrentForm.ider = null;
+            this.modifyCurrentForm.newCurrentPeriod = null;
+            this.modifyCurrentForm.newCurrentId = null;
+        },
+        modifyCurrentPeriodEnable: function () {
+            if (!this.modifyCurrentForm.ider) {
+                return true;
+            }
+            return this.modifyCurrentForm.ider.periodType !== 'NONE';
+        },
+        toShowingCurrentPeriod: function (idProducer) {
+            let format = this.getPeriodFormat(idProducer.ider.periodType);
+            if (!format) {
+                return null;
+            }
+            let currentPeriod = new Date(idProducer.currentPeriod);
+            return currentPeriod.format(format);
+        },
+        getPeriodFormat: function (periodType) {
+            switch (periodType) {
+                case 'HOUR':
+                    return 'yyyyMMddhh';
+                case 'DAY':
+                    return 'yyyyMMdd';
+                case 'MONTH':
+                    return 'yyyyMM';
+                case 'YEAR':
+                    return 'yyyy';
+                default:
+                    return null;
+            }
+        }
+    }
+};
