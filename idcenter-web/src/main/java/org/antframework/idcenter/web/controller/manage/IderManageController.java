@@ -206,6 +206,27 @@ public class IderManageController {
     }
 
     /**
+     * 查询id提供者
+     *
+     * @param pageNo     页码
+     * @param pageSize   每页大小
+     * @param iderId     id提供者的id（id编码）
+     * @param periodType 周期类型
+     * @return 查询结果
+     */
+    @RequestMapping("/queryIders")
+    public QueryIdersResult queryIders(int pageNo, int pageSize, String iderId, PeriodType periodType) {
+        Managers.admin();
+        QueryIdersOrder order = new QueryIdersOrder();
+        order.setPageNo(pageNo);
+        order.setPageSize(pageSize);
+        order.setIderId(iderId);
+        order.setPeriodType(periodType);
+
+        return iderService.queryIders(order);
+    }
+
+    /**
      * 查询被管理的id提供者
      *
      * @param pageNo   页码

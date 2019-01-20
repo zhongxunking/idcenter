@@ -5,6 +5,7 @@
     <title>id中心</title>
     <script src="../common/import.js"></script>
     <script src="../components/Iders.js"></script>
+    <script src="../components/ManagerIders.js"></script>
 </head>
 <body>
 <div id="mainApp">
@@ -24,7 +25,14 @@
     }];
     // 超级管理员菜单
     const ADMIN_MANAGER_ROUTES = Object.assign([], NORMAL_MANAGER_ROUTES);
-    ADMIN_MANAGER_ROUTES.push(GET_MANAGER_MANAGERS_ROUTE());
+    ADMIN_MANAGER_ROUTES.push(GET_MANAGER_MANAGERS_ROUTE(), {
+        path: '/managerIders',
+        component: ManagerIders,
+        meta: {
+            title: '权限',
+            icon: 'el-icon-view'
+        }
+    });
     // 主页面应用
     let mainApp;
     GET_CURRENT_MANAGER(function (manager) {
