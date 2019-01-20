@@ -25,7 +25,7 @@ import org.springframework.beans.BeanUtils;
  */
 public final class ManagerIders {
     // 关系类型
-    private static final String RELATION_TYPE = "manager-app";
+    private static final String RELATION_TYPE = "manager-ider";
     // 关系服务
     private static final RelationService RELATION_SERVICE = Contexts.getApplicationContext().getBean(RelationService.class);
 
