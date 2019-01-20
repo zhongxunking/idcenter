@@ -6,11 +6,9 @@
  * 修订记录:
  * @author 钟勋 2017-12-31 22:23 创建
  */
-package org.antframework.idcenter.client.support;
+package org.antframework.idcenter.client.core;
 
-import org.antframework.idcenter.client.Id;
-import org.antframework.idcenter.client.IdContext;
-import org.antframework.idcenter.client.core.Ids;
+import org.antframework.common.util.id.Id;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -23,20 +21,20 @@ public class IdStorage {
     // 批量id队列
     private final Queue<Ids> idsQueue = new ConcurrentLinkedQueue<>();
     // 仓库内id个数
-    private AtomicLong amount = new AtomicLong(0);
+    private final AtomicLong amount = new AtomicLong(0);
     // 允许的周期误差
-    private Long periodError;
+    private final Long periodError;
 
-    public IdStorage(IdContext.InitParams initParams) {
-        periodError = initParams.getMaxTime() - initParams.getMinTime();
+    public IdStorage(long periodError) {
+        this.periodError = periodError;
     }
 
     /**
      * 获取id
      *
-     * @return null 如果无存量id
+     * @return id（null表示无存量id）
      */
-    public Id getId() {
+    public synchronized Id getId() {
         Id id;
         do {
             Ids ids = idsQueue.peek();

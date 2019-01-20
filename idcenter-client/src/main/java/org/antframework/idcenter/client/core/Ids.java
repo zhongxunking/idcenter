@@ -8,45 +8,38 @@
  */
 package org.antframework.idcenter.client.core;
 
-import org.antframework.idcenter.client.Id;
+import lombok.AllArgsConstructor;
+import org.antframework.common.util.id.Id;
+import org.antframework.common.util.id.Period;
 
 import java.util.Date;
 
 /**
  * 批量id
  */
+@AllArgsConstructor
 public class Ids {
-    // id编码
-    private String idCode;
     // 周期
-    private Period period;
+    private final Period period;
     // 因数
-    private int factor;
+    private final int factor;
     // 开始id（包含）
-    private long startId;
+    private volatile long startId;
     // id个数
-    private int amount;
-
-    public Ids(String idCode, Period period, int factor, long startId, int amount) {
-        this.idCode = idCode;
-        this.period = period;
-        this.factor = factor;
-        this.startId = startId;
-        this.amount = amount;
-    }
+    private volatile int amount;
 
     /**
      * 获取一个id
      *
-     * @param periodError 允许的周期误差（null表示不管周期是否过期）
-     * @return null 如果不存在有效id
+     * @param periodError 允许的周期误差（单位：毫秒。null表示忽略周期是否过期）
+     * @return id（null表示不存在有效id）
      */
     public Id getId(Long periodError) {
         if (getAmount(periodError) <= 0) {
             return null;
         }
 
-        Id id = new Id(idCode, period, startId);
+        Id id = new Id(period, startId);
 
         startId += factor;
         amount--;
@@ -57,7 +50,7 @@ public class Ids {
     /**
      * 获取id个数
      *
-     * @param periodError 允许的周期误差（null表示不管周期是否过期）
+     * @param periodError 允许的周期误差（单位：毫秒。null表示忽略周期是否过期）
      * @return id个数
      */
     public int getAmount(Long periodError) {

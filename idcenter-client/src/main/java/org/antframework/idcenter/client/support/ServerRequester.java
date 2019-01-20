@@ -9,11 +9,13 @@
 package org.antframework.idcenter.client.support;
 
 import com.alibaba.fastjson.JSON;
-import org.antframework.common.util.facade.AbstractInfo;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.antframework.common.util.facade.AbstractResult;
-import org.antframework.idcenter.client.IdContext;
+import org.antframework.common.util.id.Period;
+import org.antframework.common.util.tostring.ToString;
 import org.antframework.idcenter.client.core.Ids;
-import org.antframework.idcenter.client.core.Period;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -25,6 +27,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,24 +38,25 @@ import java.util.List;
 public class ServerRequester {
     // 发送http请求的客户端
     private static final HttpClient HTTP_CLIENT = HttpClients.createDefault();
+    // 获取批量id的url后缀
+    private static final String ACQUIRE_IDS_URL_SUFFIX = "/id/acquireIds";
     // 获取批量id的url
-    private static final String ACQUIRE_IDS_SUFFIX_URL = "/id/acquireIds";
-    // 初始化参数
-    private IdContext.InitParams initParams;
+    private final String acquireIdsUrl;
 
-    public ServerRequester(IdContext.InitParams initParams) {
-        this.initParams = initParams;
+    public ServerRequester(String serverUrl) {
+        this.acquireIdsUrl = serverUrl + ACQUIRE_IDS_URL_SUFFIX;
     }
 
     /**
      * 获取批量id
      *
+     * @param iderId       id提供者的id（id编码）
      * @param expectAmount 期望获取到的id个数
      * @return 批量id
      */
-    public List<Ids> acquireIds(int expectAmount) {
+    public List<Ids> acquireIds(String iderId, int expectAmount) {
         try {
-            String resultStr = HTTP_CLIENT.execute(buildRequest(expectAmount), new BasicResponseHandler());
+            String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, expectAmount), new BasicResponseHandler());
             AcquireIdsResult result = JSON.parseObject(resultStr, AcquireIdsResult.class);
             if (result == null) {
                 throw new RuntimeException("请求id中心失败");
@@ -60,101 +64,60 @@ public class ServerRequester {
             if (!result.isSuccess()) {
                 throw new RuntimeException("从id中心获取批量id失败：" + result.getMessage());
             }
-            return extractIdses(result.getIdses());
+            return convert(result.getIdses());
         } catch (IOException e) {
             return ExceptionUtils.rethrow(e);
         }
     }
 
     // 构建请求
-    private HttpUriRequest buildRequest(int expectAmount) {
+    private HttpUriRequest buildRequest(String iderId, int expectAmount) {
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("idCode", initParams.getIdCode()));
+        params.add(new BasicNameValuePair("iderId", iderId));
         params.add(new BasicNameValuePair("expectAmount", Integer.toString(expectAmount)));
 
-        HttpPost httpPost = new HttpPost(initParams.getServerUrl() + ACQUIRE_IDS_SUFFIX_URL);
+        HttpPost httpPost = new HttpPost(acquireIdsUrl);
         httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("utf-8")));
         return httpPost;
     }
 
-    // 提取Ids
-    private List<Ids> extractIdses(List<IdsInfo> idses) {
-        List<Ids> extractedIdses = new ArrayList<>();
-        for (IdsInfo info : idses) {
-            extractedIdses.add(new Ids(info.getIdCode(), info.getPeriod(), info.getFactor(), info.getStartId(), info.getAmount()));
+    // 转换
+    private List<Ids> convert(List<AcquireIdsResult.Ids> idses) {
+        List<Ids> convertedIdses = new ArrayList<>();
+        for (AcquireIdsResult.Ids ids : idses) {
+            convertedIdses.add(new Ids(ids.getPeriod(), ids.getFactor(), ids.getStartId(), ids.getAmount()));
         }
-        return extractedIdses;
+        return convertedIdses;
     }
 
     /**
      * 获取批量id-result
      */
+    @Getter
+    @Setter
     private static class AcquireIdsResult extends AbstractResult {
         // 获取到的批量id
-        private List<IdsInfo> idses;
+        private List<Ids> idses;
 
-        public List<IdsInfo> getIdses() {
-            return idses;
-        }
+        /**
+         * 批量id
+         */
+        @AllArgsConstructor
+        @Getter
+        private static final class Ids implements Serializable {
+            // 周期
+            private final Period period;
+            // 因数
+            private final int factor;
+            // 开始id（包含）
+            private final long startId;
+            // id个数
+            private final int amount;
 
-        public void setIdses(List<IdsInfo> idses) {
-            this.idses = idses;
-        }
-    }
-
-    /**
-     * 批量id-info
-     */
-    private static class IdsInfo extends AbstractInfo {
-        // id编码
-        private String idCode;
-        // 周期
-        private Period period;
-        // 因数
-        private int factor;
-        // 开始id（包含）
-        private long startId;
-        // id个数
-        private int amount;
-
-        public String getIdCode() {
-            return idCode;
-        }
-
-        public void setIdCode(String idCode) {
-            this.idCode = idCode;
-        }
-
-        public Period getPeriod() {
-            return period;
-        }
-
-        public void setPeriod(Period period) {
-            this.period = period;
-        }
-
-        public int getFactor() {
-            return factor;
-        }
-
-        public void setFactor(int factor) {
-            this.factor = factor;
-        }
-
-        public long getStartId() {
-            return startId;
-        }
-
-        public void setStartId(long startId) {
-            this.startId = startId;
-        }
-
-        public int getAmount() {
-            return amount;
-        }
-
-        public void setAmount(int amount) {
-            this.amount = amount;
+            @Override
+            public String toString() {
+                return ToString.toString(this);
+            }
         }
     }
 }

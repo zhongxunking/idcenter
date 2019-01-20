@@ -8,8 +8,6 @@
  */
 package org.antframework.idcenter.client.support;
 
-import org.antframework.idcenter.client.IdContext;
-
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,23 +15,24 @@ import java.util.concurrent.atomic.AtomicLong;
  * 流量统计
  */
 public class FlowStat {
+    // 随机数
     private static final Random RANDOM = new Random();
-    // 初始化参数
-    private IdContext.InitParams initParams;
     // 统计开始时间
-    private long startTime;
+    private volatile long startTime = System.currentTimeMillis();
     // id使用量统计
-    private AtomicLong count;
+    private final AtomicLong count = new AtomicLong(0);
     // 下一个统计开始时间
-    private long nextStartTime;
+    private volatile long nextStartTime = startTime;
     // 下一个id使用量统计
-    private AtomicLong nextCount;
+    private final AtomicLong nextCount = new AtomicLong(0);
+    // 最小预留时间（毫秒）
+    private final long minDuration;
+    // 最大预留时间（毫秒）
+    private final long maxDuration;
 
-    public FlowStat(IdContext.InitParams initParams) {
-        this.initParams = initParams;
-        startTime = nextStartTime = System.currentTimeMillis();
-        count = new AtomicLong(0);
-        nextCount = new AtomicLong(0);
+    public FlowStat(long minDuration, long maxDuration) {
+        this.minDuration = minDuration;
+        this.maxDuration = maxDuration;
     }
 
     /**
@@ -57,12 +56,12 @@ public class FlowStat {
     /**
      * 计算差量
      *
-     * @param remain 剩余数量
+     * @param remain 余量
      * @return 差量
      */
     public int calcGap(long remain) {
         if (remain > Integer.MAX_VALUE) {
-            // 如果id剩余数量超过int最大值，则表示id数量充足
+            // 如果余量超过int最大值，则表示余量充足
             return 0;
         }
         long statDuration = System.currentTimeMillis() - startTime;
@@ -73,18 +72,15 @@ public class FlowStat {
                 count.set(0);
                 nextCount.set(0);
             }
-            if (remain > 0) {
-                return 0;
-            } else {
-                return initParams.getInitAmount();
-            }
+            // 无法通过统计计算出差量
+            return remain > 0 ? 0 : 1;
         }
 
-        long min = (long) (((double) initParams.getMinTime()) / statDuration * count.get());
+        long min = (long) (((double) minDuration) / statDuration * count.get());
         if (remain > min) {
             return 0;
         }
-        long max = (long) (((double) initParams.getMaxTime()) / statDuration * count.get());
+        long max = (long) (((double) maxDuration) / statDuration * count.get());
         if (max < min) {
             // 运算中超出long类型最大值，无法进行计算
             return 0;
