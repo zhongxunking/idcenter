@@ -91,7 +91,7 @@ const IdersTemplate = `
                     </el-col>
                     <el-col :span="8" style="text-align: center">
                         <el-tooltip content="删除" placement="top" :open-delay="1000" :hide-after="3000">
-                            <el-button @click="deleteIder(row)" :disable="manager.type !== 'ADMIN'" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
+                            <el-button @click="deleteIder(row)" :disabled="manager.type !== 'ADMIN'" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
                         </el-tooltip>
                     </el-col>
                 </el-row>
