@@ -81,19 +81,20 @@ public class FlowStat {
             // 无法通过统计计算出差量
             return remain > 0 ? 0 : 1;
         }
-
-        long min = (long) (((double) minDuration) / statDuration * count.get());
+        // 拷贝一份count的值（防止count被其他线程修改后导致计算出错）
+        long count = this.count.get();
+        long min = (long) (((double) minDuration) / statDuration * count);
         if (remain > min) {
             return 0;
         }
-        long max = (long) (((double) maxDuration) / statDuration * count.get());
+        long max = (long) (((double) maxDuration) / statDuration * count);
         if (max < min) {
             // 运算中超出long类型最大值，无法进行计算
             return 0;
         }
         long gap = max - remain;
         if (min > 0) {
-            // 进行浮动
+            // 进行浮动（防止对服务端形成共振）
             int minMaxGap = (int) Math.min(max - min + 1, Integer.MAX_VALUE);
             gap -= RANDOM.nextInt(minMaxGap) * (((double) (min - remain)) / min);
         }
