@@ -15,17 +15,14 @@ import org.antframework.idcenter.client.support.ServerRequester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * id提供者默认实现
  */
 public class DefaultIder implements Ider {
     private static final Logger logger = LoggerFactory.getLogger(DefaultIder.class);
-    // 从服务端获取id任务线程池
+    // 从服务端获取id任务的线程池
     private final Executor executor = new ThreadPoolExecutor(
             0,
             1,
@@ -33,8 +30,10 @@ public class DefaultIder implements Ider {
             TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(1),
             new ThreadPoolExecutor.DiscardPolicy());
-    // 从服务端获取id任务
-    private final AcquireTask acquireTask = new AcquireTask();
+    // 限制等待线程数量的信号量
+    private final Semaphore semaphore = new Semaphore(10);
+    // 请求服务端的互斥锁
+    private final Object lock = new Object();
     // id提供者的id（id编码）
     private final String iderId;
     // 流量统计
@@ -52,22 +51,44 @@ public class DefaultIder implements Ider {
     }
 
     @Override
-    public synchronized Id acquire() {
+    public Id acquire() {
         flowStat.addCount();
-        acquireIfNecessary();
-        return idStorage.getId();
+        asyncAcquireIds();
+        Id id = idStorage.getId();
+        if (id == null) {
+            syncAcquireIds();
+            id = idStorage.getId();
+        }
+        return id;
     }
 
-    // 从服务端获取id（如果有必要）
-    private void acquireIfNecessary() {
+    // 异步从服务端获取id（如果有必要）
+    private void asyncAcquireIds() {
         int gap = flowStat.calcGap(idStorage.getAmount(true));
         if (gap > 0) {
-            executor.execute(acquireTask);
+            executor.execute(this::syncAcquireIds);
+        }
+    }
+
+    // 同步从服务端获取id（如果有必要）
+    private void syncAcquireIds() {
+        if (!semaphore.tryAcquire()) {
+            return;
+        }
+        try {
+            synchronized (lock) {
+                int gap = flowStat.calcGap(idStorage.getAmount(false));
+                if (gap > 0) {
+                    acquireIds(gap);
+                }
+            }
+        } finally {
+            semaphore.release();
         }
     }
 
     // 从服务端获取id
-    private void acquire(int amount) {
+    private void acquireIds(int amount) {
         try {
             for (Ids ids : serverRequester.acquireIds(iderId, amount)) {
                 idStorage.addIds(ids);
@@ -75,17 +96,6 @@ public class DefaultIder implements Ider {
             flowStat.next();
         } catch (Throwable e) {
             logger.error("从id中心获取id出错：{}", e.getMessage());
-        }
-    }
-
-    // 从服务端获取id任务
-    private class AcquireTask implements Runnable {
-        @Override
-        public void run() {
-            int gap = flowStat.calcGap(idStorage.getAmount(false));
-            if (gap > 0) {
-                acquire(gap);
-            }
         }
     }
 }
