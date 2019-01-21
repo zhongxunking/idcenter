@@ -85,12 +85,12 @@ public class FlowStat {
         long count = this.count.get();
         long min = (long) (((double) minDuration) / statDuration * count);
         if (remain > min) {
-            return 0;
+            return remain > 0 ? 0 : 1;
         }
         long max = (long) (((double) maxDuration) / statDuration * count);
         if (max < min) {
             // 运算中超出long类型最大值，无法进行计算
-            return 0;
+            return remain > 0 ? 0 : 1;
         }
         long gap = max - remain;
         if (min > 0) {

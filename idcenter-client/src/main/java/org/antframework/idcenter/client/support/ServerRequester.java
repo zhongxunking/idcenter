@@ -39,7 +39,7 @@ public class ServerRequester {
     // 发送http请求的客户端
     private static final HttpClient HTTP_CLIENT = HttpClients.createDefault();
     // 获取批量id的url后缀
-    private static final String ACQUIRE_IDS_URL_SUFFIX = "/id/acquireIds";
+    private static final String ACQUIRE_IDS_URL_SUFFIX = "/ider/acquireIds";
     // 获取批量id的url
     private final String acquireIdsUrl;
 
