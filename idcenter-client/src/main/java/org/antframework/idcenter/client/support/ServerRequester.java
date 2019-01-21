@@ -100,7 +100,7 @@ public class ServerRequester {
      */
     @Getter
     @Setter
-    private static class AcquireIdsResult extends AbstractResult {
+    public static class AcquireIdsResult extends AbstractResult {
         // 获取到的批量id
         private List<Ids> idses;
 
@@ -109,7 +109,7 @@ public class ServerRequester {
          */
         @AllArgsConstructor
         @Getter
-        private static final class Ids implements Serializable {
+        public static final class Ids implements Serializable {
             // 周期
             private final Period period;
             // 因数
