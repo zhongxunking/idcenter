@@ -43,6 +43,11 @@ public class ServerRequester {
     // 获取批量id的url
     private final String acquireIdsUrl;
 
+    /**
+     * 构造服务端请求器
+     *
+     * @param serverUrl 服务端地址
+     */
     public ServerRequester(String serverUrl) {
         this.acquireIdsUrl = serverUrl + ACQUIRE_IDS_URL_SUFFIX;
     }

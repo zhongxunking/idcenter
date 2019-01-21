@@ -43,6 +43,14 @@ public class DefaultIder implements Ider {
     // 服务端请求器
     private final ServerRequester serverRequester;
 
+    /**
+     * 构造id提供者
+     *
+     * @param iderId          id提供者的id（id编码）
+     * @param minDuration     最小预留时间（毫秒）
+     * @param maxDuration     最大预留时间（毫秒）
+     * @param serverRequester 服务端请求器
+     */
     public DefaultIder(String iderId, long minDuration, long maxDuration, ServerRequester serverRequester) {
         this.iderId = iderId;
         flowStat = new FlowStat(minDuration, maxDuration);

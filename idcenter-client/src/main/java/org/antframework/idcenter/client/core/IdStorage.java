@@ -25,6 +25,11 @@ public class IdStorage {
     // 允许的周期误差
     private final Long periodError;
 
+    /**
+     * 构造id仓库
+     *
+     * @param periodError 允许的周期误差（毫秒）
+     */
     public IdStorage(long periodError) {
         this.periodError = periodError;
     }

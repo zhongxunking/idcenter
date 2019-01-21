@@ -30,6 +30,12 @@ public class FlowStat {
     // 最大预留时间（毫秒）
     private final long maxDuration;
 
+    /**
+     * 构造流量统计
+     *
+     * @param minDuration 最小预留时间（毫秒）
+     * @param maxDuration 最大预留时间（毫秒）
+     */
     public FlowStat(long minDuration, long maxDuration) {
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
