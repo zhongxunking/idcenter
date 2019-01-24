@@ -30,17 +30,11 @@ public class IdersContextTest {
         Ider ider = idersContext.getIder("userId");
         int nullCount = 0;
         for (int i = 0; i < 1000000; i++) {
-            for (int j = 0; j < 10; j++) {
-                Id id = ider.acquire();
-                if (id == null) {
-                    nullCount++;
-                }
-            }
-//            Thread.sleep(20);
-            logger.info("----{}----", i);
-            if (nullCount > 0) {
-                logger.error("id出现null次数：{}", nullCount);
+            Id id = ider.acquire();
+            if (id == null) {
+                nullCount++;
             }
         }
+        logger.info("id出现null次数：{}", nullCount);
     }
 }
