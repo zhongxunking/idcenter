@@ -13,14 +13,16 @@ import org.antframework.idcenter.client.core.DefaultIder;
 import org.antframework.idcenter.client.support.ServerRequester;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.function.Function;
+
 /**
  * id提供者上下文
  */
 public class IdersContext {
     // id提供者缓存
-    private final Cache<String, Ider> idersCache = new Cache<>(new Cache.Supplier<String, Ider>() {
+    private final Cache<String, Ider> idersCache = new Cache<>(new Function<String, Ider>() {
         @Override
-        public Ider get(String key) {
+        public Ider apply(String key) {
             return new DefaultIder(key, minDuration, maxDuration, serverRequester);
         }
     });
