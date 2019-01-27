@@ -24,6 +24,7 @@
         <module>idcenter-web</module>
         <module>idcenter-assemble</module>
         <module>idcenter-client</module>
+        <module>idcenter-spring-boot-starter</module>
         <module>idcenter-test</module>
     </modules>
 
