@@ -8,8 +8,6 @@
  */
 package org.antframework.idcenter.spring.boot;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.antframework.idcenter.spring.context.Contexts;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,8 +18,6 @@ import javax.validation.constraints.Min;
  * id中心配属性
  */
 @ConfigurationProperties("idcenter")
-@Getter
-@Setter
 public class IdcenterProperties {
     /**
      * 实例
@@ -43,4 +39,28 @@ public class IdcenterProperties {
      */
     @Min(1)
     private long maxDuration = 15 * 60 * 1000;
+
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
+
+    public long getMinDuration() {
+        return minDuration;
+    }
+
+    public void setMinDuration(long minDuration) {
+        this.minDuration = minDuration;
+    }
+
+    public long getMaxDuration() {
+        return maxDuration;
+    }
+
+    public void setMaxDuration(long maxDuration) {
+        this.maxDuration = maxDuration;
+    }
 }
