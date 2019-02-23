@@ -11,6 +11,7 @@ package org.antframework.idcenter.spring.boot;
 import org.antframework.idcenter.spring.context.Contexts;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
 
@@ -18,6 +19,7 @@ import javax.validation.constraints.Min;
  * id中心配属性
  */
 @ConfigurationProperties("idcenter")
+@Validated
 public class IdcenterProperties {
     /**
      * 实例
