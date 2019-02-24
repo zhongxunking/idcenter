@@ -32,37 +32,39 @@ id分为两部分：id所在的时间周期+id值。id具有周期概念（每�
 下面是主要表的结构：
 ```
 id提供者主要表结构：
-+-------------+--------------+------+-----+---------+----------------+
-| Field       | Type         | Null | Key | Default | Extra          |
-+-------------+--------------+------+-----+---------+----------------+
-| id_code     | varchar(128) | YES  | UNI | NULL    |                |
-| period_type | varchar(40)  | YES  |     | NULL    |                |
-| max_id      | bigint(20)   | YES  |     | NULL    |                |
-| max_amount  | int(11)      | YES  |     | NULL    |                |
-| factor      | int(11)      | YES  |     | NULL    |                |
-+-------------+--------------+------+-----+---------+----------------+
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| iderId     | varchar(128) | YES  | UNI | NULL    |                |
+| iderName   | varchar(255) | YES  |     | NULL    |                |
+| periodType | varchar(64)  | YES  |     | NULL    |                |
+| maxId      | bigint(20)   | YES  |     | NULL    |                |
+| maxAmount  | int(11)      | YES  |     | NULL    |                |
+| factor     | int(11)      | YES  |     | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
 重要字段说明
-id_code：id编码，每种类型id的唯一标识。
-period_type：周期类型（小时、天、月、年、无）
-max_id：id在一个周期内允许的最大值（不包含），null表示不限制。
-max_amount：客户端一次请求允许获取的最多id数量（包含），null表示不限制。
+iderId：id编码，每种类型id的唯一标识。
+iderName：id提供者的名称
+periodType：周期类型（小时、天、月、年、无）
+maxId：id在一个周期内允许的最大值（不包含），null表示不限制。
+maxAmount：客户端一次请求允许获取的最多id数量（包含），null表示不限制。
 factor：该id提供者具有的生产者数量。
 ```
 ```
 id生产者主要表结构：
-+----------------+--------------+------+-----+---------+----------------+
-| Field          | Type         | Null | Key | Default | Extra          |
-+----------------+--------------+------+-----+---------+----------------+
-| id_code        | varchar(128) | YES  | MUL | NULL    |                |
-| index          | int(11)      | YES  |     | NULL    |                |
-| current_period | datetime     | YES  |     | NULL    |                |
-| current_id     | bigint(20)   | YES  |     | NULL    |                |
-+----------------+--------------+------+-----+---------+----------------+
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| iderId        | varchar(128) | YES  | MUL | NULL    |                |
+| index         | int(11)      | YES  |     | NULL    |                |
+| currentPeriod | datetime     | YES  |     | NULL    |                |
+| currentId     | bigint(20)   | YES  |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
 重要字段说明
-id_code：id编码，标识本生产者属于哪个id提供者
-index：生产者的序号，id_code+index标识一个唯一的生产者
-current_period：当前周期，标识本生产者当前生产到了哪个周期。如果周期类型为无，则当前周期为null
-current_id：当前id，标识本生产者在当前周期下生产到了哪个id
+iderId：id编码，标识本生产者属于哪个id提供者
+index：生产者的序号，iderId+index标识一个唯一的生产者
+currentPeriod：当前周期，标识本生产者当前生产到了哪个周期。如果周期类型为无，则当前周期为null
+currentId：当前id，标识本生产者在当前周期下生产到了哪个id
 ```
 
 ### 1.3 客户端
@@ -91,7 +93,14 @@ java -jar idcenter-assemble-1.2.0.RELEASE-exec.jar --spring.profiles.active="onl
 ## 3. 集成客户端
 > 读者也可以先看后面的“[id管理介绍](#4-id管理介绍)”，再来看本部分的客户端介绍。
 
-### 3.1 引入客户端依赖
+提供两种方式集成客户端：
+- 直接集成客户端（非spring-boot应用）
+- 通过starter进行集成（spring-boot应用）
+
+### 3.1 直接集成客户端
+客户端提供最核心也是最原子的能力。
+
+#### 3.1.1 引入客户端依赖
 ```xml
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
@@ -100,32 +109,66 @@ java -jar idcenter-assemble-1.2.0.RELEASE-exec.jar --spring.profiles.active="onl
 </dependency>
 ```
 
-### 3.2 使用客户端
+#### 3.1.2 使用客户端
 客户端就是Java类，直接new就可以，只是需要传给它相应参数。一个应用可以创建多个客户端，每个客户端之间互不影响。
 ```java
-// 准备初始化参数
-IdContext.InitParams initParams = new IdContext.InitParams();
-initParams.setIdCode("common-uid"); // id编码
-initParams.setServerUrl("http://localhost:6210");   // 服务端地址
-initParams.setInitAmount(1000); // 初始化时获取的id数量
-initParams.setMinTime(10 * 60 * 1000);  // 最小预留时间（毫秒，服务端不可用时客户端能够维持的最小时间）
-initParams.setMaxTime(15 * 60 * 1000);  // 最大预留时间（毫秒，服务端不可用时客户端能够维持的最大时间）
+// 创建客户端
+IdersContext idersContext = new IdersContext(
+        "http://localhost:6210",    // id编码
+        10 * 60 * 1000,             // 最小预留时间（毫秒，服务端不可用时客户端能够维持的最小时间）
+        15 * 60 * 1000);            // 最大预留时间（毫秒，服务端不可用时客户端能够维持的最大时间）
 // 最大预留时间减去最小预留时间的差值就是客户端请求服务端的平均间隔时间，
 // 这个差值也是从客户端获取的id的周期误差时间，建议合理设置。比如差值为5分钟应该是适合绝大多数公司的。
 
-IdContext idContext = new IdContext(initParams);    // 创建客户端
-
-// 客户端创建成功后就可以直接获取id
-Id id1 = idContext.getAcquirer().getId();
-Id id2 = idContext.getAcquirer().getId();
+// 获取用户id的提供者
+Ider ider = idersContext.getIder("userId");
+// 获取id
+Id id1 = ider.acquire();
+Id id2 = ider.acquire();
 // 以上获取到的是最原始的id形式，使用方可以根据需要将id格式化为自己需要的格式
-// 下面得到格式化后的id，比如：2018090700001
-String idStr= id1.getPeriod().toString() + String.format("%05d", id1.getId());
+// 下面对id进行格式化，比如：2019022400001
+String formattedId1 = id1.getPeriod().toString() + String.format("%05d", id1.getId());
+```
 
-// 系统正常运行。。。
+### 3.2 通过starter进行集成
+starter本质上还是依赖于上面介绍的客户端的能力，只不过根据spring-boot场景提供了更优雅的集成方式。
 
-// 当系统运行结束时，需关闭客户端释放相关资源
-idContext.close();
+#### 3.2.1 引入starter依赖
+```xml
+<dependency>
+    <groupId>org.antframework.idcenter</groupId>
+    <artifactId>idcenter-spring-boot-starter</artifactId>
+    <version>1.2.0.RELEASE</version>
+</dependency>
+```
+
+#### 3.2.2 配置客户端
+在应用的配置文件application.properties或application-xxx.properties中配置：
+```properties
+# 必填：id中心服务端地址
+idcenter.server-url=http://localhost:6210
+
+# 选填：最小预留时间（单位：毫秒。默认为10分钟）
+idcenter.min-duration=600000
+# 选填：最大预留时间（单位：毫秒。默认为15分钟）
+idcenter.max-duration=900000
+
+# 最小预留时间含义：服务端不可用时客户端能够维持的最小时间
+# 最大预留时间含义：服务端不可用时客户端能够维持的最大时间
+# 最大预留时间减去最小预留时间的差值就是客户端请求服务端的平均间隔时间，
+# 这个差值也是从客户端获取的id的周期误差时间，建议合理设置。比如差值为5分钟应该是适合绝大多数公司的。
+```
+
+#### 3.2.3 获取id
+```java
+// 获取用户id的提供者
+Ider ider = IdersContexts.getIder("userId");
+// 获取id
+Id id1 = ider.acquire();
+Id id2 = ider.acquire();
+// 以上获取到的是最原始的id形式，使用方可以根据需要将id格式化为自己需要的格式
+// 下面对id进行格式化，比如：2019022400001
+String formattedId1 = id1.getPeriod().toString() + String.format("%05d", id1.getId());
 ```
 
 ## 4. id管理介绍
