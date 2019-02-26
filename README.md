@@ -71,7 +71,7 @@ currentId：当前id，标识本生产者在当前周期下生产到了哪个id
 客户端刚启动时会尝试从服务端获取一批id，并缓存起来，供后续使用方获取id。使用方获取id时，客户端会从缓存的id存量中获取一个全新的id返回给使用方。并且客户端会根据最近一段时间内id使用频率，自动评估当前剩余的id存量是否足够客户端运行一段时间；如果id存量不够，则客户端会异步请求服务端获取一批id，并缓缓存起来。
 
 ## 2. 服务端部署
-[下载服务端](https://repo.maven.apache.org/maven2/org/antframework/idcenter/idcenter-assemble/1.2.0.RELEASE/idcenter-assemble-1.2.0.RELEASE-exec.jar)。以下是集群部署架构图：<br/>
+[下载服务端](https://repo.maven.apache.org/maven2/org/antframework/idcenter/idcenter-assemble/1.3.0.RELEASE/idcenter-assemble-1.3.0.RELEASE-exec.jar)。以下是集群部署架构图：<br/>
 
 <img src="https://note.youdao.com/yws/api/personal/file/WEBe5a50ed3b7de63c48e1629675dbece01?method=download&shareKey=c1b635c5b90590dc21b9a29ba9f61772" width=600 />
 
@@ -83,11 +83,11 @@ currentId：当前id，标识本生产者在当前周期下生产到了哪个id
 
 启动服务端命令模板：
 ```bash
-java -jar idcenter-assemble-1.2.0.RELEASE-exec.jar --spring.profiles.active="online" --spring.datasource.url="数据库连接" --spring.datasource.username="数据库用户名" --spring.datasource.password="数据库密码"
+java -jar idcenter-assemble-1.3.0.RELEASE-exec.jar --spring.profiles.active="online" --spring.datasource.url="数据库连接" --spring.datasource.username="数据库用户名" --spring.datasource.password="数据库密码"
 ```
 比如我本地开发时启动命令：
 ```bash
-java -jar idcenter-assemble-1.2.0.RELEASE-exec.jar --spring.profiles.active="online" --spring.datasource.url="jdbc:mysql://localhost:3306/idcenter-dev?useUnicode=true&characterEncoding=utf-8" --spring.datasource.username="root" --spring.datasource.password="root"
+java -jar idcenter-assemble-1.3.0.RELEASE-exec.jar --spring.profiles.active="online" --spring.datasource.url="jdbc:mysql://localhost:3306/idcenter-dev?useUnicode=true&characterEncoding=utf-8" --spring.datasource.username="root" --spring.datasource.password="root"
 ```
 
 ## 3. 集成客户端
@@ -105,7 +105,7 @@ java -jar idcenter-assemble-1.2.0.RELEASE-exec.jar --spring.profiles.active="onl
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
     <artifactId>idcenter-client</artifactId>
-    <version>1.2.0.RELEASE</version>
+    <version>1.3.0.RELEASE</version>
 </dependency>
 ```
 
@@ -138,7 +138,7 @@ starter本质上还是依赖于上面介绍的客户端的能力，只不过根�
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
     <artifactId>idcenter-spring-boot-starter</artifactId>
-    <version>1.2.0.RELEASE</version>
+    <version>1.3.0.RELEASE</version>
 </dependency>
 ```
 
