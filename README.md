@@ -77,7 +77,7 @@ currentId：当前id，标识本生产者在当前周期下生产到了哪个id
 
 <span style="font-size: large">说明：</span>
 - 服务端使用的springboot，直接命令启动下载好的jar包即可，无需部署tomcat。
-- 服务端使用hibernate自动生成表结构，无需导入sql（只需要服务端第一次启动时拥有向数据库执行ddl语句权限，启动成功后就可以删除该权限，以后每次启动都不需要该权限）。
+- 有两种方式创建数据库表，根据具体情况选择其中一种方式即可：1、手动执行[建表sql](https://github.com/zhongxunking/idcenter/wiki/v1.3.0.RELEASE%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BB%BA%E8%A1%A8DDL)；2、让服务端拥有向数据库执行ddl语句权限，服务端第一次启动时会自动建表，无需手动执行sql。
 - 服务端在启动时会在"/var/apps/"下创建日志文件，请确保服务端对该目录拥有写权限。
 - 服务端http端口为6210。
 
