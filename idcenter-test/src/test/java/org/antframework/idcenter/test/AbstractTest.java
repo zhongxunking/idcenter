@@ -8,11 +8,12 @@
  */
 package org.antframework.idcenter.test;
 
-import org.antframework.boot.core.Apps;
+import org.antframework.boot.lang.Apps;
 import org.antframework.common.util.facade.AbstractResult;
 import org.antframework.common.util.facade.Status;
 import org.antframework.idcenter.Main;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * 单元测试父类
  */
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Main.class)
 public class AbstractTest {

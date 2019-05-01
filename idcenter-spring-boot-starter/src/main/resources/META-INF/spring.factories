@@ -1,2 +1,2 @@
 org.springframework.context.ApplicationListener=\
-  org.antframework.idcenter.spring.boot.ContextsInitializer
+  org.antframework.idcenter.spring.boot.IdcenterApplicationListener

@@ -8,24 +8,22 @@
  */
 package org.antframework.idcenter.spring.boot;
 
-import org.antframework.idcenter.spring.context.Contexts;
-import org.hibernate.validator.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 /**
  * id中心配属性
  */
 @ConfigurationProperties("idcenter")
 @Validated
+@Getter
+@Setter
 public class IdcenterProperties {
-    /**
-     * 实例
-     */
-    public static final IdcenterProperties INSTANCE = Contexts.buildProperties(IdcenterProperties.class);
-
     /**
      * 必填：id中心服务端地址（比如：http://localhost:6210）
      */
@@ -41,28 +39,4 @@ public class IdcenterProperties {
      */
     @Min(1)
     private long maxDuration = 15 * 60 * 1000;
-
-    public String getServerUrl() {
-        return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-
-    public long getMinDuration() {
-        return minDuration;
-    }
-
-    public void setMinDuration(long minDuration) {
-        this.minDuration = minDuration;
-    }
-
-    public long getMaxDuration() {
-        return maxDuration;
-    }
-
-    public void setMaxDuration(long maxDuration) {
-        this.maxDuration = maxDuration;
-    }
 }

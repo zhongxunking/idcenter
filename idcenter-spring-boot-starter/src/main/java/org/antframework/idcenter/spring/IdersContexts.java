@@ -8,6 +8,7 @@
  */
 package org.antframework.idcenter.spring;
 
+import org.antframework.boot.core.Contexts;
 import org.antframework.idcenter.client.Ider;
 import org.antframework.idcenter.client.IdersContext;
 import org.antframework.idcenter.spring.boot.IdcenterProperties;
@@ -17,10 +18,12 @@ import org.antframework.idcenter.spring.boot.IdcenterProperties;
  */
 public final class IdersContexts {
     // id提供者上下文
-    private static final IdersContext IDERS_CONTEXT = new IdersContext(
-            IdcenterProperties.INSTANCE.getServerUrl(),
-            IdcenterProperties.INSTANCE.getMinDuration(),
-            IdcenterProperties.INSTANCE.getMaxDuration());
+    private static final IdersContext IDERS_CONTEXT;
+
+    static {
+        IdcenterProperties properties = Contexts.buildProperties(IdcenterProperties.class);
+        IDERS_CONTEXT = new IdersContext(properties.getServerUrl(), properties.getMinDuration(), properties.getMaxDuration());
+    }
 
     /**
      * 获取id提供者上下文
