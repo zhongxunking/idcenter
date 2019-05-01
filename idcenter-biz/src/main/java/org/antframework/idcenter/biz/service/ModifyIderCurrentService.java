@@ -26,6 +26,7 @@ import org.bekit.service.engine.ServiceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -58,7 +59,8 @@ public class ModifyIderCurrentService {
         logger.info("被修改当前数据的id提供者：{}", ider);
         Period newPeriod = new Period(ider.getPeriodType(), order.getNewCurrentPeriod());
         List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId());
-        for (int i = 0; i < ider.getFactor(); i++) {
+        Assert.isTrue(idProducers.size() == ider.getFactor(), String.format("id生产者数量[%d]和id提供者的factor[%d]不相等", idProducers.size(), ider.getFactor()));
+        for (int i = 0; i < idProducers.size(); i++) {
             IdProducer idProducer = idProducers.get(i);
             logger.info("id生产者被修改当前数据前：{}", idProducer);
             idProducer.setCurrentPeriod(newPeriod.getDate());
