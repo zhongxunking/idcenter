@@ -12,7 +12,7 @@ import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
-import org.antframework.idcenter.biz.util.IdProducerUtils;
+import org.antframework.idcenter.biz.util.IdProducers;
 import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.dal.entity.IdProducer;
@@ -60,7 +60,7 @@ public class ModifyIderFactorService {
         IdProducer maxIdProducer = null;
         for (IdProducer idProducer : idProducers) {
             logger.info("现有的id生产者：{}", idProducer);
-            if (maxIdProducer == null || IdProducerUtils.compare(idProducer, maxIdProducer) > 0) {
+            if (maxIdProducer == null || IdProducers.compare(idProducer, maxIdProducer) > 0) {
                 maxIdProducer = idProducer;
             }
         }
@@ -91,6 +91,6 @@ public class ModifyIderFactorService {
         idProducer.setIndex(index);
         idProducer.setCurrentPeriod(maxCurrentPeriod);
         idProducer.setCurrentId(maxCurrentId);
-        IdProducerUtils.grow(ider, idProducer, index);
+        IdProducers.grow(ider, idProducer, index);
     }
 }

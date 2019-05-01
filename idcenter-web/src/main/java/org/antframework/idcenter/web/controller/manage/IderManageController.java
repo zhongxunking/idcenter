@@ -10,7 +10,7 @@ package org.antframework.idcenter.web.controller.manage;
 
 import org.antframework.common.util.facade.*;
 import org.antframework.common.util.id.PeriodType;
-import org.antframework.idcenter.biz.util.IderUtils;
+import org.antframework.idcenter.biz.util.Iders;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.facade.order.*;
@@ -127,7 +127,7 @@ public class IderManageController {
     public EmptyResult modifyIderCurrent(String iderId, String newCurrentPeriod, Long newCurrentId) {
         ManagerIders.adminOrHaveIder(iderId);
         // 解析出新的当前周期
-        IderInfo ider = IderUtils.findIder(iderId);
+        IderInfo ider = Iders.findIder(iderId);
         if (ider == null) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", iderId));
         }

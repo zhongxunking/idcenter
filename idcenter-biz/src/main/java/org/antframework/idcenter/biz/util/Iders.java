@@ -16,9 +16,9 @@ import org.antframework.idcenter.facade.order.FindIderOrder;
 import org.antframework.idcenter.facade.result.FindIderResult;
 
 /**
- * id提供者工具类
+ * id提供者操作类
  */
-public final class IderUtils {
+public final class Iders {
     // id提供者服务
     private static final IderService IDER_SERVICE = Contexts.getApplicationContext().getBean(IderService.class);
 

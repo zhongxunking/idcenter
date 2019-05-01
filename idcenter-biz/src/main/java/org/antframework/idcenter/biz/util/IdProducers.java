@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * id生产者工具类
+ * id生产者操作类
  */
-public class IdProducerUtils {
+public class IdProducers {
 
     /**
      * 比较id生产者进度
