@@ -49,7 +49,7 @@ public class ModifyIderMaxService {
         if (ider == null) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIderId()));
         }
-        if (order.getNewMaxId() < ider.getFactor()) {
+        if (order.getNewMaxId() != null && order.getNewMaxId() < ider.getFactor()) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的id最大值[%d]不能小于因数[%d]", order.getNewMaxId(), ider.getFactor()));
         }
         if (Objects.equals(order.getNewMaxId(), ider.getMaxId())) {
