@@ -61,7 +61,7 @@ public class ModifyIderMaxService {
         iderDao.save(ider);
         logger.info("id提供者被修改最大数据后：{}", ider);
         List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId());
-        Assert.isTrue(idProducers.size() == ider.getFactor(), String.format("id生产者数量[%d]和id提供者记录的factor[%d]不相等", idProducers.size(), ider.getFactor()));
+        Assert.isTrue(idProducers.size() == ider.getFactor(), String.format("id生产者数量[%d]和id提供者的factor[%d]不相等", idProducers.size(), ider.getFactor()));
         // 计算进度最靠前的id生产者
         IdProducer maxIdProducer = null;
         for (IdProducer idProducer : idProducers) {
