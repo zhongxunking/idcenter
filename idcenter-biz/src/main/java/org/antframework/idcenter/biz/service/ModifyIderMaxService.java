@@ -52,7 +52,8 @@ public class ModifyIderMaxService {
         if (order.getNewMaxId() != null && order.getNewMaxId() < ider.getFactor()) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的id最大值[%d]不能小于因数[%d]", order.getNewMaxId(), ider.getFactor()));
         }
-        if (Objects.equals(order.getNewMaxId(), ider.getMaxId())) {
+        if (Objects.equals(order.getNewMaxId(), ider.getMaxId())
+                && Objects.equals(order.getNewMaxAmount(), ider.getMaxAmount())) {
             return;
         }
         log.info("id提供者被修改最大数据前：{}", ider);
