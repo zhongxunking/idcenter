@@ -8,6 +8,7 @@
  */
 package org.antframework.idcenter.web.controller.manage;
 
+import lombok.AllArgsConstructor;
 import org.antframework.common.util.facade.*;
 import org.antframework.common.util.id.PeriodType;
 import org.antframework.idcenter.biz.util.Iders;
@@ -23,7 +24,6 @@ import org.antframework.manager.web.Managers;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,9 +35,10 @@ import java.util.Date;
  */
 @RestController
 @RequestMapping("/manage/ider")
+@AllArgsConstructor
 public class IderManageController {
-    @Autowired
-    private IderService iderService;
+    // id提供者服务
+    private final IderService iderService;
 
     /**
      * 新增id提供者

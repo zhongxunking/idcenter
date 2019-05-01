@@ -19,7 +19,7 @@ import javax.persistence.LockModeType;
 import java.util.Collection;
 
 /**
- * id提供则dao
+ * id提供者dao
  */
 @RepositoryDefinition(domainClass = Ider.class, idClass = Long.class)
 public interface IderDao {

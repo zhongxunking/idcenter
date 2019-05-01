@@ -8,6 +8,7 @@
  */
 package org.antframework.idcenter.biz.provider;
 
+import lombok.AllArgsConstructor;
 import org.antframework.boot.bekit.CommonQueries;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.idcenter.biz.service.converter.IderInfoConverter;
@@ -19,18 +20,18 @@ import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.result.FindIderResult;
 import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.bekit.service.ServiceEngine;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * id提供者服务提供者
  */
 @Service
+@AllArgsConstructor
 public class IderServiceProvider implements IderService {
-    @Autowired
-    private ServiceEngine serviceEngine;
-    @Autowired
-    private IderInfoConverter infoConverter;
+    // 服务引擎
+    private final ServiceEngine serviceEngine;
+    // id提供者info转换器
+    private final IderInfoConverter infoConverter;
 
     @Override
     public EmptyResult addIder(AddIderOrder order) {

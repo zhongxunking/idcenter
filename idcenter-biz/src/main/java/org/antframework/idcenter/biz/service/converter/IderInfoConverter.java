@@ -14,7 +14,6 @@ import org.antframework.idcenter.dal.entity.IdProducer;
 import org.antframework.idcenter.dal.entity.Ider;
 import org.antframework.idcenter.facade.info.IdProducerInfo;
 import org.antframework.idcenter.facade.info.IderInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -29,11 +28,12 @@ public class IderInfoConverter extends FacadeUtils.DefaultConverter<Ider, IderIn
     // 生产者info转换器
     private static final Converter<IdProducer, IdProducerInfo> ID_PRODUCER_INFO_CONVERTER = new FacadeUtils.DefaultConverter<>(IdProducerInfo.class);
 
-    @Autowired
-    private IdProducerDao idProducerDao;
+    // id生产者dao
+    private final IdProducerDao idProducerDao;
 
-    public IderInfoConverter() {
+    public IderInfoConverter(IdProducerDao idProducerDao) {
         super(IderInfo.class);
+        this.idProducerDao = idProducerDao;
     }
 
     @Override

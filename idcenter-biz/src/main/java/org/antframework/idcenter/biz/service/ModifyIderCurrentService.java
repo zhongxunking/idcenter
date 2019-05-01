@@ -8,6 +8,8 @@
  */
 package org.antframework.idcenter.biz.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
@@ -23,9 +25,6 @@ import org.antframework.idcenter.facade.order.ModifyIderCurrentOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -34,12 +33,13 @@ import java.util.List;
  * 修改id提供者当前数据服务
  */
 @Service(enableTx = true)
+@AllArgsConstructor
+@Slf4j
 public class ModifyIderCurrentService {
-    private static final Logger logger = LoggerFactory.getLogger(ModifyIderCurrentService.class);
-    @Autowired
-    private IderDao iderDao;
-    @Autowired
-    private IdProducerDao idProducerDao;
+    // id提供者dao
+    private final IderDao iderDao;
+    // id生产者dao
+    private final IdProducerDao idProducerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<ModifyIderCurrentOrder, EmptyResult> context) {
@@ -56,19 +56,19 @@ public class ModifyIderCurrentService {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的当前id[%d]超过id提供者[%s]允许的最大值[%d]（不包含）", order.getNewCurrentId(), ider.getIderId(), ider.getMaxId()));
         }
 
-        logger.info("被修改当前数据的id提供者：{}", ider);
+        log.info("被修改当前数据的id提供者：{}", ider);
         Period newPeriod = new Period(ider.getPeriodType(), order.getNewCurrentPeriod());
         List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId());
         Assert.isTrue(idProducers.size() == ider.getFactor(), String.format("id生产者数量[%d]和id提供者的factor[%d]不相等", idProducers.size(), ider.getFactor()));
         for (int i = 0; i < idProducers.size(); i++) {
             IdProducer idProducer = idProducers.get(i);
-            logger.info("id生产者被修改当前数据前：{}", idProducer);
+            log.info("id生产者被修改当前数据前：{}", idProducer);
             idProducer.setCurrentPeriod(newPeriod.getDate());
             idProducer.setCurrentId(order.getNewCurrentId());
             IdProducers.grow(ider, idProducer, i);
 
             idProducerDao.save(idProducer);
-            logger.info("id生产者被修改当前数据后：{}", idProducer);
+            log.info("id生产者被修改当前数据后：{}", idProducer);
         }
     }
 }

@@ -8,6 +8,8 @@
  */
 package org.antframework.idcenter.biz.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.Status;
@@ -23,9 +25,6 @@ import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceBefore;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.Random;
@@ -34,14 +33,16 @@ import java.util.Random;
  * 获取批量id服务
  */
 @Service(enableTx = true)
+@AllArgsConstructor
+@Slf4j
 public class AcquireIdsService {
-    private static final Logger logger = LoggerFactory.getLogger(AcquireIdsService.class);
     // 随机数生成器
     private static final Random RANDOM = new Random();
-    @Autowired
-    private IderDao iderDao;
-    @Autowired
-    private IdProducerDao idProducerDao;
+
+    // id提供者dao
+    private final IderDao iderDao;
+    // id生产者dao
+    private final IdProducerDao idProducerDao;
 
     @ServiceBefore
     public void before(ServiceContext<AcquireIdsOrder, AcquireIdsResult> context) {
@@ -66,12 +67,12 @@ public class AcquireIdsService {
         }
         // 刷新ider（id生产者被锁住前因数可能会被修改，在此更新到最新因数）
         ider = iderDao.findByIderId(ider.getIderId());
-        logger.info("被获取id的id提供者：{}", ider);
-        logger.info("生产id前的id生产者：{}", idProducer);
+        log.info("被获取id的id提供者：{}", ider);
+        log.info("生产id前的id生产者：{}", idProducer);
         // 计算生产的id数量
         int amount = order.getExpectAmount();
         if (ider.getMaxAmount() != null && amount > ider.getMaxAmount()) {
-            logger.warn("期望获取id的数量[{}]过多，调整到[{}]", amount, ider.getMaxAmount());
+            log.warn("期望获取id的数量[{}]过多，调整到[{}]", amount, ider.getMaxAmount());
             amount = ider.getMaxAmount();
         }
         // 现代化id生产者
@@ -80,7 +81,7 @@ public class AcquireIdsService {
         result.setIdses(IdProducers.produce(ider, idProducer, amount));
         // 更新id生产者
         idProducerDao.save(idProducer);
-        logger.info("生产id后的id生产者：{}", idProducer);
+        log.info("生产id后的id生产者：{}", idProducer);
     }
 
     // 如果id生产者的当前周期小于最新周期，则更新当前周期
@@ -92,7 +93,7 @@ public class AcquireIdsService {
             int modernStartId = calcModernStartId(ider, idProducer, modernPeriod);
             idProducer.setCurrentPeriod(modernPeriod.getDate());
             idProducer.setCurrentId((long) modernStartId);
-            logger.info("被现代化后的id生产者：{}", idProducer);
+            log.info("被现代化后的id生产者：{}", idProducer);
         }
     }
 

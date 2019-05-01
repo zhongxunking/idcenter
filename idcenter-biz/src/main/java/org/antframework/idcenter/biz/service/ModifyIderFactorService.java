@@ -8,6 +8,8 @@
  */
 package org.antframework.idcenter.biz.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
@@ -21,9 +23,6 @@ import org.antframework.idcenter.facade.order.ModifyIderFactorOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -33,12 +32,13 @@ import java.util.Objects;
  * 修改id提供者的因数服务
  */
 @Service(enableTx = true)
+@AllArgsConstructor
+@Slf4j
 public class ModifyIderFactorService {
-    private static final Logger logger = LoggerFactory.getLogger(ModifyIderFactorService.class);
-    @Autowired
-    private IderDao iderDao;
-    @Autowired
-    private IdProducerDao idProducerDao;
+    // id提供者dao
+    private final IderDao iderDao;
+    // id生产者dao
+    private final IdProducerDao idProducerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<ModifyIderFactorOrder, EmptyResult> context) {
@@ -54,12 +54,12 @@ public class ModifyIderFactorService {
         if (Objects.equals(order.getNewFactor(), ider.getFactor())) {
             return;
         }
-        logger.info("id提供者被修改因数前：{}", ider);
+        log.info("id提供者被修改因数前：{}", ider);
         List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId());
         // 计算进度最靠前的id生产者
         IdProducer maxIdProducer = null;
         for (IdProducer idProducer : idProducers) {
-            logger.info("现有的id生产者：{}", idProducer);
+            log.info("现有的id生产者：{}", idProducer);
             if (maxIdProducer == null || IdProducers.compare(idProducer, maxIdProducer) > 0) {
                 maxIdProducer = idProducer;
             }
@@ -71,18 +71,18 @@ public class ModifyIderFactorService {
             IdProducer idProducer = i < idProducers.size() ? idProducers.get(i) : new IdProducer();
             resetIdProducer(idProducer, ider, i, maxCurrentPeriod, maxCurrentId);
             idProducerDao.save(idProducer);
-            logger.info("新的id提供者：{}", idProducer);
+            log.info("新的id提供者：{}", idProducer);
         }
         // 删除多余的id生产者
         for (int i = order.getNewFactor(); i < idProducers.size(); i++) {
             IdProducer idProducer = idProducers.get(i);
             idProducerDao.delete(idProducer);
-            logger.info("删除id提供者：{}", idProducer);
+            log.info("删除id提供者：{}", idProducer);
         }
         // 修改因数
         ider.setFactor(order.getNewFactor());
         iderDao.save(ider);
-        logger.info("id提供者被修改因数后：{}", ider);
+        log.info("id提供者被修改因数后：{}", ider);
     }
 
     // 重置id生产者

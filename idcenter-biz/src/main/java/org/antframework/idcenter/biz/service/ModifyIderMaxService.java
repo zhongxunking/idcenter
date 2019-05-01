@@ -8,6 +8,8 @@
  */
 package org.antframework.idcenter.biz.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
@@ -21,9 +23,6 @@ import org.antframework.idcenter.facade.order.ModifyIderMaxOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.Date;
@@ -34,12 +33,13 @@ import java.util.Objects;
  * 修改id提供者的最大数据服务
  */
 @Service(enableTx = true)
+@AllArgsConstructor
+@Slf4j
 public class ModifyIderMaxService {
-    private static final Logger logger = LoggerFactory.getLogger(ModifyIderMaxService.class);
-    @Autowired
-    private IderDao iderDao;
-    @Autowired
-    private IdProducerDao idProducerDao;
+    // id提供者dao
+    private final IderDao iderDao;
+    // id生产者dao
+    private final IdProducerDao idProducerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<ModifyIderMaxOrder, EmptyResult> context) {
@@ -55,11 +55,11 @@ public class ModifyIderMaxService {
         if (Objects.equals(order.getNewMaxId(), ider.getMaxId())) {
             return;
         }
-        logger.info("id提供者被修改最大数据前：{}", ider);
+        log.info("id提供者被修改最大数据前：{}", ider);
         ider.setMaxId(order.getNewMaxId());
         ider.setMaxAmount(order.getNewMaxAmount());
         iderDao.save(ider);
-        logger.info("id提供者被修改最大数据后：{}", ider);
+        log.info("id提供者被修改最大数据后：{}", ider);
         List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId());
         Assert.isTrue(idProducers.size() == ider.getFactor(), String.format("id生产者数量[%d]和id提供者的factor[%d]不相等", idProducers.size(), ider.getFactor()));
         // 计算进度最靠前的id生产者
@@ -74,13 +74,13 @@ public class ModifyIderMaxService {
         // 更新所有id生产者的当前数据
         for (int i = 0; i < idProducers.size(); i++) {
             IdProducer idProducer = idProducers.get(i);
-            logger.info("id生产者被修改当前数据前：{}", idProducer);
+            log.info("id生产者被修改当前数据前：{}", idProducer);
             idProducer.setCurrentPeriod(maxCurrentPeriod);
             idProducer.setCurrentId(maxCurrentId);
             IdProducers.grow(ider, idProducer, i);
 
             idProducerDao.save(idProducer);
-            logger.info("id生产者被修改当前数据后：{}", idProducer);
+            log.info("id生产者被修改当前数据后：{}", idProducer);
         }
     }
 }

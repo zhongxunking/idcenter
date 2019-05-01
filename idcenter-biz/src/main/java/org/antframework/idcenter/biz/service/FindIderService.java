@@ -8,6 +8,7 @@
  */
 package org.antframework.idcenter.biz.service;
 
+import lombok.AllArgsConstructor;
 import org.antframework.idcenter.biz.service.converter.IderInfoConverter;
 import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.dal.entity.Ider;
@@ -16,17 +17,17 @@ import org.antframework.idcenter.facade.result.FindIderResult;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 查找id提供者服务
  */
 @Service
+@AllArgsConstructor
 public class FindIderService {
-    @Autowired
-    private IderDao iderDao;
-    @Autowired
-    private IderInfoConverter infoConverter;
+    // id提供者dao
+    private final IderDao iderDao;
+    // id提供者info转换器
+    private final IderInfoConverter infoConverter;
 
     @ServiceExecute
     public void execute(ServiceContext<FindIderOrder, FindIderResult> context) {

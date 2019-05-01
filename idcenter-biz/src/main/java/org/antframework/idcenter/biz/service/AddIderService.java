@@ -8,6 +8,8 @@
  */
 package org.antframework.idcenter.biz.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.facade.BizException;
 import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
@@ -21,10 +23,7 @@ import org.antframework.idcenter.facade.order.AddIderOrder;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -32,12 +31,13 @@ import java.util.Date;
  * 新增id提供者服务
  */
 @Service(enableTx = true)
+@AllArgsConstructor
+@Slf4j
 public class AddIderService {
-    private static final Logger logger = LoggerFactory.getLogger(AddIderService.class);
-    @Autowired
-    private IderDao iderDao;
-    @Autowired
-    private IdProducerDao idProducerDao;
+    // id提供者dao
+    private final IderDao iderDao;
+    // id生产者dao
+    private final IdProducerDao idProducerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<AddIderOrder, EmptyResult> context) {
@@ -50,11 +50,11 @@ public class AddIderService {
 
         ider = buildIder(order);
         iderDao.save(ider);
-        logger.info("新增id提供者：{}", ider);
+        log.info("新增id提供者：{}", ider);
 
         IdProducer idProducer = buildIdProducer(ider);
         idProducerDao.save(idProducer);
-        logger.info("新增id生产者：{}", idProducer);
+        log.info("新增id生产者：{}", idProducer);
     }
 
     // 构建id提供者

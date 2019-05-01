@@ -8,12 +8,15 @@
  */
 package org.antframework.idcenter.client.support;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 流量统计
  */
+@RequiredArgsConstructor
 public class FlowStat {
     // 随机数
     private static final Random RANDOM = new Random();
@@ -29,17 +32,6 @@ public class FlowStat {
     private final long minDuration;
     // 最大预留时间（毫秒）
     private final long maxDuration;
-
-    /**
-     * 构造流量统计
-     *
-     * @param minDuration 最小预留时间（毫秒）
-     * @param maxDuration 最大预留时间（毫秒）
-     */
-    public FlowStat(long minDuration, long maxDuration) {
-        this.minDuration = minDuration;
-        this.maxDuration = maxDuration;
-    }
 
     /**
      * 增加统计

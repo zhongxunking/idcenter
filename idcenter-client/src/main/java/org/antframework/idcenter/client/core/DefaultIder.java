@@ -8,20 +8,19 @@
  */
 package org.antframework.idcenter.client.core;
 
+import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Id;
 import org.antframework.idcenter.client.Ider;
 import org.antframework.idcenter.client.support.FlowStat;
 import org.antframework.idcenter.client.support.ServerRequester;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
 
 /**
  * id提供者默认实现
  */
+@Slf4j
 public class DefaultIder implements Ider {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultIder.class);
     // 从服务端获取id任务的线程池
     private final Executor executor = new ThreadPoolExecutor(
             0,
@@ -103,7 +102,7 @@ public class DefaultIder implements Ider {
             }
             flowStat.next();
         } catch (Throwable e) {
-            logger.error("从id中心获取id出错：{}", e.getMessage());
+            log.error("从id中心获取id出错：{}", e.getMessage());
         }
     }
 }
