@@ -1,12 +1,12 @@
 # 分布式id生成-idcenter
 
 1. 简介
-> 生成全局唯一的id（流水号），是很多公司都需要解决的问题。如果还是采用时间戳+随机数形式生成，在并发量大时，很有可能会生成重复的id。重复id的危害就是会导致一系列问题，比如幂等性。idcenter专门用来高效的生成全局唯一id，分为服务端和客户端，每个客户端的tps可达到150万，而且服务端毫无压力。
+> 生成全局唯一的id（流水号），是很多公司都需要解决的问题。如果还是采用时间戳+随机数形式生成，在并发量大时，很有可能会生成重复的id。重复id的危害就是可能会导致一系列问题。idcenter专门用来高效的生成全局唯一id，分为服务端和客户端，每个客户端的tps可达到150万，而且服务端毫无压力。
 
 2. 环境要求
 > * 服务端：jdk1.8
 > * 客户端：jdk1.8
-> * MySql
+> * MySQL
 
 
 > 注意：本系统已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
@@ -118,7 +118,7 @@ IdersContext idersContext = new IdersContext(
         10 * 60 * 1000,             // 最小预留时间（毫秒，服务端不可用时客户端能够维持的最小时间）
         15 * 60 * 1000);            // 最大预留时间（毫秒，服务端不可用时客户端能够维持的最大时间）
 // 最大预留时间减去最小预留时间的差值就是客户端请求服务端的平均间隔时间，
-// 这个差值也是从客户端获取的id的周期误差时间，建议合理设置。比如差值为5分钟应该是适合绝大多数公司的。
+// 这个差值也是从客户端获取的id的周期误差时间，建议合理设置。比如以上默认配置应该是适合绝大多数公司的。
 
 // 获取用户id的提供者
 Ider ider = idersContext.getIder("userId");
@@ -132,13 +132,34 @@ String formattedId1 = id1.getPeriod().toString() + String.format("%05d", id1.get
 
 ### 3.2 通过starter进行集成
 starter本质上还是依赖于上面介绍的客户端的能力，只不过根据spring-boot场景提供了更优雅的集成方式。
+> 注意：本starter既支持SpringBoot2.x，也支持SpringBoot1.x
 
 #### 3.2.1 引入starter依赖
+- SpringBoot2.x应用引入：
 ```xml
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
     <artifactId>idcenter-spring-boot-starter</artifactId>
     <version>1.3.0.RELEASE</version>
+</dependency>
+```
+- SpringBoot1.x应用引入：
+```xml
+<dependency>
+    <groupId>org.antframework.idcenter</groupId>
+    <artifactId>idcenter-spring-boot-starter</artifactId>
+    <version>1.3.0.RELEASE</version>
+    <exclusions>
+        <exclusion>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>5.3.6.Final</version>
 </dependency>
 ```
 
@@ -156,7 +177,7 @@ idcenter.max-duration=900000
 # 最小预留时间含义：服务端不可用时客户端能够维持的最小时间
 # 最大预留时间含义：服务端不可用时客户端能够维持的最大时间
 # 最大预留时间减去最小预留时间的差值就是客户端请求服务端的平均间隔时间，
-# 这个差值也是从客户端获取的id的周期误差时间，建议合理设置。比如差值为5分钟应该是适合绝大多数公司的。
+# 这个差值也是从客户端获取的id的周期误差时间，建议合理设置。比如以上默认配置应该是适合绝大多数公司的。
 ```
 
 #### 3.2.3 获取id
