@@ -266,10 +266,9 @@ public class IderManageController {
         BeanUtils.copyProperties(iderIdsResult, result, "infos");
         // 根据关系查找id提供者
         for (String iderId : iderIdsResult.getInfos()) {
-            FindIderResult findIderResult = findIder(iderId);
-            FacadeUtils.assertSuccess(findIderResult);
-            if (findIderResult.getIder() != null) {
-                result.addInfo(findIderResult.getIder());
+            IderInfo ider = Iders.findIder(iderId);
+            if (ider != null) {
+                result.addInfo(ider);
             }
         }
         return result;

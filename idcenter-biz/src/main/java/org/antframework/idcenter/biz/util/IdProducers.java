@@ -22,8 +22,7 @@ import java.util.Objects;
 /**
  * id生产者操作类
  */
-public class IdProducers {
-
+public final class IdProducers {
     /**
      * 比较id生产者进度
      *
