@@ -123,7 +123,7 @@
             <el-form-item label="id编码" prop="iderId" :rules="[{required:true, message:'请输入id编码', trigger:'blur'}]">
                 <el-input v-model="addIderForm.iderId" clearable placeholder="请输入id编码" style="width: 90%"></el-input>
             </el-form-item>
-            <el-form-item label="名称" prop="iderName" :rules="[{required:true, message:'请输入名称', trigger:'blur'}]">
+            <el-form-item label="名称" prop="iderName">
                 <el-input v-model="addIderForm.iderName" clearable placeholder="请输入名称" style="width: 90%"></el-input>
             </el-form-item>
             <el-form-item label="周期类型" prop="periodType" :rules="[{required:true, message:'请选择周期类型', trigger:'blur'}]">
