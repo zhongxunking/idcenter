@@ -20,7 +20,7 @@ import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
-import org.antframework.manager.web.Managers;
+import org.antframework.manager.web.CurrentManagers;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
@@ -52,7 +52,7 @@ public class IderManageController {
      */
     @RequestMapping("/addIder")
     public EmptyResult addIder(String iderId, String iderName, PeriodType periodType, Long maxId, Integer maxAmount) {
-        Managers.admin();
+        CurrentManagers.admin();
         AddIderOrder order = new AddIderOrder();
         order.setIderId(iderId);
         order.setIderName(iderName);
@@ -181,7 +181,7 @@ public class IderManageController {
      */
     @RequestMapping("/deleteIder")
     public EmptyResult deleteIder(String iderId) {
-        Managers.admin();
+        CurrentManagers.admin();
         // 删除与该id提供者有关的管理权限
         ManagerIders.deletesByIder(iderId);
 
@@ -217,7 +217,7 @@ public class IderManageController {
      */
     @RequestMapping("/queryIders")
     public QueryIdersResult queryIders(int pageNo, int pageSize, String iderId, PeriodType periodType) {
-        Managers.admin();
+        CurrentManagers.admin();
         QueryIdersOrder order = new QueryIdersOrder();
         order.setPageNo(pageNo);
         order.setPageSize(pageSize);
@@ -237,7 +237,7 @@ public class IderManageController {
      */
     @RequestMapping("/queryManagedIders")
     public QueryManagedIdersResult queryManagedIders(int pageNo, int pageSize, String iderId) {
-        ManagerInfo manager = Managers.currentManager();
+        ManagerInfo manager = CurrentManagers.current();
         if (manager.getType() == ManagerType.ADMIN) {
             return forAdmin(pageNo, pageSize, iderId);
         } else {

@@ -10,14 +10,14 @@ package org.antframework.idcenter.web.common;
 
 import org.antframework.boot.core.Contexts;
 import org.antframework.common.util.facade.*;
+import org.antframework.manager.biz.util.Relations;
 import org.antframework.manager.facade.api.RelationService;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
 import org.antframework.manager.facade.info.RelationInfo;
 import org.antframework.manager.facade.order.QuerySourceRelationsOrder;
 import org.antframework.manager.facade.result.QuerySourceRelationsResult;
-import org.antframework.manager.web.Managers;
-import org.antframework.manager.web.Relations;
+import org.antframework.manager.web.CurrentManagers;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -35,7 +35,7 @@ public final class ManagerIders {
      * @param iderId id提供者的id
      */
     public static void adminOrHaveIder(String iderId) {
-        ManagerInfo manager = Managers.currentManager();
+        ManagerInfo manager = CurrentManagers.current();
         if (manager.getType() == ManagerType.ADMIN) {
             return;
         }
@@ -67,7 +67,7 @@ public final class ManagerIders {
         order.setPageNo(pageNo);
         order.setPageSize(pageSize);
         order.setType(RELATION_TYPE);
-        order.setSource(Managers.currentManager().getManagerId());
+        order.setSource(CurrentManagers.current().getManagerId());
         order.setTarget(iderId);
 
         QuerySourceRelationsResult relationsResult = RELATION_SERVICE.querySourceRelations(order);
