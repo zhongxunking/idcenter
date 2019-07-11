@@ -42,7 +42,7 @@ public class IdersContext {
      */
     public IdersContext(String serverUrl, long minDuration, long maxDuration) {
         if (StringUtils.isBlank(serverUrl) || minDuration < 0 || maxDuration < minDuration) {
-            throw new IllegalArgumentException(String.format("初始化id中心客户端的参数不合法：serverUrl=%s,minDuration=%d,maxDuration=%d", serverUrl, minDuration, maxDuration));
+            throw new IllegalArgumentException(String.format("初始化idcenter客户端的参数不合法：serverUrl=%s,minDuration=%d,maxDuration=%d", serverUrl, minDuration, maxDuration));
         }
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;

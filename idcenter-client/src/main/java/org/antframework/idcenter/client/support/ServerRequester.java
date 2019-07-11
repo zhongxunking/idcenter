@@ -64,10 +64,10 @@ public class ServerRequester {
             String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, expectAmount), new BasicResponseHandler());
             AcquireIdsResult result = JSON.parseObject(resultStr, AcquireIdsResult.class);
             if (result == null) {
-                throw new RuntimeException("请求id中心失败");
+                throw new RuntimeException("请求idcenter失败");
             }
             if (!result.isSuccess()) {
-                throw new RuntimeException("从id中心获取批量id失败：" + result.getMessage());
+                throw new RuntimeException("从idcenter获取批量id失败：" + result.getMessage());
             }
             return convert(result.getIdses());
         } catch (IOException e) {

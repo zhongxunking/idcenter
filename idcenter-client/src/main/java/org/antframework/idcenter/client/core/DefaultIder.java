@@ -102,7 +102,7 @@ public class DefaultIder implements Ider {
             }
             flowStat.next();
         } catch (Throwable e) {
-            log.error("从id中心获取id出错：{}", e.getMessage());
+            log.error("从idcenter获取id出错：{}", e.getMessage());
         }
     }
 }

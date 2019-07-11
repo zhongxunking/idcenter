@@ -17,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.Min;
 
 /**
- * id中心配属性
+ * idcenter配置
  */
 @ConfigurationProperties("idcenter")
 @Validated
@@ -25,7 +25,7 @@ import javax.validation.constraints.Min;
 @Setter
 public class IdcenterProperties {
     /**
-     * 必填：id中心服务端地址（比如：http://localhost:6210）
+     * 必填：idcenter服务端地址（比如：http://localhost:6210）
      */
     @NotBlank
     private String serverUrl;
