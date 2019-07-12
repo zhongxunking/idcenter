@@ -83,11 +83,11 @@ currentId：当前id，标识本生产者在当前周期下生产到了哪个id
 
 启动服务端命令模板：
 ```bash
-nohup java -jar idcenter-1.4.1.RELEASE.jar --spring.profiles.active="online" --spring.datasource.url="数据库连接" --spring.datasource.username="数据库用户名" --spring.datasource.password="数据库密码" &
+nohup java -jar idcenter-1.4.2.RELEASE.jar --spring.profiles.active="online" --spring.datasource.url="数据库连接" --spring.datasource.username="数据库用户名" --spring.datasource.password="数据库密码" &
 ```
 比如我本地开发时启动命令：
 ```bash
-nohup java -jar idcenter-1.4.1.RELEASE.jar --spring.profiles.active="online" --spring.datasource.url="jdbc:mysql://localhost:3306/idcenter-dev?useUnicode=true&characterEncoding=utf-8" --spring.datasource.username="root" --spring.datasource.password="root" &
+nohup java -jar idcenter-1.4.2.RELEASE.jar --spring.profiles.active="online" --spring.datasource.url="jdbc:mysql://localhost:3306/idcenter-dev?useUnicode=true&characterEncoding=utf-8" --spring.datasource.username="root" --spring.datasource.password="root" &
 ```
 
 ## 3. 集成客户端
@@ -105,7 +105,7 @@ nohup java -jar idcenter-1.4.1.RELEASE.jar --spring.profiles.active="online" --s
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
     <artifactId>idcenter-client</artifactId>
-    <version>1.4.1.RELEASE</version>
+    <version>1.4.2.RELEASE</version>
 </dependency>
 ```
 
@@ -140,7 +140,7 @@ starter本质上还是依赖于上面介绍的客户端的能力，只不过根�
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
     <artifactId>idcenter-spring-boot-starter</artifactId>
-    <version>1.4.1.RELEASE</version>
+    <version>1.4.2.RELEASE</version>
 </dependency>
 ```
 - SpringBoot1.x应用引入：
@@ -148,7 +148,7 @@ starter本质上还是依赖于上面介绍的客户端的能力，只不过根�
 <dependency>
     <groupId>org.antframework.idcenter</groupId>
     <artifactId>idcenter-spring-boot-starter</artifactId>
-    <version>1.4.1.RELEASE</version>
+    <version>1.4.2.RELEASE</version>
     <exclusions>
         <exclusion>
             <groupId>org.hibernate.validator</groupId>
