@@ -33,7 +33,7 @@ idcenter具备统一的id管理能力、id具有周期概念、可承受海量�
 &ensp;&ensp;[服务端OpenAPI](https://github.com/zhongxunking/idcenter/wiki/%E6%9C%8D%E5%8A%A1%E7%AB%AFOpenAPI)
 
 # 技术支持
-欢迎加我微信入群进行交流。<br/>
+欢迎加我微信入群交流。<br/>
 <img src="https://note.youdao.com/yws/api/personal/file/WEBbca9e0a9a6e1ea2d9ab9def1cc90f839?method=download&shareKey=00e90849ae0d3b5cb8ed7dd12bc6842e" width=200 />
 
 # Who is using
