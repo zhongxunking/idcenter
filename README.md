@@ -12,6 +12,14 @@
 3. 演示环境
 > 地址：http://idcenter.antframework.org:6210 <br/>
 > 账号：admin 密码：123
+<img src="https://note.youdao.com/yws/api/personal/file/WEB05da7336237569414648a5e625d2302b?method=download&shareKey=5fabc26cd1af6f5013f50dbe918c78b8" width=700 />
+
+# 特性
+idcenter具备统一的id管理能力、id具有周期概念、可承受海量获取id需求、完善的权限管理能力。
+* 统一的id管理能力：提供id管理页面，可管理公司内部所有的id。
+* id具有周期概念：id的周期概念保证了id的时效性，让你看到id就知道这个id是什么时候产生的。
+* 可承受海量获取id请求：客户端的预处理设计，保证了单个客户端可承受百万tps级别的id获取；并且客户端和服务端之间平均5分钟通信一次，保证了服务端可支撑大量的客户端。
+* 完善的权限管理能力：可对管理员的权限进行约束，让合适的人管理合适的id。
 
 # 文档
 * 设计<br/>
