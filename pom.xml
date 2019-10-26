@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <name>idcenter</name>
-    <description>id生成中心</description>
+    <description>id中心</description>
 
     <modules>
         <module>idcenter-facade</module>
