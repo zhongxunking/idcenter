@@ -26,7 +26,6 @@ import org.bekit.service.engine.ServiceContext;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 修改id提供者的因数服务
@@ -43,7 +42,7 @@ public class ModifyIderFactorService {
     @ServiceExecute
     public void execute(ServiceContext<ModifyIderFactorOrder, EmptyResult> context) {
         ModifyIderFactorOrder order = context.getOrder();
-
+        // 校验入参
         Ider ider = iderDao.findLockByIderId(order.getIderId());
         if (ider == null) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIderId()));
@@ -51,19 +50,16 @@ public class ModifyIderFactorService {
         if (ider.getMaxId() != null && order.getNewFactor() > ider.getMaxId()) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("新的因数[%d]不能大于id提供者[%s]的最大id[%d]", order.getNewFactor(), ider.getIderId(), ider.getMaxId()));
         }
-        if (Objects.equals(order.getNewFactor(), ider.getFactor())) {
-            return;
-        }
+        // 修改id提供者的因数
         log.info("id提供者被修改因数前：{}", ider);
+        ider.setFactor(order.getNewFactor());
+        iderDao.save(ider);
+        log.info("id提供者被修改因数后：{}", ider);
+        // 查找所有id生产者
         List<IdProducer> idProducers = idProducerDao.findLockByIderIdOrderByIndexAsc(ider.getIderId());
+        idProducers.forEach(idProducer -> log.info("现有的id生产者：{}", idProducer));
         // 计算进度最靠前的id生产者
-        IdProducer maxIdProducer = null;
-        for (IdProducer idProducer : idProducers) {
-            log.info("现有的id生产者：{}", idProducer);
-            if (maxIdProducer == null || IdProducers.compare(idProducer, maxIdProducer) > 0) {
-                maxIdProducer = idProducer;
-            }
-        }
+        IdProducer maxIdProducer = idProducers.stream().max(IdProducers::compare).get();
         Date maxCurrentPeriod = maxIdProducer.getCurrentPeriod();
         Long maxCurrentId = maxIdProducer.getCurrentId();
         // 设置新的id生产者
@@ -79,10 +75,6 @@ public class ModifyIderFactorService {
             idProducerDao.delete(idProducer);
             log.info("删除id提供者：{}", idProducer);
         }
-        // 修改因数
-        ider.setFactor(order.getNewFactor());
-        iderDao.save(ider);
-        log.info("id提供者被修改因数后：{}", ider);
     }
 
     // 重置id生产者
