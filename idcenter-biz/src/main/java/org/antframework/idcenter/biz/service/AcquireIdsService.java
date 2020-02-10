@@ -52,14 +52,14 @@ public class AcquireIdsService {
         if (ider == null) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", order.getIderId()));
         }
-        context.setAttachmentAttr(Ider.class, ider);
+        context.getAttachment().put(Ider.class, ider);
     }
 
     @ServiceExecute
     public void execute(ServiceContext<AcquireIdsOrder, AcquireIdsResult> context) {
         AcquireIdsOrder order = context.getOrder();
         AcquireIdsResult result = context.getResult();
-        Ider ider = context.getAttachmentAttr(Ider.class);
+        Ider ider = (Ider) context.getAttachment().get(Ider.class);
         // 随机选择一个id生产者
         IdProducer idProducer = idProducerDao.findLockByIderIdAndIndex(ider.getIderId(), RANDOM.nextInt(ider.getFactor()));
         if (idProducer == null) {
