@@ -14,10 +14,10 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 流量统计
+ * 流量计数器
  */
 @RequiredArgsConstructor
-public class FlowStat {
+public class FlowCounter {
     // 随机数
     private static final Random RANDOM = new Random();
     // 统计开始时间
@@ -34,7 +34,7 @@ public class FlowStat {
     private final long maxDuration;
 
     /**
-     * 增加统计
+     * 增加计数
      */
     public void addCount() {
         count.addAndGet(1);
@@ -42,7 +42,7 @@ public class FlowStat {
     }
 
     /**
-     * 切换到下一个统计
+     * 切换到下一个计数
      */
     public void next() {
         startTime = nextStartTime;
@@ -57,7 +57,7 @@ public class FlowStat {
      * @param remain 余量
      * @return 差量
      */
-    public int calcGap(long remain) {
+    public int computeGap(long remain) {
         if (remain > Integer.MAX_VALUE) {
             // 如果余量超过int最大值，则表示余量充足
             return 0;

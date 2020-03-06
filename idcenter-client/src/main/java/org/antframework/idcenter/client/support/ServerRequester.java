@@ -15,7 +15,6 @@ import lombok.Setter;
 import org.antframework.common.util.facade.AbstractResult;
 import org.antframework.common.util.id.Period;
 import org.antframework.common.util.tostring.ToString;
-import org.antframework.idcenter.client.core.Ids;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -69,7 +68,7 @@ public class ServerRequester {
             if (!result.isSuccess()) {
                 throw new RuntimeException("从idcenter获取批量id失败：" + result.getMessage());
             }
-            return convert(result.getIdses());
+            return result.getIdses();
         } catch (IOException e) {
             return ExceptionUtils.rethrow(e);
         }
@@ -86,15 +85,6 @@ public class ServerRequester {
         return httpPost;
     }
 
-    // 转换
-    private List<Ids> convert(List<AcquireIdsResult.Ids> idses) {
-        List<Ids> convertedIdses = new ArrayList<>();
-        for (AcquireIdsResult.Ids ids : idses) {
-            convertedIdses.add(new Ids(ids.getPeriod(), ids.getFactor(), ids.getStartId(), ids.getAmount()));
-        }
-        return convertedIdses;
-    }
-
     /**
      * 获取批量id-result
      */
@@ -103,26 +93,26 @@ public class ServerRequester {
     public static class AcquireIdsResult extends AbstractResult {
         // 获取到的批量id
         private List<Ids> idses;
+    }
 
-        /**
-         * 批量id
-         */
-        @AllArgsConstructor
-        @Getter
-        public static final class Ids implements Serializable {
-            // 周期
-            private final Period period;
-            // 因数
-            private final int factor;
-            // 开始id（包含）
-            private final long startId;
-            // id个数
-            private final int amount;
+    /**
+     * 批量id
+     */
+    @AllArgsConstructor
+    @Getter
+    public static final class Ids implements Serializable {
+        // 周期
+        private final Period period;
+        // 因数
+        private final int factor;
+        // 开始id（包含）
+        private final long startId;
+        // id个数
+        private final int amount;
 
-            @Override
-            public String toString() {
-                return ToString.toString(this);
-            }
+        @Override
+        public String toString() {
+            return ToString.toString(this);
         }
     }
 }

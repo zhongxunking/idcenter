@@ -10,10 +10,12 @@ package org.antframework.idcenter.client.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Id;
+import org.antframework.common.util.id.Period;
 import org.antframework.idcenter.client.Ider;
-import org.antframework.idcenter.client.support.FlowStat;
+import org.antframework.idcenter.client.support.FlowCounter;
 import org.antframework.idcenter.client.support.ServerRequester;
 
+import java.util.Date;
 import java.util.concurrent.*;
 
 /**
@@ -21,6 +23,9 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class DefaultIder implements Ider {
+    // 因id过期从服务端获取id最短间隔时间（毫秒）
+    private static final long MIN_OVERDUE_INTERVAL = 5000;
+
     // 从服务端获取id任务的线程池
     private final Executor executor = new ThreadPoolExecutor(
             0,
@@ -33,12 +38,14 @@ public class DefaultIder implements Ider {
     private final Semaphore semaphore = new Semaphore(10);
     // 请求服务端的互斥锁
     private final Object lock = new Object();
+    // 上次因id过期从服务端获取id的时间
+    private volatile long lastOverdueTime = System.currentTimeMillis();
+    // id仓库
+    private final IdStorage idStorage = new IdStorage();
     // id提供者的id（id编码）
     private final String iderId;
-    // 流量统计
-    private final FlowStat flowStat;
-    // id仓库
-    private final IdStorage idStorage;
+    // 流量计数器
+    private final FlowCounter flowCounter;
     // 服务端请求器
     private final ServerRequester serverRequester;
 
@@ -52,29 +59,51 @@ public class DefaultIder implements Ider {
      */
     public DefaultIder(String iderId, long minDuration, long maxDuration, ServerRequester serverRequester) {
         this.iderId = iderId;
-        flowStat = new FlowStat(minDuration, maxDuration);
-        idStorage = new IdStorage(maxDuration - minDuration);
+        this.flowCounter = new FlowCounter(minDuration, maxDuration);
         this.serverRequester = serverRequester;
     }
 
     @Override
     public Id acquire() {
-        flowStat.addCount();
-        asyncAcquireIds();
+        flowCounter.addCount();
+        asyncAcquireIds(true);
         Id id = idStorage.getId();
         if (id == null) {
             syncAcquireIds();
             id = idStorage.getId();
         }
+        if (id != null && isOverdue(id)) {
+            asyncAcquireIds(false);
+        }
         return id;
     }
 
-    // 异步从服务端获取id（如果有必要）
-    private void asyncAcquireIds() {
-        int gap = flowStat.calcGap(idStorage.getAmount(true));
-        if (gap > 0) {
-            executor.execute(this::syncAcquireIds);
+    // id是否过期
+    private boolean isOverdue(Id id) {
+        long currentTime = System.currentTimeMillis();
+        if (lastOverdueTime > currentTime) {
+            lastOverdueTime = currentTime;
         }
+        if (currentTime - lastOverdueTime <= MIN_OVERDUE_INTERVAL) {
+            return false;
+        }
+        Period currentPeriod = new Period(id.getPeriod().getType(), new Date(currentTime));
+        if (currentPeriod.compareTo(id.getPeriod()) <= 0) {
+            return false;
+        }
+        lastOverdueTime = currentTime;
+        return true;
+    }
+
+    // 异步从服务端获取id（如果有必要）
+    private void asyncAcquireIds(boolean checkGap) {
+        if (checkGap) {
+            int gap = flowCounter.computeGap(idStorage.getAmount(null));
+            if (gap <= 0) {
+                return;
+            }
+        }
+        executor.execute(this::syncAcquireIds);
     }
 
     // 同步从服务端获取id（如果有必要）
@@ -84,9 +113,14 @@ public class DefaultIder implements Ider {
         }
         try {
             synchronized (lock) {
-                int gap = flowStat.calcGap(idStorage.getAmount(false));
+                Date currentTime = new Date();
+                int gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 if (gap > 0) {
                     acquireIds(gap);
+                    gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
+                }
+                if (gap <= 0) {
+                    idStorage.clearOverdueIdChunks(currentTime);
                 }
             }
         } finally {
@@ -97,10 +131,11 @@ public class DefaultIder implements Ider {
     // 从服务端获取id
     private void acquireIds(int amount) {
         try {
-            for (Ids ids : serverRequester.acquireIds(iderId, amount)) {
-                idStorage.addIds(ids);
+            for (ServerRequester.Ids ids : serverRequester.acquireIds(iderId, amount)) {
+                IdChunk idChunk = new IdChunk(ids.getPeriod(), ids.getFactor(), ids.getStartId(), ids.getAmount());
+                idStorage.addIdChunk(idChunk);
             }
-            flowStat.next();
+            flowCounter.next();
         } catch (Throwable e) {
             log.error("从idcenter获取id出错：{}", e.getMessage());
         }

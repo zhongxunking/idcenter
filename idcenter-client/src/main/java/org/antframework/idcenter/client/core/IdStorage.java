@@ -10,6 +10,7 @@ package org.antframework.idcenter.client.core;
 
 import org.antframework.common.util.id.Id;
 
+import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,21 +19,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * id仓库
  */
 public class IdStorage {
-    // 批量id队列
-    private final Queue<Ids> idsQueue = new ConcurrentLinkedQueue<>();
-    // 仓库内id个数
+    // id块队列
+    private final Queue<IdChunk> idChunks = new ConcurrentLinkedQueue<>();
+    // 仓库内id数量
     private final AtomicLong amount = new AtomicLong(0);
-    // 允许的周期误差
-    private final Long periodError;
-
-    /**
-     * 构造id仓库
-     *
-     * @param periodError 允许的周期误差（毫秒）
-     */
-    public IdStorage(long periodError) {
-        this.periodError = periodError;
-    }
 
     /**
      * 获取id
@@ -42,14 +32,13 @@ public class IdStorage {
     public synchronized Id getId() {
         Id id;
         do {
-            Ids ids = idsQueue.peek();
-            if (ids == null) {
+            IdChunk idChunk = idChunks.peek();
+            if (idChunk == null) {
                 return null;
             }
-            id = ids.getId(periodError);
+            id = idChunk.getId();
             if (id == null) {
-                idsQueue.poll();
-                amount.addAndGet(-ids.getAmount(null));
+                idChunks.poll();
             }
         } while (id == null);
         amount.addAndGet(-1);
@@ -58,26 +47,40 @@ public class IdStorage {
     }
 
     /**
-     * 添加批量id
+     * 添加id块
      */
-    public void addIds(Ids ids) {
-        idsQueue.offer(ids);
-        amount.addAndGet(ids.getAmount(null));
+    public synchronized void addIdChunk(IdChunk idChunk) {
+        idChunks.offer(idChunk);
+        amount.addAndGet(idChunk.getAmount(null));
+    }
+
+    /**
+     * 清理过期的id块
+     *
+     * @param currentTime 当前时间（null表示不管是否过期）
+     */
+    public synchronized void clearOverdueIdChunks(Date currentTime) {
+        IdChunk idChunk = idChunks.peek();
+        while (idChunk != null && idChunk.getAmount(currentTime) <= 0) {
+            idChunks.poll();
+            amount.addAndGet(-idChunk.getAmount(null));
+            idChunk = idChunks.peek();
+        }
     }
 
     /**
      * 获取id数量
      *
-     * @param allowPeriodError 是否允许周期误差
+     * @param currentTime 当前时间（null表示不管是否过期）
      * @return id数量
      */
-    public long getAmount(boolean allowPeriodError) {
-        if (allowPeriodError) {
+    public long getAmount(Date currentTime) {
+        if (currentTime == null) {
             return this.amount.get();
         }
-        int amount = 0;
-        for (Ids ids : idsQueue) {
-            amount += ids.getAmount(0L);
+        long amount = 0;
+        for (IdChunk idChunk : idChunks) {
+            amount += idChunk.getAmount(currentTime);
         }
         return amount;
     }
