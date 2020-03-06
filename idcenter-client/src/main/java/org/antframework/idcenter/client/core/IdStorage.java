@@ -10,7 +10,6 @@ package org.antframework.idcenter.client.core;
 
 import org.antframework.common.util.id.Id;
 
-import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -59,7 +58,7 @@ public class IdStorage {
      *
      * @param currentTime 当前时间（null表示不管是否过期）
      */
-    public synchronized void clearOverdueIdChunks(Date currentTime) {
+    public synchronized void clearOverdueIdChunks(Long currentTime) {
         IdChunk idChunk = idChunks.peek();
         while (idChunk != null && idChunk.getAmount(currentTime) <= 0) {
             idChunks.poll();
@@ -74,7 +73,7 @@ public class IdStorage {
      * @param currentTime 当前时间（null表示不管是否过期）
      * @return id数量
      */
-    public long getAmount(Date currentTime) {
+    public long getAmount(Long currentTime) {
         if (currentTime == null) {
             return this.amount.get();
         }

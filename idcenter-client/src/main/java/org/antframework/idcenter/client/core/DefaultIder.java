@@ -39,7 +39,7 @@ public class DefaultIder implements Ider {
     // 请求服务端的互斥锁
     private final Object lock = new Object();
     // 上次因id过期从服务端获取id的时间
-    private volatile long lastOverdueTime = System.currentTimeMillis();
+    private volatile long lastOverdueTime = System.currentTimeMillis() - MIN_OVERDUE_INTERVAL;
     // id仓库
     private final IdStorage idStorage = new IdStorage();
     // id提供者的id（id编码）
@@ -84,7 +84,7 @@ public class DefaultIder implements Ider {
         if (lastOverdueTime > currentTime) {
             lastOverdueTime = currentTime;
         }
-        if (currentTime - lastOverdueTime <= MIN_OVERDUE_INTERVAL) {
+        if (currentTime - lastOverdueTime < MIN_OVERDUE_INTERVAL) {
             return false;
         }
         Period currentPeriod = new Period(id.getPeriod().getType(), new Date(currentTime));
@@ -113,7 +113,7 @@ public class DefaultIder implements Ider {
         }
         try {
             synchronized (lock) {
-                Date currentTime = new Date();
+                Long currentTime = System.currentTimeMillis();
                 int gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 if (gap > 0) {
                     acquireIds(gap);

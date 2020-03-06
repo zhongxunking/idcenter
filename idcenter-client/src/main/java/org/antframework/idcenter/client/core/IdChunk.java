@@ -52,9 +52,9 @@ public class IdChunk {
      * @param currentTime 当前时间（null表示不管是否过期）
      * @return id个数
      */
-    public int getAmount(Date currentTime) {
+    public int getAmount(Long currentTime) {
         if (currentTime != null) {
-            Period currentPeriod = new Period(period.getType(), currentTime);
+            Period currentPeriod = new Period(period.getType(), new Date(currentTime));
             if (currentPeriod.compareTo(period) > 0) {
                 return 0;
             }
