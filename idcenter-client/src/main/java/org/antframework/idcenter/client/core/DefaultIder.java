@@ -34,32 +34,34 @@ public class DefaultIder implements Ider {
             TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(1),
             new ThreadPoolExecutor.DiscardPolicy());
-    // 限制等待线程数量的信号量
-    private final Semaphore semaphore = new Semaphore(10);
-    // 请求服务端的互斥锁
-    private final Object lock = new Object();
     // 上次因id过期从服务端获取id的时间
     private volatile long lastOverdueTime = System.currentTimeMillis() - MIN_OVERDUE_INTERVAL;
+    // 请求服务端的互斥锁
+    private final Object lock = new Object();
     // id仓库
     private final IdStorage idStorage = new IdStorage();
     // id提供者的id（id编码）
     private final String iderId;
     // 流量计数器
     private final FlowCounter flowCounter;
+    // 限制等待线程数量的信号量
+    private final Semaphore semaphore;
     // 服务端请求器
     private final ServerRequester serverRequester;
 
     /**
      * 构造id提供者
      *
-     * @param iderId          id提供者的id（id编码）
-     * @param minDuration     最小预留时间（毫秒）
-     * @param maxDuration     最大预留时间（毫秒）
-     * @param serverRequester 服务端请求器
+     * @param iderId            id提供者的id（id编码）
+     * @param minDuration       最小预留时间（毫秒）
+     * @param maxDuration       最大预留时间（毫秒）
+     * @param maxBlockedThreads 最多被阻塞的线程数量（null表示不限制数量）
+     * @param serverRequester   服务端请求器
      */
-    public DefaultIder(String iderId, long minDuration, long maxDuration, ServerRequester serverRequester) {
+    public DefaultIder(String iderId, long minDuration, long maxDuration, Integer maxBlockedThreads, ServerRequester serverRequester) {
         this.iderId = iderId;
         this.flowCounter = new FlowCounter(minDuration, maxDuration);
+        this.semaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
         this.serverRequester = serverRequester;
     }
 
@@ -69,7 +71,7 @@ public class DefaultIder implements Ider {
         asyncAcquireIds(true);
         Id id = idStorage.getId();
         if (id == null) {
-            syncAcquireIds();
+            syncAcquireIds(true);
             id = idStorage.getId();
         }
         if (id != null && isOverdue(id)) {
@@ -103,13 +105,15 @@ public class DefaultIder implements Ider {
                 return;
             }
         }
-        executor.execute(this::syncAcquireIds);
+        executor.execute(() -> syncAcquireIds(false));
     }
 
     // 同步从服务端获取id（如果有必要）
-    private void syncAcquireIds() {
-        if (!semaphore.tryAcquire()) {
-            return;
+    private void syncAcquireIds(boolean limit) {
+        if (limit && semaphore != null) {
+            if (!semaphore.tryAcquire()) {
+                return;
+            }
         }
         try {
             synchronized (lock) {
@@ -124,7 +128,9 @@ public class DefaultIder implements Ider {
                 }
             }
         } finally {
-            semaphore.release();
+            if (limit && semaphore != null) {
+                semaphore.release();
+            }
         }
     }
 
