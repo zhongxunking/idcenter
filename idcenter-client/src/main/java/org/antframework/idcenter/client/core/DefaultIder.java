@@ -16,6 +16,7 @@ import org.antframework.idcenter.client.support.FlowCounter;
 import org.antframework.idcenter.client.support.ServerRequester;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -137,10 +138,10 @@ public class DefaultIder implements Ider {
     // 从服务端获取id
     private void acquireIds(int amount) {
         try {
-            for (ServerRequester.Ids ids : serverRequester.acquireIds(iderId, amount)) {
-                IdChunk idChunk = new IdChunk(ids.getPeriod(), ids.getFactor(), ids.getStartId(), ids.getAmount());
-                idStorage.addIdChunk(idChunk);
-            }
+            List<ServerRequester.IdChunk> idChunks = serverRequester.acquireIds(iderId, amount);
+            idChunks.stream()
+                    .map(idChunk -> new IdChunk(idChunk.getPeriod(), idChunk.getFactor(), idChunk.getStartId(), idChunk.getAmount()))
+                    .forEach(idStorage::addIdChunk);
             flowCounter.next();
         } catch (Throwable e) {
             log.error("从idcenter获取id出错：{}", e.getMessage());

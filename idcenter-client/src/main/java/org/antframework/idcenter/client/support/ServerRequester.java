@@ -54,13 +54,13 @@ public class ServerRequester {
     /**
      * 获取批量id
      *
-     * @param iderId       id提供者的id（id编码）
-     * @param expectAmount 期望获取到的id个数
+     * @param iderId id提供者的id（id编码）
+     * @param amount id数量
      * @return 批量id
      */
-    public List<Ids> acquireIds(String iderId, int expectAmount) {
+    public List<IdChunk> acquireIds(String iderId, int amount) {
         try {
-            String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, expectAmount), new BasicResponseHandler());
+            String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, amount), new BasicResponseHandler());
             AcquireIdsResult result = JSON.parseObject(resultStr, AcquireIdsResult.class);
             if (result == null) {
                 throw new RuntimeException("请求idcenter失败");
@@ -68,17 +68,17 @@ public class ServerRequester {
             if (!result.isSuccess()) {
                 throw new RuntimeException("从idcenter获取批量id失败：" + result.getMessage());
             }
-            return result.getIdses();
+            return result.getIdChunks();
         } catch (IOException e) {
             return ExceptionUtils.rethrow(e);
         }
     }
 
     // 构建请求
-    private HttpUriRequest buildRequest(String iderId, int expectAmount) {
+    private HttpUriRequest buildRequest(String iderId, int amount) {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("iderId", iderId));
-        params.add(new BasicNameValuePair("expectAmount", Integer.toString(expectAmount)));
+        params.add(new BasicNameValuePair("amount", Integer.toString(amount)));
 
         HttpPost httpPost = new HttpPost(acquireIdsUrl);
         httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("utf-8")));
@@ -91,16 +91,16 @@ public class ServerRequester {
     @Getter
     @Setter
     public static class AcquireIdsResult extends AbstractResult {
-        // 获取到的批量id
-        private List<Ids> idses;
+        // id块
+        private List<IdChunk> idChunks;
     }
 
     /**
-     * 批量id
+     * id块
      */
     @AllArgsConstructor
     @Getter
-    public static final class Ids implements Serializable {
+    public static final class IdChunk implements Serializable {
         // 周期
         private final Period period;
         // 因数
