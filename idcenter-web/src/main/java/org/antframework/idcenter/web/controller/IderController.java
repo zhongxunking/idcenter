@@ -28,15 +28,15 @@ public class IderController {
     /**
      * 获取批量id
      *
-     * @param iderId       id提供者的id（id编码）
-     * @param expectAmount 期望的数量
+     * @param iderId id提供者的id（id编码）
+     * @param amount id数量
      * @return 获取结果
      */
     @RequestMapping("/acquireIds")
-    public AcquireIdsResult acquireIds(String iderId, Integer expectAmount) {
+    public AcquireIdsResult acquireIds(String iderId, Integer amount) {
         AcquireIdsOrder order = new AcquireIdsOrder();
         order.setIderId(iderId);
-        order.setExpectAmount(expectAmount);
+        order.setAmount(amount);
 
         return iderService.acquireIds(order);
     }
