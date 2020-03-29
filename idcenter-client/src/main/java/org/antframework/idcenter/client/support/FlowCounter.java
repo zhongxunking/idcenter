@@ -39,10 +39,12 @@ public class FlowCounter {
 
     /**
      * 增加计数
+     *
+     * @param amount 增加的数量
      */
-    public void addCount() {
-        count.increment();
-        nextCount.increment();
+    public void addCount(long amount) {
+        count.add(amount);
+        nextCount.add(amount);
     }
 
     /**

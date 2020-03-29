@@ -68,7 +68,7 @@ public class DefaultIder implements Ider {
 
     @Override
     public Id acquire() {
-        flowCounter.addCount();
+        flowCounter.addCount(1);
         asyncAcquireIds(true);
         Id id = idStorage.getId();
         if (id == null) {
