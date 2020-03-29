@@ -8,37 +8,41 @@
  */
 package org.antframework.idcenter.client.support;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 流量计数器
  */
-@RequiredArgsConstructor
 public class FlowCounter {
     // 随机数
     private static final Random RANDOM = new Random();
-    // 统计开始时间
-    private volatile long startTime = System.currentTimeMillis();
-    // id使用量统计
-    private final AtomicLong count = new AtomicLong(0);
-    // 下一个统计开始时间
-    private volatile long nextStartTime = startTime;
-    // 下一个id使用量统计
-    private final AtomicLong nextCount = new AtomicLong(0);
+
     // 最小预留时间（毫秒）
     private final long minDuration;
     // 最大预留时间（毫秒）
     private final long maxDuration;
+    // 统计开始时间
+    private volatile long startTime;
+    // id使用量统计
+    private volatile LongAdder count;
+    // 下一个统计开始时间
+    private volatile long nextStartTime;
+    // 下一个id使用量统计
+    private volatile LongAdder nextCount;
+
+    public FlowCounter(long minDuration, long maxDuration) {
+        this.minDuration = minDuration;
+        this.maxDuration = maxDuration;
+        initCounter();
+    }
 
     /**
      * 增加计数
      */
     public void addCount() {
-        count.addAndGet(1);
-        nextCount.addAndGet(1);
+        count.increment();
+        nextCount.increment();
     }
 
     /**
@@ -46,9 +50,9 @@ public class FlowCounter {
      */
     public void next() {
         startTime = nextStartTime;
-        count.set(nextCount.get());
+        count = nextCount;
         nextStartTime = System.currentTimeMillis();
-        nextCount.set(0);
+        nextCount = new LongAdder();
     }
 
     /**
@@ -66,15 +70,13 @@ public class FlowCounter {
         if (statDuration <= 0) {
             if (statDuration < 0) {
                 // 如果时钟被回拨，则统计清零
-                startTime = nextStartTime = System.currentTimeMillis();
-                count.set(0);
-                nextCount.set(0);
+                initCounter();
             }
             // 无法通过统计计算出差量
             return remain > 0 ? 0 : 1;
         }
         // 拷贝一份count的值（防止count被其他线程修改后导致计算出错）
-        long count = this.count.get();
+        long count = this.count.sum();
         long min = (long) (((double) minDuration) / statDuration * count);
         if (remain > min) {
             return remain > 0 ? 0 : 1;
@@ -93,5 +95,13 @@ public class FlowCounter {
         // 差量不能超过int类型最大值
         gap = Math.min(gap, Integer.MAX_VALUE);
         return (int) Math.max(gap, 1);
+    }
+
+    // 初始化计数器
+    private void initCounter() {
+        startTime = System.currentTimeMillis() - ((maxDuration - minDuration) / 100);
+        count = new LongAdder();
+        nextStartTime = startTime;
+        nextCount = new LongAdder();
     }
 }
