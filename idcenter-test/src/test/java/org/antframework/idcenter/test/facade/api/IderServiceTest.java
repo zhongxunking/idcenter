@@ -98,7 +98,7 @@ public class IderServiceTest extends AbstractTest {
     public void testAcquireIds() {
         AcquireIdsOrder order = new AcquireIdsOrder();
         order.setIderId("userId");
-        order.setExpectAmount(1000);
+        order.setAmount(1000);
 
         AcquireIdsResult result = iderService.acquireIds(order);
         assertSuccess(result);
