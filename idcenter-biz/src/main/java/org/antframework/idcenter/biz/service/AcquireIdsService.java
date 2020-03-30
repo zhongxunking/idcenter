@@ -78,7 +78,7 @@ public class AcquireIdsService {
         // 现代化id生产者
         modernizeIdProducer(ider, idProducer);
         // 生产id
-        result.setIdChunks(IdProducers.produce(ider, idProducer, amount));
+        result.setIdSegments(IdProducers.produce(ider, idProducer, amount));
         // 更新id生产者
         idProducerDao.save(idProducer);
         log.info("生产id后的id生产者：{}", idProducer);

@@ -11,7 +11,7 @@ package org.antframework.idcenter.facade.result;
 import lombok.Getter;
 import lombok.Setter;
 import org.antframework.common.util.facade.AbstractResult;
-import org.antframework.idcenter.facade.vo.IdChunk;
+import org.antframework.idcenter.facade.vo.IdSegment;
 
 import java.util.List;
 
@@ -21,6 +21,6 @@ import java.util.List;
 @Getter
 @Setter
 public class AcquireIdsResult extends AbstractResult {
-    // id块
-    private List<IdChunk> idChunks;
+    // id段
+    private List<IdSegment> idSegments;
 }

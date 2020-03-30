@@ -58,7 +58,7 @@ public class ServerRequester {
      * @param amount id数量
      * @return 批量id
      */
-    public List<IdChunk> acquireIds(String iderId, int amount) {
+    public List<IdSegment> acquireIds(String iderId, int amount) {
         try {
             String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, amount), new BasicResponseHandler());
             AcquireIdsResult result = JSON.parseObject(resultStr, AcquireIdsResult.class);
@@ -68,7 +68,7 @@ public class ServerRequester {
             if (!result.isSuccess()) {
                 throw new RuntimeException("从idcenter获取批量id失败：" + result.getMessage());
             }
-            return result.getIdChunks();
+            return result.getIdSegments();
         } catch (IOException e) {
             return ExceptionUtils.rethrow(e);
         }
@@ -91,16 +91,16 @@ public class ServerRequester {
     @Getter
     @Setter
     public static class AcquireIdsResult extends AbstractResult {
-        // id块
-        private List<IdChunk> idChunks;
+        // id段
+        private List<IdSegment> idSegments;
     }
 
     /**
-     * id块
+     * id段
      */
     @AllArgsConstructor
     @Getter
-    public static final class IdChunk implements Serializable {
+    public static final class IdSegment implements Serializable {
         // 周期
         private final Period period;
         // 因数

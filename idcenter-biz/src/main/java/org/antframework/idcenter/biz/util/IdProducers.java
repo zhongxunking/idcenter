@@ -12,7 +12,7 @@ import org.antframework.common.util.facade.FacadeUtils;
 import org.antframework.common.util.id.Period;
 import org.antframework.idcenter.dal.entity.IdProducer;
 import org.antframework.idcenter.dal.entity.Ider;
-import org.antframework.idcenter.facade.vo.IdChunk;
+import org.antframework.idcenter.facade.vo.IdSegment;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public final class IdProducers {
      * @param amount     需生产的id个数
      * @return 生产出的id
      */
-    public static List<IdChunk> produce(Ider ider, IdProducer idProducer, int amount) {
+    public static List<IdSegment> produce(Ider ider, IdProducer idProducer, int amount) {
         return grow(ider, idProducer, ((long) amount) * ider.getFactor());
     }
 
@@ -66,9 +66,9 @@ public final class IdProducers {
      * @param length     增加长度
      * @return 增加过程中产生的id
      */
-    public static List<IdChunk> grow(Ider ider, IdProducer idProducer, long length) {
+    public static List<IdSegment> grow(Ider ider, IdProducer idProducer, long length) {
         Assert.isTrue(length >= 0, "id生产者增加长度不能小于0");
-        List<IdChunk> idChunks = new ArrayList<>();
+        List<IdSegment> idSegments = new ArrayList<>();
 
         long newCurrentId = idProducer.getCurrentId() + length;
         Assert.isTrue(newCurrentId >= idProducer.getCurrentId(), "运算中超过long类型最大值，无法进行计算");
@@ -76,12 +76,12 @@ public final class IdProducers {
         long anchorId = idProducer.getCurrentId();
         while (anchorId < newCurrentId) {
             int idAmount = computeIdAmountOfPeriod(ider, newCurrentId, anchorId);
-            idChunks.add(buildIdChunk(ider, idProducer, anchorId, idAmount));
+            idSegments.add(buildIdSegment(ider, idProducer, anchorId, idAmount));
             anchorId += ((long) idAmount) * ider.getFactor();
         }
         updateIdProducer(idProducer, ider, newCurrentId);
 
-        return idChunks;
+        return idSegments;
     }
 
     // 计算anchorId所在周期内产生的id数量
@@ -95,15 +95,15 @@ public final class IdProducers {
         return FacadeUtils.calcTotalPage(anchorEndId - anchorId, ider.getFactor());
     }
 
-    // 构建id块
-    private static IdChunk buildIdChunk(Ider ider, IdProducer idProducer, long anchorId, int idAmount) {
+    // 构建id段
+    private static IdSegment buildIdSegment(Ider ider, IdProducer idProducer, long anchorId, int idAmount) {
         Period period = new Period(ider.getPeriodType(), idProducer.getCurrentPeriod());
         long startId = anchorId;
         if (ider.getMaxId() != null) {
             period = period.grow((int) (startId / ider.getMaxId()));
             startId = startId % ider.getMaxId();
         }
-        return new IdChunk(period, ider.getFactor(), startId, idAmount);
+        return new IdSegment(period, ider.getFactor(), startId, idAmount);
     }
 
     // 更新id生产者

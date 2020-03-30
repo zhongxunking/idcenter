@@ -138,9 +138,9 @@ public class DefaultIder implements Ider {
     // 从服务端获取id
     private void acquireIds(int amount) {
         try {
-            List<ServerRequester.IdChunk> idChunks = serverRequester.acquireIds(iderId, amount);
-            idChunks.stream()
-                    .map(idChunk -> new IdChunk(idChunk.getPeriod(), idChunk.getFactor(), idChunk.getStartId(), idChunk.getAmount()))
+            List<ServerRequester.IdSegment> idSegments = serverRequester.acquireIds(iderId, amount);
+            idSegments.stream()
+                    .map(idSegment -> new IdChunk(idSegment.getPeriod(), idSegment.getFactor(), idSegment.getStartId(), idSegment.getAmount()))
                     .forEach(idStorage::addIdChunk);
             flowCounter.next();
         } catch (Throwable e) {
