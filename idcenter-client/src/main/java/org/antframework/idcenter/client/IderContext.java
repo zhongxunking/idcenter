@@ -18,9 +18,9 @@ import java.util.function.Function;
 /**
  * id提供者上下文
  */
-public class IdersContext {
+public class IderContext {
     // id提供者缓存
-    private final Cache<String, Ider> idersCache = new Cache<>(new Function<String, Ider>() {
+    private final Cache<String, Ider> iderCache = new Cache<>(new Function<String, Ider>() {
         @Override
         public Ider apply(String key) {
             return new DefaultIder(key, minDuration, maxDuration, maxBlockedThreads, serverRequester);
@@ -43,7 +43,7 @@ public class IdersContext {
      * @param maxDuration       最大预留时间（毫秒）
      * @param maxBlockedThreads 最多被阻塞的线程数量（null表示不限制数量）
      */
-    public IdersContext(String serverUrl, long minDuration, long maxDuration, Integer maxBlockedThreads) {
+    public IderContext(String serverUrl, long minDuration, long maxDuration, Integer maxBlockedThreads) {
         if (StringUtils.isBlank(serverUrl)
                 || minDuration < 0
                 || maxDuration < minDuration
@@ -63,6 +63,6 @@ public class IdersContext {
      * @return id提供者
      */
     public Ider getIder(String iderId) {
-        return idersCache.get(iderId);
+        return iderCache.get(iderId);
     }
 }
