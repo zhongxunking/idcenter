@@ -8,12 +8,7 @@
  */
 package org.antframework.idcenter.web.id;
 
-import org.antframework.common.util.facade.BizException;
-import org.antframework.common.util.facade.CommonResultCode;
-import org.antframework.common.util.facade.Status;
 import org.antframework.common.util.other.Cache;
-import org.antframework.idcenter.biz.util.Iders;
-import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.web.id.core.DefaultIder;
 
 import java.util.function.Function;
@@ -26,10 +21,6 @@ public class IderContext {
     private final Cache<String, Ider> iderCache = new Cache<>(new Function<String, Ider>() {
         @Override
         public Ider apply(String key) {
-            IderInfo ider = Iders.findIder(key);
-            if (ider == null) {
-                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", key));
-            }
             return new DefaultIder(key, minDuration, maxDuration, maxBlockedThreads);
         }
     });
