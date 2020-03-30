@@ -69,16 +69,10 @@ public class AcquireIdsService {
         ider = iderDao.findByIderId(ider.getIderId());
         log.info("被获取id的id提供者：{}", ider);
         log.info("生产id前的id生产者：{}", idProducer);
-        // 计算生产的id数量
-        int amount = order.getAmount();
-        if (ider.getMaxAmount() != null && amount > ider.getMaxAmount()) {
-            log.warn("期望获取id的数量[{}]过多，调整到[{}]", amount, ider.getMaxAmount());
-            amount = ider.getMaxAmount();
-        }
         // 现代化id生产者
         modernizeIdProducer(ider, idProducer);
         // 生产id
-        result.setIdSegments(IdProducers.produce(ider, idProducer, amount));
+        result.setIdSegments(IdProducers.produce(ider, idProducer, order.getAmount()));
         // 更新id生产者
         idProducerDao.save(idProducer);
         log.info("生产id后的id生产者：{}", idProducer);
