@@ -55,7 +55,7 @@ public class IderController {
      */
     @RequestMapping("/acquireIds")
     public AcquireIdsResult acquireIds(@NotBlank String iderId, @NotNull @Min(1) Integer amount) {
-        log.info("收到获取批量id请求：iderId={},amount={}", iderId, amount);
+        log.info("收到请求-获取批量id：iderId={},amount={}", iderId, amount);
         // 计算id数量
         Integer maxAmount = maxAmountCache.get(iderId);
         if (maxAmount == null) {
@@ -72,7 +72,7 @@ public class IderController {
         // 构造result
         AcquireIdsResult result = FacadeUtils.buildSuccess(AcquireIdsResult.class);
         result.setIdSegments(idSegments);
-        log.info("获取批量id执行结果：result={}", result);
+        log.info("执行结果-获取批量id：result={}", result);
         return result;
     }
 
