@@ -13,11 +13,15 @@ import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.FacadeUtils;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.info.IderInfo;
+import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.order.FindIderOrder;
 import org.antframework.idcenter.facade.order.ModifyIderCurrentOrder;
+import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.result.FindIderResult;
+import org.antframework.idcenter.facade.vo.IdSegment;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * id提供者操作类
@@ -41,6 +45,23 @@ public final class Iders {
 
         EmptyResult result = IDER_SERVICE.modifyIderCurrent(order);
         FacadeUtils.assertSuccess(result);
+    }
+
+    /**
+     * 获取批量id
+     *
+     * @param iderId id提供者的id（id编码）
+     * @param amount 数量
+     * @return 批量id
+     */
+    public static List<IdSegment> acquireIds(String iderId, int amount) {
+        AcquireIdsOrder order = new AcquireIdsOrder();
+        order.setIderId(iderId);
+        order.setAmount(amount);
+
+        AcquireIdsResult result = IDER_SERVICE.acquireIds(order);
+        FacadeUtils.assertSuccess(result);
+        return result.getIdSegments();
     }
 
     /**
