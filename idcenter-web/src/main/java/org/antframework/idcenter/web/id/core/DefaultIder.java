@@ -24,6 +24,9 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class DefaultIder implements Ider {
+    // 最短间隔时间（毫秒）
+    private static final long MIN_INTERVAL = 5000;
+
     // 从服务端获取id任务的线程池
     private final Executor executor = new ThreadPoolExecutor(
             0,
@@ -32,6 +35,8 @@ public class DefaultIder implements Ider {
             TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(1),
             new ThreadPoolExecutor.DiscardPolicy());
+    // 上次请求服务失败的时间
+    private volatile long lastServiceFailureTime = System.currentTimeMillis() - MIN_INTERVAL;
     // 请求服务端的互斥锁
     private final Object lock = new Object();
     // id仓库
@@ -101,7 +106,7 @@ public class DefaultIder implements Ider {
                 Long currentTime = System.currentTimeMillis();
                 int gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 if (gap > 0) {
-                    doAcquireIds(gap);
+                    acquireIdsFromService(gap);
                     gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 }
                 if (gap <= 0) {
@@ -115,8 +120,17 @@ public class DefaultIder implements Ider {
         }
     }
 
-    // 从服务端获取id
-    private void doAcquireIds(int amount) {
+    // 从服务获取批量id
+    private void acquireIdsFromService(int amount) {
+        // 对失败情况限速
+        long currentTime = System.currentTimeMillis();
+        if (lastServiceFailureTime > currentTime) {
+            lastServiceFailureTime = currentTime;
+        }
+        if (currentTime - lastServiceFailureTime < MIN_INTERVAL) {
+            return;
+        }
+        // 获取批量id
         try {
             List<IdSegment> idSegments = Iders.acquireIds(iderId, amount);
             idSegments.stream()
@@ -124,6 +138,7 @@ public class DefaultIder implements Ider {
                     .forEach(idStorage::addIdChunk);
             flowCounter.next();
         } catch (Throwable e) {
+            lastServiceFailureTime = System.currentTimeMillis();
             log.error("从idcenter获取id出错：{}", e.getMessage());
         }
     }

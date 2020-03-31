@@ -24,8 +24,8 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class DefaultIder implements Ider {
-    // 因id过期从服务端获取id最短间隔时间（毫秒）
-    private static final long MIN_OVERDUE_INTERVAL = 5000;
+    // 最短间隔时间（毫秒）
+    private static final long MIN_INTERVAL = 5000;
 
     // 从服务端获取id任务的线程池
     private final Executor executor = new ThreadPoolExecutor(
@@ -36,7 +36,9 @@ public class DefaultIder implements Ider {
             new ArrayBlockingQueue<>(1),
             new ThreadPoolExecutor.DiscardPolicy());
     // 上次因id过期从服务端获取id的时间
-    private volatile long lastOverdueTime = System.currentTimeMillis() - MIN_OVERDUE_INTERVAL;
+    private volatile long lastOverdueTime = System.currentTimeMillis() - MIN_INTERVAL;
+    // 上次请求服务端失败的时间
+    private volatile long lastServerFailureTime = lastOverdueTime;
     // 请求服务端的互斥锁
     private final Object lock = new Object();
     // id仓库
@@ -83,13 +85,15 @@ public class DefaultIder implements Ider {
 
     // id是否过期
     private boolean isOverdue(Id id) {
+        // 对频繁过期情况限速
         long currentTime = System.currentTimeMillis();
         if (lastOverdueTime > currentTime) {
             lastOverdueTime = currentTime;
         }
-        if (currentTime - lastOverdueTime < MIN_OVERDUE_INTERVAL) {
+        if (currentTime - lastOverdueTime < MIN_INTERVAL) {
             return false;
         }
+        // 判断是否过期
         Period currentPeriod = new Period(id.getPeriod().getType(), new Date(currentTime));
         if (currentPeriod.compareTo(id.getPeriod()) <= 0) {
             return false;
@@ -121,7 +125,7 @@ public class DefaultIder implements Ider {
                 Long currentTime = System.currentTimeMillis();
                 int gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 if (gap > 0) {
-                    acquireIds(gap);
+                    acquireIdsFromServer(gap);
                     gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 }
                 if (gap <= 0) {
@@ -135,8 +139,17 @@ public class DefaultIder implements Ider {
         }
     }
 
-    // 从服务端获取id
-    private void acquireIds(int amount) {
+    // 从服务端获取批量id
+    private void acquireIdsFromServer(int amount) {
+        // 对失败情况限速
+        long currentTime = System.currentTimeMillis();
+        if (lastServerFailureTime > currentTime) {
+            lastServerFailureTime = currentTime;
+        }
+        if (currentTime - lastServerFailureTime < MIN_INTERVAL) {
+            return;
+        }
+        // 获取批量id
         try {
             List<ServerRequester.IdSegment> idSegments = serverRequester.acquireIds(iderId, amount);
             idSegments.stream()
@@ -144,6 +157,7 @@ public class DefaultIder implements Ider {
                     .forEach(idStorage::addIdChunk);
             flowCounter.next();
         } catch (Throwable e) {
+            lastServerFailureTime = System.currentTimeMillis();
             log.error("从idcenter获取id出错：{}", e.getMessage());
         }
     }
