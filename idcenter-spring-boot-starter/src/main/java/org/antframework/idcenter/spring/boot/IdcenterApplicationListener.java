@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.spring.boot;
 
-import org.antframework.idcenter.spring.IdersContexts;
+import org.antframework.idcenter.spring.IderContexts;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -19,6 +19,6 @@ public class IdcenterApplicationListener implements ApplicationListener<Applicat
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         // 触发初始化
-        IdersContexts.getContext();
+        IderContexts.getContext();
     }
 }

@@ -52,6 +52,7 @@ public class WebConfiguration {
         /**
          * 选填：最多被阻塞的线程数量（null表示不限制数量。默认为100）
          */
+        @Min(0)
         private Integer maxBlockedThreads = 100;
     }
 }
