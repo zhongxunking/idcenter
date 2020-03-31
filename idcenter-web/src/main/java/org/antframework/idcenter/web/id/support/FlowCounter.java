@@ -34,7 +34,7 @@ public class FlowCounter {
     public FlowCounter(long minDuration, long maxDuration) {
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
-        initCounter();
+        resetCounter();
     }
 
     /**
@@ -43,6 +43,9 @@ public class FlowCounter {
      * @param amount 增加的数量
      */
     public void addCount(long amount) {
+        if (count.sum() < 0 || nextCount.sum() < 0) {
+            resetCounter();
+        }
         count.add(amount);
         nextCount.add(amount);
     }
@@ -72,7 +75,7 @@ public class FlowCounter {
         if (statDuration <= 0) {
             if (statDuration < 0) {
                 // 如果时钟被回拨，则统计清零
-                initCounter();
+                resetCounter();
             }
             // 无法通过统计计算出差量
             return remain > 0 ? 0 : 1;
@@ -100,7 +103,7 @@ public class FlowCounter {
     }
 
     // 初始化计数器
-    private void initCounter() {
+    private void resetCounter() {
         startTime = System.currentTimeMillis() - ((maxDuration - minDuration) / 100);
         count = new LongAdder();
         nextStartTime = startTime;
