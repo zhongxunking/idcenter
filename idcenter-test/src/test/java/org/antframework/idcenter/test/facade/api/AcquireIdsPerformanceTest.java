@@ -79,7 +79,7 @@ public class AcquireIdsPerformanceTest extends AbstractTest {
     private void acquireIds() {
         AcquireIdsOrder order = new AcquireIdsOrder();
         order.setIderId("userId");
-        order.setExpectAmount(100);
+        order.setAmount(100);
 
         AcquireIdsResult result = iderService.acquireIds(order);
         FacadeUtils.assertSuccess(result);

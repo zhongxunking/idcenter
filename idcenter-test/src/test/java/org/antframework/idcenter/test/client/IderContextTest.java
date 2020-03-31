@@ -12,10 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.antframework.common.util.id.Id;
 import org.antframework.idcenter.client.Ider;
-import org.antframework.idcenter.client.IdersContext;
+import org.antframework.idcenter.client.IderContext;
 import org.antframework.idcenter.client.core.DefaultIder;
+import org.antframework.idcenter.client.core.IdChunk;
 import org.antframework.idcenter.client.core.IdStorage;
-import org.antframework.idcenter.client.core.Ids;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Assert;
@@ -37,8 +37,8 @@ import java.util.function.Consumer;
  * id提供者上下文单元测试
  */
 @Ignore
-public class IdersContextTest {
-    private static final Logger logger = LoggerFactory.getLogger(IdersContextTest.class);
+public class IderContextTest {
+    private static final Logger logger = LoggerFactory.getLogger(IderContextTest.class);
 
     @Test
     public void testIdersContext() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
@@ -53,8 +53,8 @@ public class IdersContextTest {
         private static final int COUNT = 1000000;
 
         static void test() {
-            IdersContext idersContext = new IdersContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000);
-            Ider ider = idersContext.getIder("userId");
+            IderContext iderContext = new IderContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000, null);
+            Ider ider = iderContext.getIder("userId");
             logger.info("-----------单ider单线程-----------start");
             new SingleIderSingleThreadTask(0, ider, COUNT, performance -> {
             }).run();
@@ -103,8 +103,8 @@ public class IdersContextTest {
         private static final int AMOUNT_OF_THREAD = 30;
 
         static void test() {
-            IdersContext idersContext = new IdersContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000);
-            Ider ider = idersContext.getIder("userId");
+            IderContext iderContext = new IderContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000, null);
+            Ider ider = iderContext.getIder("userId");
             logger.info("-----------单ider多线程-----------start");
             new SingleIderMultiThreadTask(0, ider, AMOUNT_OF_THREAD, performance -> {
             }).run();
@@ -206,8 +206,8 @@ public class IdersContextTest {
             CountDownLatch latch = new CountDownLatch(amountOfIder);
             long startTime = System.currentTimeMillis();
             for (int i = 0; i < amountOfIder; i++) {
-                IdersContext idersContext = new IdersContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000);
-                Ider ider = idersContext.getIder("userId");
+                IderContext iderContext = new IderContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000, null);
+                Ider ider = iderContext.getIder("userId");
                 int index = i;
                 executor.execute(new SingleIderMultiThreadTask(index, ider, AMOUNT_OF_THREAD, performance -> {
                     performances[index] = performance;
@@ -260,16 +260,16 @@ public class IdersContextTest {
             ReflectionUtils.makeAccessible(amountField);
             AtomicLong amount = (AtomicLong) amountField.get(idStorage);
 
-            Field idsQueueField = IdStorage.class.getDeclaredField("idsQueue");
-            ReflectionUtils.makeAccessible(idsQueueField);
-            Queue<Ids> idsQueue = (Queue<Ids>) idsQueueField.get(idStorage);
+            Field idChunksField = IdStorage.class.getDeclaredField("idChunks");
+            ReflectionUtils.makeAccessible(idChunksField);
+            Queue<IdChunk> idChunks = (Queue<IdChunk>) idChunksField.get(idStorage);
 
             long realAmount = 0;
-            for (Ids ids : idsQueue) {
-                realAmount += ids.getAmount(null);
+            for (IdChunk idChunk : idChunks) {
+                realAmount += idChunk.getAmount(null);
             }
 
-            logger.info("校验IdStorage：id仓库记录余量={}，id真正余量={}，idsQueue大小={}", amount.get(), realAmount, idsQueue.size());
+            logger.info("校验IdStorage：id仓库记录余量={}，id真正余量={}，idChunks大小={}", amount.get(), realAmount, idChunks.size());
             Assert.assertEquals(realAmount, amount.get());
         } catch (Throwable e) {
             ExceptionUtils.rethrow(e);

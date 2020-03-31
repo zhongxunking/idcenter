@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Id;
 import org.antframework.idcenter.client.Ider;
-import org.antframework.idcenter.client.IdersContext;
+import org.antframework.idcenter.client.IderContext;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Ignore
 @Slf4j
-public class IdersContextPerformanceTest {
+public class IderContextPerformanceTest {
     // 并发线程数
     private static final int AMOUNT_OF_THREAD = 10;
     // 每个任务内循环次数
@@ -52,8 +52,8 @@ public class IdersContextPerformanceTest {
 
     @Before
     public void init() {
-        IdersContext idersContext = new IdersContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000);
-        ider = idersContext.getIder("userId");
+        IderContext iderContext = new IderContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000, null);
+        ider = iderContext.getIder("userId");
     }
 
     @Test
