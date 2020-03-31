@@ -42,9 +42,9 @@ public class IderContextTest {
 
     @Test
     public void testIdersContext() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
-//        SingleThreadSingleIderTest.test();
+        SingleThreadSingleIderTest.test();
 //        SingleIderMultiThreadTest.test();
-        MultiIderMultiThreadTest.test();
+//        MultiIderMultiThreadTest.test();
     }
 
     // 单ider单线程--测试
