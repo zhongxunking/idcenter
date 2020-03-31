@@ -11,6 +11,7 @@ package org.antframework.idcenter.client.core;
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Id;
 import org.antframework.common.util.id.Period;
+import org.antframework.common.util.other.RateLimiter;
 import org.antframework.idcenter.client.Ider;
 import org.antframework.idcenter.client.support.FlowCounter;
 import org.antframework.idcenter.client.support.ServerRequester;
@@ -24,9 +25,6 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class DefaultIder implements Ider {
-    // 最短间隔时间（毫秒）
-    private static final long MIN_INTERVAL = 5000;
-
     // 从服务端获取id任务的线程池
     private final Executor executor = new ThreadPoolExecutor(
             0,
@@ -35,10 +33,10 @@ public class DefaultIder implements Ider {
             TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(1),
             new ThreadPoolExecutor.DiscardPolicy());
-    // 上次因id过期从服务端获取id的时间
-    private volatile long lastOverdueTime = System.currentTimeMillis() - MIN_INTERVAL;
-    // 上次请求服务端失败的时间
-    private volatile long lastServerFailureTime = lastOverdueTime;
+    // 过期限速器
+    private final RateLimiter overdueRateLimiter = new RateLimiter(5000);
+    // 服务端失败限速器
+    private final RateLimiter serverFailureRateLimiter = new RateLimiter(5000);
     // 请求服务端的互斥锁
     private final Object lock = new Object();
     // id仓库
@@ -85,20 +83,14 @@ public class DefaultIder implements Ider {
 
     // id是否过期
     private boolean isOverdue(Id id) {
-        // 对频繁过期情况限速
-        long currentTime = System.currentTimeMillis();
-        if (lastOverdueTime > currentTime) {
-            lastOverdueTime = currentTime;
-        }
-        if (currentTime - lastOverdueTime < MIN_INTERVAL) {
+        if (!overdueRateLimiter.can()) {
             return false;
         }
-        // 判断是否过期
-        Period currentPeriod = new Period(id.getPeriod().getType(), new Date(currentTime));
+        Period currentPeriod = new Period(id.getPeriod().getType(), new Date());
         if (currentPeriod.compareTo(id.getPeriod()) <= 0) {
             return false;
         }
-        lastOverdueTime = currentTime;
+        overdueRateLimiter.run();
         return true;
     }
 
@@ -141,15 +133,9 @@ public class DefaultIder implements Ider {
 
     // 从服务端获取批量id
     private void acquireIdsFromServer(int amount) {
-        // 对失败情况限速
-        long currentTime = System.currentTimeMillis();
-        if (lastServerFailureTime > currentTime) {
-            lastServerFailureTime = currentTime;
-        }
-        if (currentTime - lastServerFailureTime < MIN_INTERVAL) {
+        if (!serverFailureRateLimiter.can()) {
             return;
         }
-        // 获取批量id
         try {
             List<ServerRequester.IdSegment> idSegments = serverRequester.acquireIds(iderId, amount);
             idSegments.stream()
@@ -157,7 +143,7 @@ public class DefaultIder implements Ider {
                     .forEach(idStorage::addIdChunk);
             flowCounter.next();
         } catch (Throwable e) {
-            lastServerFailureTime = System.currentTimeMillis();
+            serverFailureRateLimiter.run();
             log.error("从idcenter获取id出错：{}", e.getMessage());
         }
     }
