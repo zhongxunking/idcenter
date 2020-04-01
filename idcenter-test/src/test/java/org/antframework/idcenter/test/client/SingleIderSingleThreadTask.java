@@ -51,7 +51,14 @@ public class SingleIderSingleThreadTask implements Runnable {
         }
         long endTime = System.currentTimeMillis();
 
-        Performance performance = new Performance(startTime, endTime, amountOfId, amountOfNullId, idSet);
+        double tps = (amountOfId - amountOfNullId) * 1000D / (endTime - startTime);
+        Performance performance = new Performance(
+                startTime,
+                endTime,
+                amountOfId,
+                amountOfNullId,
+                idSet,
+                tps);
         log.info("单ider单线程任务{}：{}", index, performance);
         performance.check();
         consumer.accept(performance);

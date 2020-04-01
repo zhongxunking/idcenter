@@ -32,14 +32,8 @@ public class Performance {
     private final int amountOfNullId;
     // id集合
     private final Set<Id> idSet;
-
-    public long getTimeCost() {
-        return endTime - startTime;
-    }
-
-    public double getTps() {
-        return (amountOfId - amountOfNullId) * 1000D / getTimeCost();
-    }
+    // tps
+    private double tps;
 
     public void check() {
         if (idSet != null) {
@@ -52,10 +46,10 @@ public class Performance {
         return String.format("开始时间=%s，结束时间=%s，耗时=%d毫秒，循环次数=%d，id出现null次数=%d，id数量=%s，tps=%.2f",
                 DateFormatUtils.format(startTime, "yyyy-MM-dd HH:mm:ss.SSS"),
                 DateFormatUtils.format(endTime, "yyyy-MM-dd HH:mm:ss.SSS"),
-                getTimeCost(),
+                endTime - startTime,
                 amountOfId,
                 amountOfNullId,
                 idSet == null ? "null" : idSet.size(),
-                getTps());
+                tps);
     }
 }

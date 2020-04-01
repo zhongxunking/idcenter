@@ -75,6 +75,7 @@ public class MultiIderMultiThreadTask implements Runnable {
         log.info("----------------多ider多线程任务{}：打印所有单ider多线程任务--start--------------", index);
         Set<Id> idSet = onlyPerformance ? null : new HashSet<>(amountOfIder * amountOfThread * amountOfId);
         int amountOfNullId = 0;
+        double tps = 0;
         for (int i = 0; i < amountOfIder; i++) {
             Performance performance = performances[i];
             log.info("单ider多线程任务{}：{}", i, performance);
@@ -82,6 +83,7 @@ public class MultiIderMultiThreadTask implements Runnable {
                 idSet.addAll(performance.getIdSet());
             }
             amountOfNullId += performance.getAmountOfNullId();
+            tps += performance.getTps();
         }
         log.info("----------------多ider多线程任务{}：打印所有单ider多线程任务--end--------------", index);
         Performance performance = new Performance(
@@ -89,7 +91,8 @@ public class MultiIderMultiThreadTask implements Runnable {
                 endTime,
                 amountOfIder * amountOfThread * amountOfId,
                 amountOfNullId,
-                idSet);
+                idSet,
+                tps);
         log.info("多ider多线程任务{}：{}", index, performance);
         performance.check();
         consumer.accept(performance);

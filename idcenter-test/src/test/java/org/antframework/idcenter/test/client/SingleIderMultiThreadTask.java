@@ -70,6 +70,7 @@ public class SingleIderMultiThreadTask implements Runnable {
         log.info("----------------单ider多线程任务{}：打印所有单ider单线程任务--start--------------", index);
         Set<Id> idSet = onlyPerformance ? null : new HashSet<>(amountOfThread * amountOfId);
         int amountOfNullId = 0;
+        double tps = 0;
         for (int i = 0; i < amountOfThread; i++) {
             Performance performance = performances[i];
             log.info("单ider单线程任务{}：{}", i, performance);
@@ -77,9 +78,16 @@ public class SingleIderMultiThreadTask implements Runnable {
                 idSet.addAll(performance.getIdSet());
             }
             amountOfNullId += performance.getAmountOfNullId();
+            tps += performance.getTps();
         }
         log.info("----------------单ider多线程任务{}：打印所有单ider单线程任务--end--------------", index);
-        Performance performance = new Performance(startTime, endTime, amountOfThread * amountOfId, amountOfNullId, idSet);
+        Performance performance = new Performance(
+                startTime,
+                endTime,
+                amountOfThread * amountOfId,
+                amountOfNullId,
+                idSet,
+                tps);
         log.info("单ider多线程任务{}：{}", index, performance);
         performance.check();
         consumer.accept(performance);
