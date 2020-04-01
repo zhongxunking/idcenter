@@ -22,8 +22,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 public class Performance {
-    // 任务序号
-    private final int index;
     // 开始时间
     private final long startTime;
     // 结束时间
@@ -51,8 +49,7 @@ public class Performance {
 
     @Override
     public String toString() {
-        return String.format("任务序号=%d，开始时间=%s，结束时间=%s，耗时=%d毫秒，循环次数=%d，id出现null次数=%d，id数量=%s，tps=%.2f",
-                index,
+        return String.format("开始时间=%s，结束时间=%s，耗时=%d毫秒，循环次数=%d，id出现null次数=%d，id数量=%s，tps=%.2f",
                 DateFormatUtils.format(startTime, "yyyy-MM-dd HH:mm:ss.SSS"),
                 DateFormatUtils.format(endTime, "yyyy-MM-dd HH:mm:ss.SSS"),
                 getTimeCost(),
