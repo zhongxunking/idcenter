@@ -12,14 +12,13 @@ import lombok.AllArgsConstructor;
 import org.antframework.common.util.id.Period;
 import org.antframework.idcenter.facade.vo.IdSegment;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * id块
  */
 @AllArgsConstructor
-public final class IdChunk implements Serializable {
+public final class IdChunk {
     // 周期
     private final Period period;
     // 因数

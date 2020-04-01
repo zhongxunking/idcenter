@@ -22,12 +22,10 @@ import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.id.Ider;
 import org.antframework.idcenter.web.id.IderContext;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.List;
 
@@ -54,8 +52,14 @@ public class IderController {
      * @return 获取批量id-result
      */
     @RequestMapping("/acquireIds")
-    public AcquireIdsResult acquireIds(@NotBlank String iderId, @NotNull @Min(1) Integer amount) {
+    public AcquireIdsResult acquireIds(String iderId, Integer amount) {
         log.info("收到请求-获取批量id：iderId={},amount={}", iderId, amount);
+        if (StringUtils.isEmpty(iderId)) {
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "iderId不能为空");
+        }
+        if (amount == null || amount <= 0) {
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "amount不能为空且必须大于0");
+        }
         // 计算id数量
         Integer maxAmount = maxAmountCache.get(iderId);
         if (maxAmount == null) {
