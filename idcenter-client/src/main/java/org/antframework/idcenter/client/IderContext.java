@@ -48,7 +48,7 @@ public class IderContext {
                 || minDuration < 0
                 || maxDuration < minDuration
                 || (maxBlockedThreads != null && maxBlockedThreads < 0)) {
-            throw new IllegalArgumentException(String.format("初始化IdersContext的参数不合法：serverUrl=%s,minDuration=%d,maxDuration=%d,maxBlockedThreads=%s", serverUrl, minDuration, maxDuration, maxBlockedThreads));
+            throw new IllegalArgumentException(String.format("初始化IderContext的参数不合法：serverUrl=%s,minDuration=%d,maxDuration=%d,maxBlockedThreads=%s", serverUrl, minDuration, maxDuration, maxBlockedThreads));
         }
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;

@@ -51,7 +51,7 @@ public class IderController {
      *
      * @param iderId id提供者的id（id编码）
      * @param amount id数量
-     * @return 获取结果
+     * @return 获取批量id-result
      */
     @RequestMapping("/acquireIds")
     public AcquireIdsResult acquireIds(@NotBlank String iderId, @NotNull @Min(1) Integer amount) {

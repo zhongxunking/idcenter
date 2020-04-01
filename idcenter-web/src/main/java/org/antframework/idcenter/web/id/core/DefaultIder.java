@@ -25,7 +25,7 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class DefaultIder implements Ider {
-    // 从服务端获取id任务的线程池
+    // 执行获取批量id任务的线程池
     private final Executor executor = new ThreadPoolExecutor(
             0,
             1,
@@ -81,7 +81,7 @@ public class DefaultIder implements Ider {
         return currentPeriod.compareTo(idSegment.getPeriod()) > 0;
     }
 
-    // 异步从服务端获取id（如果有必要）
+    // 异步从服务获取批量id（如果有必要）
     private void asyncAcquireIds(boolean checkGap) {
         if (checkGap) {
             int gap = flowCounter.computeGap(idStorage.getAmount(null));
@@ -92,7 +92,7 @@ public class DefaultIder implements Ider {
         executor.execute(() -> syncAcquireIds(false));
     }
 
-    // 同步从服务端获取id（如果有必要）
+    // 同步从服务获取批量id（如果有必要）
     private void syncAcquireIds(boolean limit) {
         if (limit && semaphore != null) {
             if (!semaphore.tryAcquire()) {

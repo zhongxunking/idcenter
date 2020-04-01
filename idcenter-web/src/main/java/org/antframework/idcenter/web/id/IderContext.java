@@ -40,7 +40,7 @@ public class IderContext {
      */
     public IderContext(long minDuration, long maxDuration, Integer maxBlockedThreads) {
         if (minDuration < 0 || maxDuration < minDuration || (maxBlockedThreads != null && maxBlockedThreads < 0)) {
-            throw new IllegalArgumentException(String.format("初始化IdersContext的参数不合法：minDuration=%d,maxDuration=%d,maxBlockedThreads=%s", minDuration, maxDuration, maxBlockedThreads));
+            throw new IllegalArgumentException(String.format("初始化IderContext的参数不合法：minDuration=%d,maxDuration=%d,maxBlockedThreads=%s", minDuration, maxDuration, maxBlockedThreads));
         }
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;

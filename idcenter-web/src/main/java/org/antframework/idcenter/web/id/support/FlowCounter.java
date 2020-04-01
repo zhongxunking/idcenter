@@ -102,7 +102,7 @@ public class FlowCounter {
         return (int) Math.max(gap, 1);
     }
 
-    // 初始化计数器
+    // 重置计数器
     private void resetCounter() {
         startTime = System.currentTimeMillis() - ((maxDuration - minDuration) / 100);
         count = new LongAdder();
