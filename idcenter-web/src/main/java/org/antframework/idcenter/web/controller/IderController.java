@@ -66,7 +66,7 @@ public class IderController {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", iderId));
         }
         int realAmount = amount;
-        if (maxAmount > 0 && realAmount > maxAmount) {
+        if (maxAmount >= 0 && realAmount > maxAmount) {
             realAmount = maxAmount;
             log.warn("期望获取id的数量[{}]过多，调整到[{}]", amount, realAmount);
         }
@@ -87,7 +87,7 @@ public class IderController {
         if (ider != null) {
             maxAmount = ider.getMaxAmount();
             if (maxAmount == null) {
-                maxAmount = 0;
+                maxAmount = -1;
             }
         }
         return maxAmount;

@@ -34,7 +34,7 @@ public class IdStorage {
     public synchronized List<IdSegment> getIds(int amount) {
         List<IdSegment> idSegments = new ArrayList<>();
         int gotAmount = 0;
-        do {
+        while (gotAmount < amount) {
             IdChunk idChunk = idChunks.peek();
             if (idChunk == null) {
                 break;
@@ -46,7 +46,7 @@ public class IdStorage {
                 idSegments.add(idSegment);
                 gotAmount += idSegment.getAmount();
             }
-        } while (gotAmount < amount);
+        }
         this.amount.addAndGet(-gotAmount);
 
         return idSegments;
