@@ -1,6 +1,6 @@
 # idcenter
 1. 简介
-> 生成全局唯一的id（流水号），是很多公司都需要解决的问题。如果还是采用时间戳+随机数形式生成，在并发量大时，很有可能会生成重复的id。重复id的危害就是可能会导致一系列问题。idcenter专门用来高效的生成全局唯一id，分为服务端和客户端，每个客户端的tps可达到150万，而且服务端毫无压力。
+> 生成全局唯一的id（流水号），是很多公司都需要解决的问题。idcenter专门用来高效的生成全局唯一id，分为服务端和客户端。一个服务端可以支持海量的客户端请求，同时每个客户端获取id的tps可达到150万。
 
 2. 环境要求
 > * 服务端：jdk1.8
@@ -15,10 +15,11 @@
 <img src="https://note.youdao.com/yws/api/personal/file/WEB05da7336237569414648a5e625d2302b?method=download&shareKey=5fabc26cd1af6f5013f50dbe918c78b8" width=700 />
 
 # 特性
-idcenter具备统一的id管理能力、id具有周期概念、可承受海量获取id需求、完善的权限管理能力。
+idcenter具备统一的id管理能力、id支持周期概念、可承受海量获取id需求、完善的权限管理能力。
 * 统一的id管理能力：提供id管理页面，可管理公司内部所有的id。
-* id具有周期概念：id的周期概念保证了id的时效性，让你看到id就知道这个id是什么时候产生的。
-* 可承受海量获取id请求：客户端的预处理设计，保证了单个客户端可承受百万tps级别的id获取；并且客户端和服务端之间平均5分钟通信一次，保证了服务端可支撑大量的客户端。
+* id支持周期概念：id的周期概念保证了id的时效性，让你看到id就知道这个id是什么时候产生的。
+* 服务端支持海量的客户端请求：服务端的预处理设计，保证了服务端可以支持海量的客户端请求。
+* 每个客户端可承受海量的id获取请求：客户端的预处理设计，保证了单个客户端可承受百万tps级别的id获取。
 * 完善的权限管理能力：可对管理员的权限进行约束，让合适的人管理合适的id。
 
 # 文档
@@ -33,7 +34,7 @@ idcenter具备统一的id管理能力、id具有周期概念、可承受海量�
 &ensp;&ensp;[服务端OpenAPI](https://github.com/zhongxunking/idcenter/wiki/%E6%9C%8D%E5%8A%A1%E7%AB%AFOpenAPI)
 
 # 技术支持
-欢迎加我微信入群交流。<br/>
+欢迎加我微信（zhong_xun_）入群交流。<br/>
 <img src="https://note.youdao.com/yws/api/personal/file/WEBbca9e0a9a6e1ea2d9ab9def1cc90f839?method=download&shareKey=00e90849ae0d3b5cb8ed7dd12bc6842e" width=200 />
 
 # Who is using
