@@ -25,10 +25,12 @@ public class GlobalExceptionHandler {
     // 处理BizException
     @ExceptionHandler(BizException.class)
     public EmptyResult handleBizException(BizException e) {
+        log.info("收到手动异常：status={}, code={}, message={}", e.getStatus(), e.getCode(), e.getMessage());
         EmptyResult result = new EmptyResult();
         result.setStatus(e.getStatus());
         result.setCode(e.getCode());
         result.setMessage(e.getMessage());
+        log.info("执行结果：result={}", result);
 
         return result;
     }

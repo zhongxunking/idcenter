@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.antframework.idcenter</groupId>
         <artifactId>idcenter</artifactId>
-        <version>1.4.2.RELEASE</version>
+        <version>1.5.0.RELEASE</version>
     </parent>
 
     <artifactId>idcenter-web</artifactId>
@@ -28,6 +28,10 @@
         <dependency>
             <groupId>org.antframework.manager</groupId>
             <artifactId>manager-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
     </dependencies>
 </project>

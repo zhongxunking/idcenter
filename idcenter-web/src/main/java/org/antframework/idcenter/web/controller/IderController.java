@@ -8,12 +8,26 @@
  */
 package org.antframework.idcenter.web.controller;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.AllArgsConstructor;
-import org.antframework.idcenter.facade.api.IderService;
-import org.antframework.idcenter.facade.order.AcquireIdsOrder;
+import lombok.extern.slf4j.Slf4j;
+import org.antframework.common.util.facade.BizException;
+import org.antframework.common.util.facade.CommonResultCode;
+import org.antframework.common.util.facade.FacadeUtils;
+import org.antframework.common.util.facade.Status;
+import org.antframework.idcenter.biz.util.Iders;
+import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
+import org.antframework.idcenter.facade.vo.IdSegment;
+import org.antframework.idcenter.web.id.Ider;
+import org.antframework.idcenter.web.id.IderContext;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Duration;
+import java.util.List;
 
 /**
  * id提供者controller
@@ -21,23 +35,61 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/ider")
 @AllArgsConstructor
+@Slf4j
 public class IderController {
-    // id提供者服务
-    private final IderService iderService;
+    // 单次获取id的最大数量缓存
+    private final LoadingCache<String, Integer> maxAmountCache = Caffeine.newBuilder()
+            .refreshAfterWrite(Duration.ofMinutes(1))
+            .build(this::findMaxAmount);
+    // id提供者上下文
+    private final IderContext iderContext;
 
     /**
      * 获取批量id
      *
-     * @param iderId       id提供者的id（id编码）
-     * @param expectAmount 期望的数量
-     * @return 获取结果
+     * @param iderId id提供者的id（id编码）
+     * @param amount id数量
+     * @return 获取批量id-result
      */
     @RequestMapping("/acquireIds")
-    public AcquireIdsResult acquireIds(String iderId, Integer expectAmount) {
-        AcquireIdsOrder order = new AcquireIdsOrder();
-        order.setIderId(iderId);
-        order.setExpectAmount(expectAmount);
+    public AcquireIdsResult acquireIds(String iderId, Integer amount) {
+        log.info("收到请求-获取批量id：iderId={},amount={}", iderId, amount);
+        if (StringUtils.isEmpty(iderId)) {
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "iderId不能为空");
+        }
+        if (amount == null || amount <= 0) {
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "amount不能为空且必须大于0");
+        }
+        // 计算id数量
+        Integer maxAmount = maxAmountCache.get(iderId);
+        if (maxAmount == null) {
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", iderId));
+        }
+        int realAmount = amount;
+        if (maxAmount >= 0 && realAmount > maxAmount) {
+            realAmount = maxAmount;
+            log.warn("期望获取id的数量[{}]过多，调整到[{}]", amount, realAmount);
+        }
+        // 获取批量id
+        Ider ider = iderContext.getIder(iderId);
+        List<IdSegment> idSegments = ider.acquireIds(realAmount);
+        // 构造result
+        AcquireIdsResult result = FacadeUtils.buildSuccess(AcquireIdsResult.class);
+        result.setIdSegments(idSegments);
+        log.info("执行结果-获取批量id：result={}", result);
+        return result;
+    }
 
-        return iderService.acquireIds(order);
+    // 查找单次获取id的最大数量
+    private Integer findMaxAmount(String iderId) {
+        Integer maxAmount = null;
+        IderInfo ider = Iders.findIder(iderId);
+        if (ider != null) {
+            maxAmount = ider.getMaxAmount();
+            if (maxAmount == null) {
+                maxAmount = -1;
+            }
+        }
+        return maxAmount;
     }
 }

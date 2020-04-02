@@ -25,8 +25,8 @@ public class AcquireIdsOrder extends AbstractOrder {
     // id提供者的id（id编码）
     @NotBlank
     private String iderId;
-    // 期望的数量
+    // 数量
     @Min(1)
     @NotNull
-    private Integer expectAmount;
+    private Integer amount;
 }

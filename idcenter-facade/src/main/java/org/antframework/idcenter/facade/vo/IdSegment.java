@@ -16,11 +16,11 @@ import org.antframework.common.util.tostring.ToString;
 import java.io.Serializable;
 
 /**
- * 批量id
+ * id段
  */
 @AllArgsConstructor
 @Getter
-public final class Ids implements Serializable {
+public final class IdSegment implements Serializable {
     // 周期
     private final Period period;
     // 因数

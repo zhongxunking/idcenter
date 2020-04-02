@@ -39,4 +39,9 @@ public class IdcenterProperties {
      */
     @Min(1)
     private long maxDuration = 15 * 60 * 1000;
+    /**
+     * 选填：最多被阻塞的线程数量（null表示不限制数量。默认为不限制数量）
+     */
+    @Min(0)
+    private Integer maxBlockedThreads = null;
 }

@@ -15,10 +15,10 @@ import org.antframework.common.util.id.Period;
 import java.util.Date;
 
 /**
- * 批量id
+ * id块
  */
 @AllArgsConstructor
-public class Ids {
+public class IdChunk {
     // 周期
     private final Period period;
     // 因数
@@ -31,11 +31,10 @@ public class Ids {
     /**
      * 获取一个id
      *
-     * @param periodError 允许的周期误差（单位：毫秒。null表示忽略周期是否过期）
-     * @return id（null表示不存在有效id）
+     * @return id（null表示无可用id）
      */
-    public Id getId(Long periodError) {
-        if (getAmount(periodError) <= 0) {
+    public Id getId() {
+        if (getAmount(null) <= 0) {
             return null;
         }
 
@@ -50,13 +49,13 @@ public class Ids {
     /**
      * 获取id个数
      *
-     * @param periodError 允许的周期误差（单位：毫秒。null表示忽略周期是否过期）
+     * @param currentTime 当前时间（null表示不管是否过期）
      * @return id个数
      */
-    public int getAmount(Long periodError) {
-        if (periodError != null) {
-            Period modernPeriod = new Period(period.getType(), new Date(System.currentTimeMillis() - periodError));
-            if (period.compareTo(modernPeriod) < 0) {
+    public int getAmount(Long currentTime) {
+        if (currentTime != null) {
+            Period currentPeriod = new Period(period.getType(), new Date(currentTime));
+            if (currentPeriod.compareTo(period) > 0) {
                 return 0;
             }
         }

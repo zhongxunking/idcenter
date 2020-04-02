@@ -15,7 +15,6 @@ import lombok.Setter;
 import org.antframework.common.util.facade.AbstractResult;
 import org.antframework.common.util.id.Period;
 import org.antframework.common.util.tostring.ToString;
-import org.antframework.idcenter.client.core.Ids;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -55,13 +54,13 @@ public class ServerRequester {
     /**
      * 获取批量id
      *
-     * @param iderId       id提供者的id（id编码）
-     * @param expectAmount 期望获取到的id个数
+     * @param iderId id提供者的id（id编码）
+     * @param amount id数量
      * @return 批量id
      */
-    public List<Ids> acquireIds(String iderId, int expectAmount) {
+    public List<IdSegment> acquireIds(String iderId, int amount) {
         try {
-            String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, expectAmount), new BasicResponseHandler());
+            String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, amount), new BasicResponseHandler());
             AcquireIdsResult result = JSON.parseObject(resultStr, AcquireIdsResult.class);
             if (result == null) {
                 throw new RuntimeException("请求idcenter失败");
@@ -69,30 +68,21 @@ public class ServerRequester {
             if (!result.isSuccess()) {
                 throw new RuntimeException("从idcenter获取批量id失败：" + result.getMessage());
             }
-            return convert(result.getIdses());
+            return result.getIdSegments();
         } catch (IOException e) {
             return ExceptionUtils.rethrow(e);
         }
     }
 
     // 构建请求
-    private HttpUriRequest buildRequest(String iderId, int expectAmount) {
+    private HttpUriRequest buildRequest(String iderId, int amount) {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("iderId", iderId));
-        params.add(new BasicNameValuePair("expectAmount", Integer.toString(expectAmount)));
+        params.add(new BasicNameValuePair("amount", Integer.toString(amount)));
 
         HttpPost httpPost = new HttpPost(acquireIdsUrl);
         httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("utf-8")));
         return httpPost;
-    }
-
-    // 转换
-    private List<Ids> convert(List<AcquireIdsResult.Ids> idses) {
-        List<Ids> convertedIdses = new ArrayList<>();
-        for (AcquireIdsResult.Ids ids : idses) {
-            convertedIdses.add(new Ids(ids.getPeriod(), ids.getFactor(), ids.getStartId(), ids.getAmount()));
-        }
-        return convertedIdses;
     }
 
     /**
@@ -101,28 +91,28 @@ public class ServerRequester {
     @Getter
     @Setter
     public static class AcquireIdsResult extends AbstractResult {
-        // 获取到的批量id
-        private List<Ids> idses;
+        // id段
+        private List<IdSegment> idSegments;
+    }
 
-        /**
-         * 批量id
-         */
-        @AllArgsConstructor
-        @Getter
-        public static final class Ids implements Serializable {
-            // 周期
-            private final Period period;
-            // 因数
-            private final int factor;
-            // 开始id（包含）
-            private final long startId;
-            // id个数
-            private final int amount;
+    /**
+     * id段
+     */
+    @AllArgsConstructor
+    @Getter
+    public static final class IdSegment implements Serializable {
+        // 周期
+        private final Period period;
+        // 因数
+        private final int factor;
+        // 开始id（包含）
+        private final long startId;
+        // id个数
+        private final int amount;
 
-            @Override
-            public String toString() {
-                return ToString.toString(this);
-            }
+        @Override
+        public String toString() {
+            return ToString.toString(this);
         }
     }
 }

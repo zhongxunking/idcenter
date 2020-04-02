@@ -28,6 +28,6 @@ public class ModifyIderMaxOrder extends AbstractOrder {
     @Min(1)
     private Long newMaxId;
     // 新的单次获取id的最大数量（包含），null表示不限制
-    @Min(1)
+    @Min(0)
     private Integer newMaxAmount;
 }

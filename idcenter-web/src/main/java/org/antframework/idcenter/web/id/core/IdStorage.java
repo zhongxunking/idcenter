@@ -6,10 +6,12 @@
  * 修订记录:
  * @author 钟勋 2017-12-31 22:23 创建
  */
-package org.antframework.idcenter.client.core;
+package org.antframework.idcenter.web.id.core;
 
-import org.antframework.common.util.id.Id;
+import org.antframework.idcenter.facade.vo.IdSegment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -24,25 +26,30 @@ public class IdStorage {
     private final AtomicLong amount = new AtomicLong(0);
 
     /**
-     * 获取id
+     * 获取批量id
      *
-     * @return id（null表示无存量id）
+     * @param amount 获取的id数量
+     * @return 批量id
      */
-    public synchronized Id getId() {
-        Id id;
-        do {
+    public synchronized List<IdSegment> getIds(int amount) {
+        List<IdSegment> idSegments = new ArrayList<>();
+        int gotAmount = 0;
+        while (gotAmount < amount) {
             IdChunk idChunk = idChunks.peek();
             if (idChunk == null) {
-                return null;
+                break;
             }
-            id = idChunk.getId();
-            if (id == null) {
+            IdSegment idSegment = idChunk.getIds(amount - gotAmount);
+            if (idSegment == null) {
                 idChunks.poll();
+            } else {
+                idSegments.add(idSegment);
+                gotAmount += idSegment.getAmount();
             }
-        } while (id == null);
-        amount.addAndGet(-1);
+        }
+        this.amount.addAndGet(-gotAmount);
 
-        return id;
+        return idSegments;
     }
 
     /**
