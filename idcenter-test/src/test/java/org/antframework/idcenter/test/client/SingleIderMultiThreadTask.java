@@ -62,11 +62,7 @@ public class SingleIderMultiThreadTask implements Runnable {
             ExceptionUtils.rethrow(e);
         }
         long endTime = System.currentTimeMillis();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            ExceptionUtils.rethrow(e);
-        }
+
         log.info("----------------单ider多线程任务{}：打印所有单ider单线程任务--start--------------", index);
         Set<Id> idSet = onlyPerformance ? null : new HashSet<>(amountOfThread * amountOfId);
         int amountOfNullId = 0;

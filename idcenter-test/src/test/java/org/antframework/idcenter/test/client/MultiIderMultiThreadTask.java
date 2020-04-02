@@ -57,8 +57,8 @@ public class MultiIderMultiThreadTask implements Runnable {
             int index = i;
             executor.execute(new SingleIderMultiThreadTask(index, ider, amountOfThread, amountOfId, performance -> {
                 performances[index] = performance;
-                latch.countDown();
                 IderChecker.checkIdAmount((DefaultIder) ider);
+                latch.countDown();
             }, onlyPerformance));
         }
         try {
@@ -67,11 +67,7 @@ public class MultiIderMultiThreadTask implements Runnable {
             ExceptionUtils.rethrow(e);
         }
         long endTime = System.currentTimeMillis();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            ExceptionUtils.rethrow(e);
-        }
+
         log.info("----------------多ider多线程任务{}：打印所有单ider多线程任务--start--------------", index);
         Set<Id> idSet = onlyPerformance ? null : new HashSet<>(amountOfIder * amountOfThread * amountOfId);
         int amountOfNullId = 0;
