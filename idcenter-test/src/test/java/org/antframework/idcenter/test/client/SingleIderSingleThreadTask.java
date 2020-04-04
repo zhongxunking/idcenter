@@ -40,7 +40,7 @@ public class SingleIderSingleThreadTask implements Runnable {
         int amountOfNullId = 0;
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < amountOfId; i++) {
-            Id id = ider.acquire();
+            Id id = ider.acquireId();
             if (id != null) {
                 if (!onlyPerformance) {
                     idSet.add(id);
