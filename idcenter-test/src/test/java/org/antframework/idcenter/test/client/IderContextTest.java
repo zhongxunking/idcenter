@@ -35,7 +35,7 @@ public class IderContextTest {
     @Test
     public void testSingleIderMultiThread() {
         log.info("-----------单ider多线程-----------start");
-        new SingleIderMultiThreadTask(0, "http://localhost:6210", "iderId", 10, 100000, performance -> {
+        new SingleIderMultiThreadTask(0, "http://localhost:6210", "userId", 10, 100000, performance -> {
         }, false).run();
         log.info("-----------单ider多线程-----------end");
     }
@@ -43,7 +43,7 @@ public class IderContextTest {
     @Test
     public void testMultiIderMultiThread() {
         log.info("------------多ider多线程-------------start");
-        new MultiIderMultiThreadTask(0, "http://localhost:6210", "iderId", 10, 5, 20000, performance -> {
+        new MultiIderMultiThreadTask(0, "http://localhost:6210", "userId", 10, 5, 20000, performance -> {
         }, false).run();
         log.info("------------多ider多线程-------------end");
     }
