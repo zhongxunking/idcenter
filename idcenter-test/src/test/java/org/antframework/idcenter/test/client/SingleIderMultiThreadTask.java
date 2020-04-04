@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Id;
 import org.antframework.idcenter.client.Ider;
+import org.antframework.idcenter.client.IderContext;
+import org.antframework.idcenter.client.core.DefaultIder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.HashSet;
@@ -27,8 +29,10 @@ import java.util.function.Consumer;
 public class SingleIderMultiThreadTask implements Runnable {
     // 任务序号
     private final int index;
-    // id提供者
-    private final Ider ider;
+    // 服务端地址
+    private final String serverUrl;
+    // id提供者的id（id编码）
+    private final String iderId;
     // 线程数量
     private final int amountOfThread;
     // id数量
@@ -40,6 +44,9 @@ public class SingleIderMultiThreadTask implements Runnable {
 
     @Override
     public void run() {
+        IderContext iderContext = new IderContext(serverUrl, 10 * 60 * 1000, 15 * 60 * 1000, null);
+        Ider ider = iderContext.getIder(iderId);
+
         Executor executor = new ThreadPoolExecutor(
                 amountOfThread,
                 amountOfThread,
@@ -86,6 +93,7 @@ public class SingleIderMultiThreadTask implements Runnable {
                 tps);
         log.info("单ider多线程任务{}：{}", index, performance);
         performance.check();
+        IderChecker.checkIdAmount((DefaultIder) ider);
         consumer.accept(performance);
     }
 }
