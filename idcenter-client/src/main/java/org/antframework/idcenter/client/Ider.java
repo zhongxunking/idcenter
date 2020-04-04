@@ -20,5 +20,5 @@ public interface Ider {
      *
      * @return id（null表示无可用id）
      */
-    Id acquire();
+    Id acquireId();
 }

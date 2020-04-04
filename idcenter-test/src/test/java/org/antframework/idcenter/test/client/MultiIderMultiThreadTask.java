@@ -11,9 +11,6 @@ package org.antframework.idcenter.test.client;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Id;
-import org.antframework.idcenter.client.Ider;
-import org.antframework.idcenter.client.IderContext;
-import org.antframework.idcenter.client.core.DefaultIder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.HashSet;
@@ -29,6 +26,10 @@ import java.util.function.Consumer;
 public class MultiIderMultiThreadTask implements Runnable {
     // 序号
     private final int index;
+    // 服务端地址
+    private final String serverUrl;
+    // id提供者的id（id编码）
+    private final String iderId;
     // ider的数量
     private final int amountOfIder;
     // 线程数量
@@ -52,12 +53,9 @@ public class MultiIderMultiThreadTask implements Runnable {
         CountDownLatch latch = new CountDownLatch(amountOfIder);
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < amountOfIder; i++) {
-            IderContext iderContext = new IderContext("http://localhost:6210", 10 * 60 * 1000, 15 * 60 * 1000, null);
-            Ider ider = iderContext.getIder("userId");
             int index = i;
-            executor.execute(new SingleIderMultiThreadTask(index, ider, amountOfThread, amountOfId, performance -> {
+            executor.execute(new SingleIderMultiThreadTask(index, serverUrl, iderId, amountOfThread, amountOfId, performance -> {
                 performances[index] = performance;
-                IderChecker.checkIdAmount((DefaultIder) ider);
                 latch.countDown();
             }, onlyPerformance));
         }
