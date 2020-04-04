@@ -41,7 +41,7 @@ public final class IdChunk {
         int gotAmount = Math.min(amount, this.amount);
         IdSegment idSegment = new IdSegment(period, factor, startId, gotAmount);
 
-        startId += factor * gotAmount;
+        startId += factor * (long) gotAmount;
         this.amount -= gotAmount;
 
         return idSegment;
