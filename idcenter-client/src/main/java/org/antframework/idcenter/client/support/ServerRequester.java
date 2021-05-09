@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -8,12 +8,14 @@
  */
 package org.antframework.idcenter.client.support;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.antframework.common.util.facade.AbstractResult;
 import org.antframework.common.util.id.Period;
+import org.antframework.common.util.id.PeriodType;
+import org.antframework.common.util.json.JSON;
 import org.antframework.common.util.tostring.ToString;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
@@ -27,29 +29,23 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 服务端请求器
  */
+@AllArgsConstructor
 public class ServerRequester {
     // 发送http请求的客户端
     private static final HttpClient HTTP_CLIENT = HttpClients.createDefault();
-    // 获取批量id的url后缀
-    private static final String ACQUIRE_IDS_URL_SUFFIX = "/ider/acquireIds";
-    // 获取批量id的url
-    private final String acquireIdsUrl;
-
-    /**
-     * 构造服务端请求器
-     *
-     * @param serverUrl 服务端地址
-     */
-    public ServerRequester(String serverUrl) {
-        this.acquireIdsUrl = serverUrl + ACQUIRE_IDS_URL_SUFFIX;
-    }
+    // 获取批量id的uri
+    private static final String ACQUIRE_IDS_URI = "/ider/acquireIds";
+    // 服务端地址
+    private final String serverUrl;
 
     /**
      * 获取批量id
@@ -60,8 +56,8 @@ public class ServerRequester {
      */
     public List<IdSegment> acquireIds(String iderId, int amount) {
         try {
-            String resultStr = HTTP_CLIENT.execute(buildRequest(iderId, amount), new BasicResponseHandler());
-            AcquireIdsResult result = JSON.parseObject(resultStr, AcquireIdsResult.class);
+            String resultJson = HTTP_CLIENT.execute(buildRequest(iderId, amount), new BasicResponseHandler());
+            AcquireIdsResult result = convertToAcquireIdsResult(resultJson);
             if (result == null) {
                 throw new RuntimeException("请求idcenter失败");
             }
@@ -80,9 +76,31 @@ public class ServerRequester {
         params.add(new BasicNameValuePair("iderId", iderId));
         params.add(new BasicNameValuePair("amount", Integer.toString(amount)));
 
-        HttpPost httpPost = new HttpPost(acquireIdsUrl);
-        httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("utf-8")));
+        HttpPost httpPost = new HttpPost(serverUrl + ACQUIRE_IDS_URI);
+        httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
         return httpPost;
+    }
+
+    // 转换成获取批量id-result
+    private AcquireIdsResult convertToAcquireIdsResult(String json) throws JsonProcessingException {
+        if (json == null) {
+            return null;
+        }
+        AcquireIdsResultInfo resultInfo = JSON.OBJECT_MAPPER.readValue(json, AcquireIdsResultInfo.class);
+        List<IdSegment> idSegments = resultInfo.getIdSegments()
+                .stream()
+                .map(info -> {
+                    Period period = new Period(info.getPeriod().getType(), info.getPeriod().getDate());
+                    return new IdSegment(period, info.getFactor(), info.getStartId(), info.getAmount());
+                })
+                .collect(Collectors.toList());
+
+        AcquireIdsResult result = new AcquireIdsResult();
+        result.setStatus(resultInfo.getStatus());
+        result.setCode(resultInfo.getCode());
+        result.setMessage(resultInfo.getMessage());
+        result.setIdSegments(idSegments);
+        return result;
     }
 
     /**
@@ -114,5 +132,37 @@ public class ServerRequester {
         public String toString() {
             return ToString.toString(this);
         }
+    }
+
+    // 获取批量id-result-info
+    @Getter
+    @Setter
+    private static class AcquireIdsResultInfo extends AbstractResult {
+        // id段
+        private List<IdSegmentInfo> idSegments;
+    }
+
+    // id段info
+    @Getter
+    @Setter
+    private static class IdSegmentInfo {
+        // 周期
+        private PeriodInfo period;
+        // 因数
+        private int factor;
+        // 开始id（包含）
+        private long startId;
+        // id个数
+        private int amount;
+    }
+
+    // 周期info
+    @Getter
+    @Setter
+    private static class PeriodInfo {
+        // 周期类型
+        private PeriodType type;
+        // 周期时间
+        private Date date;
     }
 }
