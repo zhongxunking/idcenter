@@ -11,8 +11,10 @@
 
 3. 演示环境
 > 地址：http://idcenter.antframework.org:6210 <br/>
-> 账号：admin 密码：123 <br/>
-> 获取id示例：http://idcenter.antframework.org:6210/ider/acquireIds?iderId=userId&amount=1  <br/>
+> 账号：admin 密码：123
+
+> 获取id样例：http://idcenter.antframework.org:6210/ider/acquireIds?iderId=tradeId&amount=1
+
 <img src="https://note.youdao.com/yws/api/personal/file/WEB05da7336237569414648a5e625d2302b?method=download&shareKey=5fabc26cd1af6f5013f50dbe918c78b8" width=700 />
 
 # 特性
