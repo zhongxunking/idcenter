@@ -21,6 +21,7 @@ import org.antframework.manager.client.sign.ManagerSigner;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -75,11 +76,18 @@ public class ServerRequester {
 
     // 构建请求
     private HttpUriRequest buildRequest(String iderId, int amount) {
+        RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(10000)
+                .setConnectionRequestTimeout(10000)
+                .setSocketTimeout(30000)
+                .build();
+
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("iderId", iderId));
         params.add(new BasicNameValuePair("amount", Integer.toString(amount)));
 
         HttpPost httpPost = new HttpPost(serverUrl + ACQUIRE_IDS_URI);
+        httpPost.setConfig(config);
         httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
         if (managerSigner != null) {
             managerSigner.sign(httpPost, params);
