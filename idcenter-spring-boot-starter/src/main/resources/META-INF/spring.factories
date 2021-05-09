@@ -1,2 +1,2 @@
-org.springframework.context.ApplicationListener=\
-  org.antframework.idcenter.spring.boot.IdcenterApplicationListener
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.antframework.idcenter.spring.boot.IdcenterAutoConfiguration

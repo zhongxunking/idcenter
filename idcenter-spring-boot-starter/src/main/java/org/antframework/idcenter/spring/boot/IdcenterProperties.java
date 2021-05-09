@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -44,4 +44,12 @@ public class IdcenterProperties {
      */
     @Min(0)
     private Integer maxBlockedThreads = null;
+    /**
+     * 选填：管理员id（默认不使用管理员签名）
+     */
+    private String managerId = null;
+    /**
+     * 选填：管理员密钥（默认不使用管理员签名）
+     */
+    private String secretKey = null;
 }

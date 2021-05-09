@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -11,19 +11,13 @@ package org.antframework.idcenter.spring;
 import org.antframework.boot.core.Contexts;
 import org.antframework.idcenter.client.Ider;
 import org.antframework.idcenter.client.IderContext;
-import org.antframework.idcenter.spring.boot.IdcenterProperties;
 
 /**
  * id提供者上下文操作类
  */
 public final class IderContexts {
     // id提供者上下文
-    private static final IderContext IDER_CONTEXT;
-
-    static {
-        IdcenterProperties properties = Contexts.buildProperties(IdcenterProperties.class);
-        IDER_CONTEXT = new IderContext(properties.getServerUrl(), properties.getMinDuration(), properties.getMaxDuration(), properties.getMaxBlockedThreads());
-    }
+    private static final IderContext IDER_CONTEXT = Contexts.getApplicationContext().getBean(IderContext.class);
 
     /**
      * 获取id提供者上下文

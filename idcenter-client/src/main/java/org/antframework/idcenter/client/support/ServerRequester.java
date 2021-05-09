@@ -17,6 +17,7 @@ import org.antframework.common.util.id.Period;
 import org.antframework.common.util.id.PeriodType;
 import org.antframework.common.util.json.JSON;
 import org.antframework.common.util.tostring.ToString;
+import org.antframework.manager.client.sign.ManagerSigner;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -46,6 +47,8 @@ public class ServerRequester {
     private static final String ACQUIRE_IDS_URI = "/ider/acquireIds";
     // 服务端地址
     private final String serverUrl;
+    // 管理员签名器
+    private final ManagerSigner managerSigner;
 
     /**
      * 获取批量id
@@ -78,6 +81,9 @@ public class ServerRequester {
 
         HttpPost httpPost = new HttpPost(serverUrl + ACQUIRE_IDS_URI);
         httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
+        if (managerSigner != null) {
+            managerSigner.sign(httpPost, params);
+        }
         return httpPost;
     }
 

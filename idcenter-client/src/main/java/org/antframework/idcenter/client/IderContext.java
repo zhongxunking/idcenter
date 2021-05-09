@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -11,6 +11,7 @@ package org.antframework.idcenter.client;
 import org.antframework.common.util.other.Cache;
 import org.antframework.idcenter.client.core.DefaultIder;
 import org.antframework.idcenter.client.support.ServerRequester;
+import org.antframework.manager.client.sign.ManagerSigner;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.Function;
@@ -42,8 +43,15 @@ public class IderContext {
      * @param minDuration       最小预留时间（毫秒）
      * @param maxDuration       最大预留时间（毫秒）
      * @param maxBlockedThreads 最多被阻塞的线程数量（null表示不限制数量）
+     * @param managerId         管理员id（选填：null表示不使用管理员签名）
+     * @param secretKey         管理员密钥（选填：null表示不使用管理员签名）
      */
-    public IderContext(String serverUrl, long minDuration, long maxDuration, Integer maxBlockedThreads) {
+    public IderContext(String serverUrl,
+                       long minDuration,
+                       long maxDuration,
+                       Integer maxBlockedThreads,
+                       String managerId,
+                       String secretKey) {
         if (StringUtils.isBlank(serverUrl)
                 || minDuration < 0
                 || maxDuration < minDuration
@@ -53,7 +61,7 @@ public class IderContext {
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
         this.maxBlockedThreads = maxBlockedThreads;
-        this.serverRequester = new ServerRequester(serverUrl);
+        this.serverRequester = new ServerRequester(serverUrl, StringUtils.isBlank(managerId) || StringUtils.isBlank(secretKey) ? null : new ManagerSigner(managerId, secretKey));
     }
 
     /**

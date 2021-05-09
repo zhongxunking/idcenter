@@ -74,5 +74,19 @@ public class WebConfiguration {
          */
         @Min(0)
         private Integer maxBlockedThreads = 100;
+        // ider
+        private Ider ider = new Ider();
+
+        /**
+         * ider
+         */
+        @Getter
+        @Setter
+        public static class Ider {
+            /**
+             * 选填：获取id是否需要管理员认证（默认为不需要）
+             */
+            private boolean acquireNeedManager = false;
+        }
     }
 }
