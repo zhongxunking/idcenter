@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -20,7 +20,7 @@ import org.antframework.idcenter.facade.result.QueryIdersResult;
 import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.manager.facade.enums.ManagerType;
 import org.antframework.manager.facade.info.ManagerInfo;
-import org.antframework.manager.web.CurrentManagers;
+import org.antframework.manager.web.CurrentManagerAssert;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
@@ -52,7 +52,7 @@ public class IderManageController {
      */
     @RequestMapping("/addIder")
     public EmptyResult addIder(String iderId, String iderName, PeriodType periodType, Long maxId, Integer maxAmount) {
-        CurrentManagers.admin();
+        CurrentManagerAssert.admin();
         AddIderOrder order = new AddIderOrder();
         order.setIderId(iderId);
         order.setIderName(iderName);
@@ -72,7 +72,7 @@ public class IderManageController {
      */
     @RequestMapping("/modifyIderName")
     public EmptyResult modifyIderName(String iderId, String newIderName) {
-        ManagerIders.adminOrHaveIder(iderId);
+        ManagerIders.assertAdminOrHaveIder(iderId);
         ModifyIderNameOrder order = new ModifyIderNameOrder();
         order.setIderId(iderId);
         order.setNewIderName(newIderName);
@@ -90,7 +90,7 @@ public class IderManageController {
      */
     @RequestMapping("/modifyIderMax")
     public EmptyResult modifyIderMax(String iderId, Long newMaxId, Integer newMaxAmount) {
-        ManagerIders.adminOrHaveIder(iderId);
+        ManagerIders.assertAdminOrHaveIder(iderId);
         ModifyIderMaxOrder order = new ModifyIderMaxOrder();
         order.setIderId(iderId);
         order.setNewMaxId(newMaxId);
@@ -108,7 +108,7 @@ public class IderManageController {
      */
     @RequestMapping("/modifyIderFactor")
     public EmptyResult modifyIderFactor(String iderId, Integer newFactor) {
-        ManagerIders.adminOrHaveIder(iderId);
+        ManagerIders.assertAdminOrHaveIder(iderId);
         ModifyIderFactorOrder order = new ModifyIderFactorOrder();
         order.setIderId(iderId);
         order.setNewFactor(newFactor);
@@ -126,7 +126,7 @@ public class IderManageController {
      */
     @RequestMapping("/modifyIderCurrent")
     public EmptyResult modifyIderCurrent(String iderId, String newCurrentPeriod, Long newCurrentId) {
-        ManagerIders.adminOrHaveIder(iderId);
+        ManagerIders.assertAdminOrHaveIder(iderId);
         // 解析出新的当前周期
         IderInfo ider = Iders.findIder(iderId);
         if (ider == null) {
@@ -181,7 +181,7 @@ public class IderManageController {
      */
     @RequestMapping("/deleteIder")
     public EmptyResult deleteIder(String iderId) {
-        CurrentManagers.admin();
+        CurrentManagerAssert.admin();
         // 删除与该id提供者有关的管理权限
         ManagerIders.deletesByIder(iderId);
 
@@ -199,7 +199,7 @@ public class IderManageController {
      */
     @RequestMapping("/findIder")
     public FindIderResult findIder(String iderId) {
-        ManagerIders.adminOrHaveIder(iderId);
+        ManagerIders.assertAdminOrHaveIder(iderId);
         FindIderOrder order = new FindIderOrder();
         order.setIderId(iderId);
 
@@ -217,7 +217,7 @@ public class IderManageController {
      */
     @RequestMapping("/queryIders")
     public QueryIdersResult queryIders(int pageNo, int pageSize, String iderId, PeriodType periodType) {
-        CurrentManagers.admin();
+        CurrentManagerAssert.admin();
         QueryIdersOrder order = new QueryIdersOrder();
         order.setPageNo(pageNo);
         order.setPageSize(pageSize);
@@ -237,7 +237,7 @@ public class IderManageController {
      */
     @RequestMapping("/queryManagedIders")
     public QueryManagedIdersResult queryManagedIders(int pageNo, int pageSize, String iderId) {
-        ManagerInfo manager = CurrentManagers.current();
+        ManagerInfo manager = CurrentManagerAssert.current();
         if (manager.getType() == ManagerType.ADMIN) {
             return forAdmin(pageNo, pageSize, iderId);
         } else {
@@ -247,12 +247,7 @@ public class IderManageController {
 
     // 查询所有的id提供者
     private QueryManagedIdersResult forAdmin(int pageNo, int pageSize, String iderId) {
-        QueryIdersOrder order = new QueryIdersOrder();
-        order.setPageNo(pageNo);
-        order.setPageSize(pageSize);
-        order.setIderId(iderId);
-        order.setPeriodType(null);
-        QueryIdersResult queryIdersResult = iderService.queryIders(order);
+        QueryIdersResult queryIdersResult = queryIders(pageNo, pageSize, iderId, null);
         // 构建返回结果
         QueryManagedIdersResult result = new QueryManagedIdersResult();
         BeanUtils.copyProperties(queryIdersResult, result, "infos");
@@ -261,7 +256,7 @@ public class IderManageController {
     }
 
     // 查询普通管理员管理的id提供者
-    private QueryManagedIdersResult forNormal(AbstractQueryResult<String> iderIdsResult) {
+    private QueryManagedIdersResult forNormal(ManagerIders.QueryManagedIdersResult iderIdsResult) {
         QueryManagedIdersResult result = new QueryManagedIdersResult();
         BeanUtils.copyProperties(iderIdsResult, result, "infos");
         // 根据关系查找id提供者
