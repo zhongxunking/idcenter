@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -10,11 +10,17 @@ package org.antframework.idcenter.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.idcenter.web.id.IderContext;
+import org.antframework.manager.facade.event.ManagerDeletingEvent;
+import org.antframework.manager.facade.info.ManagerInfo;
+import org.bekit.event.annotation.DomainListener;
+import org.bekit.event.annotation.Listen;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
@@ -24,11 +30,25 @@ import javax.validation.constraints.Min;
  */
 @Configuration
 @EnableConfigurationProperties(WebConfiguration.IdcenterProperties.class)
+@Import(WebConfiguration.ManagerListener.class)
 public class WebConfiguration {
     // id提供者上下文
     @Bean
     public IderContext iderContext(IdcenterProperties properties) {
         return new IderContext(properties.getMinDuration(), properties.getMaxDuration(), properties.getMaxBlockedThreads());
+    }
+
+    /**
+     * 管理员监听器
+     */
+    @DomainListener
+    public static class ManagerListener {
+        // 监听管理员删除事件
+        @Listen
+        public void listenManagerDeletingEvent(ManagerDeletingEvent event) {
+            ManagerInfo manager = event.getManager();
+            ManagerIders.deletesByManager(manager.getManagerId());
+        }
     }
 
     /**
