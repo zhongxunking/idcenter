@@ -13,6 +13,7 @@ import org.antframework.idcenter.client.core.DefaultIder;
 import org.antframework.idcenter.client.support.ServerRequester;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -57,6 +58,13 @@ public class IderContext {
         this.maxDuration = maxDuration;
         this.maxBlockedThreads = maxBlockedThreads;
         this.serverRequester = new ServerRequester(serverUrl);
+    }
+
+    /**
+     * 获取已获取id的id提供者的id（id编码）
+     */
+    public Set<String> getIderIds() {
+        return iderCache.getAllKeys();
     }
 
     /**
