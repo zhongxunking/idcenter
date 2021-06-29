@@ -21,7 +21,6 @@ import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.WebConfiguration;
-import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.idcenter.web.id.Ider;
 import org.antframework.idcenter.web.id.IderContext;
 import org.apache.commons.lang3.StringUtils;
@@ -57,10 +56,6 @@ public class IderController {
      */
     @RequestMapping("/acquireIds")
     public AcquireIdsResult acquireIds(String iderId, Integer amount) {
-        if (properties.getIder().isAcquireNeedManager()) {
-            // 校验权限
-            ManagerIders.assertAdminOrHaveIder(iderId);
-        }
         log.info("收到请求-获取批量id：iderId={},amount={}", iderId, amount);
         if (StringUtils.isEmpty(iderId)) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "iderId不能为空");

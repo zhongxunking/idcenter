@@ -48,8 +48,6 @@ public class SingleIderMultiThreadTask implements Runnable {
                 serverUrl,
                 10 * 60 * 1000,
                 15 * 60 * 1000,
-                null,
-                null,
                 null);
         Ider ider = iderContext.getIder(iderId);
 

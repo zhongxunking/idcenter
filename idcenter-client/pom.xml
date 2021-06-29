@@ -16,10 +16,6 @@
             <artifactId>ant-common-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.antframework.manager</groupId>
-            <artifactId>manager-client</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
