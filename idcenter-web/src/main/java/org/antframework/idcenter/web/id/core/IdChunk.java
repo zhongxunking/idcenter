@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -34,7 +34,7 @@ public final class IdChunk {
      * @param amount 获取的id数量
      * @return 批量id
      */
-    public IdSegment getIds(int amount) {
+    public synchronized IdSegment getIds(int amount) {
         if (getAmount(null) <= 0) {
             return null;
         }
