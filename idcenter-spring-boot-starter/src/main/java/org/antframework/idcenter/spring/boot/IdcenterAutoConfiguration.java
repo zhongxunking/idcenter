@@ -34,6 +34,7 @@ public class IdcenterAutoConfiguration {
                 properties.getServerUrl(),
                 properties.getMinDuration(),
                 properties.getMaxDuration(),
-                properties.getMaxBlockedThreads());
+                properties.getMaxBlockedThreads(),
+                properties.getRequestServerThreads());
     }
 }

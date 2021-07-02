@@ -27,7 +27,8 @@ public class IderContextTest {
                 "http://localhost:6210",
                 10 * 60 * 1000,
                 15 * 60 * 1000,
-                null);
+                null,
+                5);
         Ider ider = iderContext.getIder("userId");
         log.info("-----------单ider单线程-----------start");
         new SingleIderSingleThreadTask(0, ider, 1000000, performance -> {

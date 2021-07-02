@@ -44,4 +44,9 @@ public class IdcenterProperties {
      */
     @Min(0)
     private Integer maxBlockedThreads = null;
+    /**
+     * 选填：请求服务端的线程数量（默认为5）
+     */
+    @Min(1)
+    private int requestServerThreads = 5;
 }
