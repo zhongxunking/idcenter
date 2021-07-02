@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Configuration;
  * idcenter自动配置
  */
 @Configuration
-@ConditionalOnMissingBean(IderContext.class)
 @EnableConfigurationProperties(IdcenterProperties.class)
 @AllArgsConstructor
 public class IdcenterAutoConfiguration {
@@ -32,8 +31,8 @@ public class IdcenterAutoConfiguration {
     public IderContext iderContext() {
         return new IderContext(
                 properties.getServerUrl(),
-                properties.getMinDuration(),
-                properties.getMaxDuration(),
+                properties.getMinReserve(),
+                properties.getMaxReserve(),
                 properties.getMaxBlockedThreads(),
                 properties.getRequestServerThreads());
     }
