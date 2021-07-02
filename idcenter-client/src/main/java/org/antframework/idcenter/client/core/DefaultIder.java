@@ -34,15 +34,15 @@ public class DefaultIder implements Ider {
     // 是否存在异步任务
     private final AtomicBoolean existingAsyncTask = new AtomicBoolean(false);
     // 请求服务端的互斥锁
-    private final Object lock = new Object();
+    private final Object requestServerLock = new Object();
     // id仓库
     private final IdStorage idStorage = new IdStorage();
     // id提供者的id（id编码）
     private final String iderId;
     // 流量计数器
     private final FlowCounter flowCounter;
-    // 限制等待线程数量的信号量
-    private final Semaphore semaphore;
+    // 限制被阻塞线程数量的信号量
+    private final Semaphore limitedThreadsSemaphore;
     // 服务端请求器
     private final ServerRequester serverRequester;
     // 任务执行器
@@ -66,7 +66,7 @@ public class DefaultIder implements Ider {
                        TaskExecutor taskExecutor) {
         this.iderId = iderId;
         this.flowCounter = new FlowCounter(minDuration, maxDuration);
-        this.semaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
+        this.limitedThreadsSemaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
         this.serverRequester = serverRequester;
         this.taskExecutor = taskExecutor;
     }
@@ -120,13 +120,13 @@ public class DefaultIder implements Ider {
 
     // 同步从服务端获取批量id（如果有必要）
     private void syncAcquireIds(boolean limit) {
-        if (limit && semaphore != null) {
-            if (!semaphore.tryAcquire()) {
+        if (limit && limitedThreadsSemaphore != null) {
+            if (!limitedThreadsSemaphore.tryAcquire()) {
                 return;
             }
         }
         try {
-            synchronized (lock) {
+            synchronized (requestServerLock) {
                 Long currentTime = System.currentTimeMillis();
                 int gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 if (gap > 0) {
@@ -138,8 +138,8 @@ public class DefaultIder implements Ider {
                 }
             }
         } finally {
-            if (limit && semaphore != null) {
-                semaphore.release();
+            if (limit && limitedThreadsSemaphore != null) {
+                limitedThreadsSemaphore.release();
             }
         }
     }
