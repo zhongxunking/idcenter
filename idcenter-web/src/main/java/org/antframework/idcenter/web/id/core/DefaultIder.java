@@ -48,18 +48,18 @@ public class DefaultIder implements Ider {
      * 构造id提供者
      *
      * @param iderId            id提供者的id（id编码）
-     * @param minDuration       最小预留时间（毫秒）
-     * @param maxDuration       最大预留时间（毫秒）
+     * @param minReserve        最短时长储备量（毫秒）
+     * @param maxReserve        最长时长储备量（毫秒）
      * @param maxBlockedThreads 最多被阻塞的线程数量（null表示不限制数量）
      * @param taskExecutor      任务执行器
      */
     public DefaultIder(String iderId,
-                       long minDuration,
-                       long maxDuration,
+                       long minReserve,
+                       long maxReserve,
                        Integer maxBlockedThreads,
                        TaskExecutor taskExecutor) {
         this.iderId = iderId;
-        this.flowCounter = new FlowCounter(minDuration, maxDuration);
+        this.flowCounter = new FlowCounter(minReserve, maxReserve);
         this.limitedThreadsSemaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
         this.taskExecutor = taskExecutor;
     }

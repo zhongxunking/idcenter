@@ -24,16 +24,16 @@ public class IderContext {
         public Ider apply(String key) {
             return new DefaultIder(
                     key,
-                    minDuration,
-                    maxDuration,
+                    minReserve,
+                    maxReserve,
                     maxBlockedThreads,
                     taskExecutor);
         }
     });
-    // 最小预留时间（毫秒）
-    private final long minDuration;
-    // 最大预留时间（毫秒）
-    private final long maxDuration;
+    // 最短时长储备量（毫秒）
+    private final long minReserve;
+    // 最长时长储备量（毫秒）
+    private final long maxReserve;
     // 最多被阻塞的线程数量
     private final Integer maxBlockedThreads;
     // 任务执行器
@@ -42,23 +42,23 @@ public class IderContext {
     /**
      * 构造id提供者上下文
      *
-     * @param minDuration           最小预留时间（毫秒）
-     * @param maxDuration           最大预留时间（毫秒）
+     * @param minReserve            最短时长储备量（毫秒）
+     * @param maxReserve            最长时长储备量（毫秒）
      * @param maxBlockedThreads     最多被阻塞的线程数量（null表示不限制数量）
      * @param requestServiceThreads 请求服务的线程数量
      */
-    public IderContext(long minDuration,
-                       long maxDuration,
+    public IderContext(long minReserve,
+                       long maxReserve,
                        Integer maxBlockedThreads,
                        int requestServiceThreads) {
-        if (minDuration < 0
-                || maxDuration < minDuration
+        if (minReserve < 0
+                || maxReserve < minReserve
                 || (maxBlockedThreads != null && maxBlockedThreads < 0)
                 || requestServiceThreads <= 0) {
-            throw new IllegalArgumentException(String.format("初始化IderContext的参数不合法：minDuration=%d,maxDuration=%d,maxBlockedThreads=%s,requestServiceThreads=%d", minDuration, maxDuration, maxBlockedThreads, requestServiceThreads));
+            throw new IllegalArgumentException(String.format("初始化IderContext的参数不合法：minReserve=%d,maxReserve=%d,maxBlockedThreads=%s,requestServiceThreads=%d", minReserve, maxReserve, maxBlockedThreads, requestServiceThreads));
         }
-        this.minDuration = minDuration;
-        this.maxDuration = maxDuration;
+        this.minReserve = minReserve;
+        this.maxReserve = maxReserve;
         this.maxBlockedThreads = maxBlockedThreads;
         this.taskExecutor = new TaskExecutor(requestServiceThreads);
     }
