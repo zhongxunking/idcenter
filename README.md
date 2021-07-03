@@ -14,7 +14,10 @@
 
 > 获取id样例：http://idcenter.antframework.org:6210/ider/acquireIds?iderId=tradeId&amount=1
 
+
 <img src="https://note.youdao.com/yws/api/personal/file/WEB05da7336237569414648a5e625d2302b?method=download&shareKey=5fabc26cd1af6f5013f50dbe918c78b8" width=700 />
+性能：
+<img src="https://note.youdao.com/yws/api/personal/file/WEBfb8835ccf544b2bf85815ed79020b356?method=download&shareKey=953cf6fa1abeb99496458e70fefe8cf5" width=700 height="20" />
 
 # 特性
 idcenter具备统一的id管理能力、id可支持周期概念、可承受海量获取id需求、完善的权限管理能力。
