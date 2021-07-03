@@ -162,7 +162,7 @@ public class DefaultIder implements Ider {
             flowCounter.next();
         } catch (Throwable e) {
             serverFailureRateLimiter.run();
-            log.error("从idcenter获取id出错：{}", e.getMessage());
+            log.error("从idcenter获取id出错：{}", e.toString());
         }
     }
 }
