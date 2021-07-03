@@ -12,6 +12,7 @@ import org.antframework.common.util.other.Cache;
 import org.antframework.idcenter.web.id.core.DefaultIder;
 import org.antframework.idcenter.web.id.support.TaskExecutor;
 
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -61,6 +62,13 @@ public class IderContext {
         this.maxReserve = maxReserve;
         this.maxBlockedThreads = maxBlockedThreads;
         this.taskExecutor = new TaskExecutor(requestServiceThreads);
+    }
+
+    /**
+     * 获取已获取id的id提供者的id（id编码）
+     */
+    public Set<String> getIderIds() {
+        return iderCache.getAllKeys();
     }
 
     /**
