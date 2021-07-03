@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -15,55 +15,60 @@ import org.antframework.common.util.other.RateLimiter;
 import org.antframework.idcenter.client.Ider;
 import org.antframework.idcenter.client.support.FlowCounter;
 import org.antframework.idcenter.client.support.ServerRequester;
+import org.antframework.idcenter.client.support.TaskExecutor;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * id提供者默认实现
  */
 @Slf4j
 public class DefaultIder implements Ider {
-    // 执行获取批量id任务的线程池
-    private final Executor executor = new ThreadPoolExecutor(
-            0,
-            1,
-            5,
-            TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(1),
-            new ThreadPoolExecutor.DiscardPolicy());
     // 过期限速器
     private final RateLimiter overdueRateLimiter = new RateLimiter(5000);
     // 服务端失败限速器
     private final RateLimiter serverFailureRateLimiter = new RateLimiter(5000);
+    // 是否存在异步任务
+    private final AtomicBoolean existingAsyncTask = new AtomicBoolean(false);
     // 请求服务端的互斥锁
-    private final Object lock = new Object();
+    private final Object requestServerLock = new Object();
     // id仓库
     private final IdStorage idStorage = new IdStorage();
     // id提供者的id（id编码）
     private final String iderId;
     // 流量计数器
     private final FlowCounter flowCounter;
-    // 限制等待线程数量的信号量
-    private final Semaphore semaphore;
+    // 限制被阻塞线程数量的信号量
+    private final Semaphore limitedThreadsSemaphore;
     // 服务端请求器
     private final ServerRequester serverRequester;
+    // 任务执行器
+    private final TaskExecutor taskExecutor;
 
     /**
      * 构造id提供者
      *
      * @param iderId            id提供者的id（id编码）
-     * @param minDuration       最小预留时间（毫秒）
-     * @param maxDuration       最大预留时间（毫秒）
+     * @param minReserve        最短时长储备量（毫秒）
+     * @param maxReserve        最长时长储备量（毫秒）
      * @param maxBlockedThreads 最多被阻塞的线程数量（null表示不限制数量）
      * @param serverRequester   服务端请求器
+     * @param taskExecutor      任务执行器
      */
-    public DefaultIder(String iderId, long minDuration, long maxDuration, Integer maxBlockedThreads, ServerRequester serverRequester) {
+    public DefaultIder(String iderId,
+                       long minReserve,
+                       long maxReserve,
+                       Integer maxBlockedThreads,
+                       ServerRequester serverRequester,
+                       TaskExecutor taskExecutor) {
         this.iderId = iderId;
-        this.flowCounter = new FlowCounter(minDuration, maxDuration);
-        this.semaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
+        this.flowCounter = new FlowCounter(minReserve, maxReserve);
+        this.limitedThreadsSemaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
         this.serverRequester = serverRequester;
+        this.taskExecutor = taskExecutor;
     }
 
     @Override
@@ -102,18 +107,31 @@ public class DefaultIder implements Ider {
                 return;
             }
         }
-        executor.execute(() -> syncAcquireIds(false));
+        if (existingAsyncTask.compareAndSet(false, true)) {
+            try {
+                taskExecutor.execute(() -> {
+                    try {
+                        syncAcquireIds(false);
+                    } finally {
+                        existingAsyncTask.set(false);
+                    }
+                });
+            } catch (Throwable e) {
+                existingAsyncTask.set(false);
+                log.error("触发异步获取批量id任务失败", e);
+            }
+        }
     }
 
     // 同步从服务端获取批量id（如果有必要）
     private void syncAcquireIds(boolean limit) {
-        if (limit && semaphore != null) {
-            if (!semaphore.tryAcquire()) {
+        if (limit && limitedThreadsSemaphore != null) {
+            if (!limitedThreadsSemaphore.tryAcquire()) {
                 return;
             }
         }
         try {
-            synchronized (lock) {
+            synchronized (requestServerLock) {
                 Long currentTime = System.currentTimeMillis();
                 int gap = flowCounter.computeGap(idStorage.getAmount(currentTime));
                 if (gap > 0) {
@@ -125,8 +143,8 @@ public class DefaultIder implements Ider {
                 }
             }
         } finally {
-            if (limit && semaphore != null) {
-                semaphore.release();
+            if (limit && limitedThreadsSemaphore != null) {
+                limitedThreadsSemaphore.release();
             }
         }
     }
@@ -144,7 +162,7 @@ public class DefaultIder implements Ider {
             flowCounter.next();
         } catch (Throwable e) {
             serverFailureRateLimiter.run();
-            log.error("从idcenter获取id出错：{}", e.getMessage());
+            log.error("从idcenter获取id出错：{}", e.toString());
         }
     }
 }

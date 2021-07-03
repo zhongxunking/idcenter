@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (email:zhongxunking@163.com)
  */
 
@@ -33,7 +33,7 @@ public class Performance {
     // id集合
     private final Set<Id> idSet;
     // tps
-    private double tps;
+    private final double tps;
 
     public void check() {
         if (idSet != null) {
@@ -43,13 +43,23 @@ public class Performance {
 
     @Override
     public String toString() {
-        return String.format("开始时间=%s，结束时间=%s，耗时=%d毫秒，循环次数=%d，id出现null次数=%d，id数量=%s，tps=%.2f",
-                DateFormatUtils.format(startTime, "yyyy-MM-dd HH:mm:ss.SSS"),
-                DateFormatUtils.format(endTime, "yyyy-MM-dd HH:mm:ss.SSS"),
-                endTime - startTime,
-                amountOfId,
-                amountOfNullId,
-                idSet == null ? "null" : idSet.size(),
-                tps);
+        if (idSet == null) {
+            return String.format("开始时间=%s，结束时间=%s，耗时=%d毫秒，获取id次数=%d，id出现null次数=%d，tps=%.2f",
+                    DateFormatUtils.format(startTime, "yyyy-MM-dd HH:mm:ss.SSS"),
+                    DateFormatUtils.format(endTime, "yyyy-MM-dd HH:mm:ss.SSS"),
+                    endTime - startTime,
+                    amountOfId,
+                    amountOfNullId,
+                    tps);
+        } else {
+            return String.format("开始时间=%s，结束时间=%s，耗时=%d毫秒，获取id次数=%d，id出现null次数=%d，获取到的id数量=%s，tps=%.2f",
+                    DateFormatUtils.format(startTime, "yyyy-MM-dd HH:mm:ss.SSS"),
+                    DateFormatUtils.format(endTime, "yyyy-MM-dd HH:mm:ss.SSS"),
+                    endTime - startTime,
+                    amountOfId,
+                    amountOfNullId,
+                    idSet.size(),
+                    tps);
+        }
     }
 }

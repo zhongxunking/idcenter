@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -20,6 +20,7 @@ import org.antframework.idcenter.biz.util.Iders;
 import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.vo.IdSegment;
+import org.antframework.idcenter.web.WebConfiguration;
 import org.antframework.idcenter.web.id.Ider;
 import org.antframework.idcenter.web.id.IderContext;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +42,8 @@ public class IderController {
     private final LoadingCache<String, Integer> maxAmountCache = Caffeine.newBuilder()
             .refreshAfterWrite(Duration.ofMinutes(1))
             .build(this::findMaxAmount);
+    // 配置
+    private final WebConfiguration.IdcenterProperties properties;
     // id提供者上下文
     private final IderContext iderContext;
 
@@ -61,6 +64,19 @@ public class IderController {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), "amount不能为空且必须大于0");
         }
         // 计算id数量
+        int realAmount = computeRealAmount(iderId, amount);
+        // 获取批量id
+        List<IdSegment> idSegments = doAcquireIds(iderId, realAmount);
+        // 构造result
+        AcquireIdsResult result = FacadeUtils.buildSuccess(AcquireIdsResult.class);
+        result.setIdSegments(idSegments);
+        log.info("执行结果-获取批量id：result={}", result);
+        return result;
+    }
+
+    // 计算真实的数量
+    private int computeRealAmount(String iderId, int amount) {
+        // 计算id数量
         Integer maxAmount = maxAmountCache.get(iderId);
         if (maxAmount == null) {
             throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", iderId));
@@ -70,14 +86,13 @@ public class IderController {
             realAmount = maxAmount;
             log.warn("期望获取id的数量[{}]过多，调整到[{}]", amount, realAmount);
         }
-        // 获取批量id
+        return realAmount;
+    }
+
+    // 获取批量id
+    private List<IdSegment> doAcquireIds(String iderId, int amount) {
         Ider ider = iderContext.getIder(iderId);
-        List<IdSegment> idSegments = ider.acquireIds(realAmount);
-        // 构造result
-        AcquireIdsResult result = FacadeUtils.buildSuccess(AcquireIdsResult.class);
-        result.setIdSegments(idSegments);
-        log.info("执行结果-获取批量id：result={}", result);
-        return result;
+        return ider.acquireIds(amount);
     }
 
     // 查找单次获取id的最大数量

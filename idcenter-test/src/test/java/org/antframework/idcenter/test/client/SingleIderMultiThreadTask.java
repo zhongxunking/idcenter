@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (email:zhongxunking@163.com)
  */
 
@@ -44,7 +44,12 @@ public class SingleIderMultiThreadTask implements Runnable {
 
     @Override
     public void run() {
-        IderContext iderContext = new IderContext(serverUrl, 10 * 60 * 1000, 15 * 60 * 1000, null);
+        IderContext iderContext = new IderContext(
+                serverUrl,
+                10 * 60 * 1000,
+                15 * 60 * 1000,
+                null,
+                5);
         Ider ider = iderContext.getIder(iderId);
 
         Executor executor = new ThreadPoolExecutor(

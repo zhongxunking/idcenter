@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>idcenter</title>
-    <script src="../common/import.js"></script>
+    <script>
+        IDCENTER_VERSION = '1.6.0-SNAPSHOT';
+        document.write("<script src=\"../common/import.js?version=" + IDCENTER_VERSION + "\"><\/script>");
+    </script>
 </head>
 <body>
 <div id="loginApp">

@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -33,7 +33,7 @@ public class IdChunk {
      *
      * @return id（null表示无可用id）
      */
-    public Id getId() {
+    public synchronized Id getId() {
         if (getAmount(null) <= 0) {
             return null;
         }

@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -30,18 +30,23 @@ public class IdcenterProperties {
     @NotBlank
     private String serverUrl;
     /**
-     * 选填：最小预留时间（单位：毫秒。默认为10分钟）
+     * 选填：最短时长储备量（单位：毫秒。默认为10分钟）
      */
     @Min(1)
-    private long minDuration = 10 * 60 * 1000;
+    private long minReserve = 10 * 60 * 1000;
     /**
-     * 选填：最大预留时间（单位：毫秒。默认为15分钟）
+     * 选填：最长时长储备量（单位：毫秒。默认为15分钟）
      */
     @Min(1)
-    private long maxDuration = 15 * 60 * 1000;
+    private long maxReserve = 15 * 60 * 1000;
     /**
      * 选填：最多被阻塞的线程数量（null表示不限制数量。默认为不限制数量）
      */
     @Min(0)
     private Integer maxBlockedThreads = null;
+    /**
+     * 选填：请求服务端的线程数量（默认为5）
+     */
+    @Min(1)
+    private int requestServerThreads = 5;
 }
