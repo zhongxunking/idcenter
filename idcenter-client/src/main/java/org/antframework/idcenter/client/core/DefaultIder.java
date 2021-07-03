@@ -108,13 +108,18 @@ public class DefaultIder implements Ider {
             }
         }
         if (existingAsyncTask.compareAndSet(false, true)) {
-            taskExecutor.execute(() -> {
-                try {
-                    syncAcquireIds(false);
-                } finally {
-                    existingAsyncTask.set(false);
-                }
-            });
+            try {
+                taskExecutor.execute(() -> {
+                    try {
+                        syncAcquireIds(false);
+                    } finally {
+                        existingAsyncTask.set(false);
+                    }
+                });
+            } catch (Throwable e) {
+                existingAsyncTask.set(false);
+                log.error("触发异步获取批量id任务失败", e);
+            }
         }
     }
 
