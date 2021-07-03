@@ -35,7 +35,11 @@ public class WebConfiguration {
     // id提供者上下文
     @Bean
     public IderContext iderContext(IdcenterProperties properties) {
-        return new IderContext(properties.getMinDuration(), properties.getMaxDuration(), properties.getMaxBlockedThreads());
+        return new IderContext(
+                properties.getMinDuration(),
+                properties.getMaxDuration(),
+                properties.getMaxBlockedThreads(),
+                properties.getRequestServiceThreads());
     }
 
     /**
@@ -74,5 +78,10 @@ public class WebConfiguration {
          */
         @Min(0)
         private Integer maxBlockedThreads = 100;
+        /**
+         * 选填：请求服务的线程数量（默认为20）
+         */
+        @Min(1)
+        private int requestServiceThreads = 20;
     }
 }

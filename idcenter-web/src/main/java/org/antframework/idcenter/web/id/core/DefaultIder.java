@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -15,26 +15,22 @@ import org.antframework.idcenter.biz.util.Iders;
 import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.id.Ider;
 import org.antframework.idcenter.web.id.support.FlowCounter;
+import org.antframework.idcenter.web.id.support.TaskExecutor;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * id提供者默认实现
  */
 @Slf4j
 public class DefaultIder implements Ider {
-    // 执行获取批量id任务的线程池
-    private final Executor executor = new ThreadPoolExecutor(
-            0,
-            1,
-            5,
-            TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(1),
-            new ThreadPoolExecutor.DiscardPolicy());
     // 服务失败限速器
     private final RateLimiter serviceFailureRateLimiter = new RateLimiter(5000);
+    // 是否存在异步任务
+    private final AtomicBoolean existingAsyncTask = new AtomicBoolean(false);
     // 请求服务端的互斥锁
     private final Object lock = new Object();
     // id仓库
@@ -45,6 +41,8 @@ public class DefaultIder implements Ider {
     private final FlowCounter flowCounter;
     // 限制等待线程数量的信号量
     private final Semaphore semaphore;
+    // 任务执行器
+    private final TaskExecutor taskExecutor;
 
     /**
      * 构造id提供者
@@ -53,11 +51,17 @@ public class DefaultIder implements Ider {
      * @param minDuration       最小预留时间（毫秒）
      * @param maxDuration       最大预留时间（毫秒）
      * @param maxBlockedThreads 最多被阻塞的线程数量（null表示不限制数量）
+     * @param taskExecutor      任务执行器
      */
-    public DefaultIder(String iderId, long minDuration, long maxDuration, Integer maxBlockedThreads) {
+    public DefaultIder(String iderId,
+                       long minDuration,
+                       long maxDuration,
+                       Integer maxBlockedThreads,
+                       TaskExecutor taskExecutor) {
         this.iderId = iderId;
         this.flowCounter = new FlowCounter(minDuration, maxDuration);
         this.semaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
+        this.taskExecutor = taskExecutor;
     }
 
     @Override
@@ -89,7 +93,20 @@ public class DefaultIder implements Ider {
                 return;
             }
         }
-        executor.execute(() -> syncAcquireIds(false));
+        if (existingAsyncTask.compareAndSet(false, true)) {
+            try {
+                taskExecutor.execute(() -> {
+                    try {
+                        syncAcquireIds(false);
+                    } finally {
+                        existingAsyncTask.set(false);
+                    }
+                });
+            } catch (Throwable e) {
+                existingAsyncTask.set(false);
+                log.error("触发异步获取批量id任务失败", e);
+            }
+        }
     }
 
     // 同步从服务获取批量id（如果有必要）
