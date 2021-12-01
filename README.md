@@ -9,10 +9,10 @@
 > 注意：客户端jar包已经上传到[maven中央库](http://search.maven.org/#search%7Cga%7C1%7Corg.antframework.idcenter)
 
 3. 演示环境
-> 地址：http://idcenter.antframework.org:6210 <br/>
+> 地址：http://47.108.55.170:6210 <br/>
 > 账号：admin 密码：123
 
-> 获取id样例：http://idcenter.antframework.org:6210/ider/acquireIds?iderId=tradeId&amount=1
+> 获取id样例：http://47.108.55.170:6210/ider/acquireIds?iderId=tradeId&amount=1
 
 
 <img src="https://note.youdao.com/yws/api/personal/file/WEB05da7336237569414648a5e625d2302b?method=download&shareKey=5fabc26cd1af6f5013f50dbe918c78b8" width=700 />
