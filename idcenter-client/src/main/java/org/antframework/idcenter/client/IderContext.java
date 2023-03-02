@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.client;
 
-import org.antframework.common.util.other.Cache;
+import org.antframework.common.util.kit.Cache;
 import org.antframework.idcenter.client.core.DefaultIder;
 import org.antframework.idcenter.client.support.ServerRequester;
 import org.antframework.idcenter.client.support.TaskExecutor;

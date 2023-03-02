@@ -8,7 +8,7 @@
  */
 package org.antframework.idcenter.web.id;
 
-import org.antframework.common.util.other.Cache;
+import org.antframework.common.util.kit.Cache;
 import org.antframework.idcenter.web.id.core.DefaultIder;
 import org.antframework.idcenter.web.id.support.TaskExecutor;
 

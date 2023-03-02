@@ -10,7 +10,7 @@ package org.antframework.idcenter.web.id.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Period;
-import org.antframework.common.util.other.RateLimiter;
+import org.antframework.common.util.kit.RateLimiter;
 import org.antframework.idcenter.biz.util.Iders;
 import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.id.Ider;
