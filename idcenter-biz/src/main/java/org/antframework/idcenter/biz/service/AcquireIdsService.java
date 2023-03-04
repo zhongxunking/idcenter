@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -21,12 +21,14 @@ import org.antframework.idcenter.dal.entity.IdProducer;
 import org.antframework.idcenter.dal.entity.Ider;
 import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
+import org.antframework.idcenter.facade.vo.IdSegment;
 import org.bekit.service.annotation.service.Service;
 import org.bekit.service.annotation.service.ServiceBefore;
 import org.bekit.service.annotation.service.ServiceExecute;
 import org.bekit.service.engine.ServiceContext;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -72,7 +74,8 @@ public class AcquireIdsService {
         // 现代化id生产者
         modernizeIdProducer(ider, idProducer);
         // 生产id
-        result.setIdSegments(IdProducers.produce(ider, idProducer, order.getAmount()));
+        List<IdSegment> idSegments = IdProducers.produce(ider, idProducer, order.getAmount());
+        result.setIdSegments(idSegments);
         // 更新id生产者
         idProducerDao.save(idProducer);
         log.info("生产id后的id生产者：{}", idProducer);
@@ -84,25 +87,9 @@ public class AcquireIdsService {
 
         Period period = new Period(ider.getPeriodType(), idProducer.getCurrentPeriod());
         if (period.compareTo(modernPeriod) < 0) {
-            int modernStartId = computeModernStartId(ider, idProducer, modernPeriod);
             idProducer.setCurrentPeriod(modernPeriod.getDate());
-            idProducer.setCurrentId((long) modernStartId);
+            idProducer.setCurrentId((long) idProducer.getIndex());
             log.info("被现代化后的id生产者：{}", idProducer);
         }
-    }
-
-    // 计算生产者跳跃到最新周期时的开始id
-    private int computeModernStartId(Ider ider, IdProducer idProducer, Period modernPeriod) {
-        int modernStartId = (int) (idProducer.getCurrentId() % ider.getFactor());
-        if (ider.getMaxId() == null) {
-            return modernStartId;
-        }
-        int growPerPeriod = ider.getFactor() - (int) (ider.getMaxId() % ider.getFactor());
-        Period anchorPeriod = new Period(ider.getPeriodType(), idProducer.getCurrentPeriod());
-        while (anchorPeriod.compareTo(modernPeriod) < 0) {
-            anchorPeriod = anchorPeriod.grow(1);
-            modernStartId = (modernStartId + growPerPeriod) % ider.getFactor();
-        }
-        return modernStartId;
     }
 }
