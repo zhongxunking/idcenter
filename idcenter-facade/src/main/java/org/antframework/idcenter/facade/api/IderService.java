@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -18,7 +18,6 @@ import org.antframework.idcenter.facade.result.QueryIdersResult;
  * id提供者服务
  */
 public interface IderService {
-
     /**
      * 新增id提供者
      */
@@ -33,11 +32,6 @@ public interface IderService {
      * 修改id提供者的最大数据
      */
     EmptyResult modifyIderMax(ModifyIderMaxOrder order);
-
-    /**
-     * 修改id提供者的因数
-     */
-    EmptyResult modifyIderFactor(ModifyIderFactorOrder order);
 
     /**
      * 修改id提供者当前数据

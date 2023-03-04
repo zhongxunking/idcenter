@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -11,7 +11,6 @@ package org.antframework.idcenter.biz.provider;
 import lombok.AllArgsConstructor;
 import org.antframework.boot.bekit.CommonQueries;
 import org.antframework.common.util.facade.EmptyResult;
-import org.antframework.idcenter.biz.service.converter.IderInfoConverter;
 import org.antframework.idcenter.biz.util.QueryUtils;
 import org.antframework.idcenter.dal.dao.IderDao;
 import org.antframework.idcenter.facade.api.IderService;
@@ -30,8 +29,6 @@ import org.springframework.stereotype.Service;
 public class IderServiceProvider implements IderService {
     // 服务引擎
     private final ServiceEngine serviceEngine;
-    // id提供者info转换器
-    private final IderInfoConverter infoConverter;
 
     @Override
     public EmptyResult addIder(AddIderOrder order) {
@@ -46,11 +43,6 @@ public class IderServiceProvider implements IderService {
     @Override
     public EmptyResult modifyIderMax(ModifyIderMaxOrder order) {
         return serviceEngine.execute("modifyIderMaxService", order);
-    }
-
-    @Override
-    public EmptyResult modifyIderFactor(ModifyIderFactorOrder order) {
-        return serviceEngine.execute("modifyIderFactorService", order);
     }
 
     @Override
@@ -76,6 +68,6 @@ public class IderServiceProvider implements IderService {
     @Override
     public QueryIdersResult queryIders(QueryIdersOrder order) {
         CommonQueries.CommonQueryResult result = serviceEngine.execute(CommonQueries.SERVICE_NAME, order, QueryUtils.buildCommonQueryAttachment(IderDao.class));
-        return result.convertTo(QueryIdersResult.class, infoConverter);
+        return result.convertTo(QueryIdersResult.class);
     }
 }
