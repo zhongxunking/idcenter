@@ -104,7 +104,7 @@ public class AcquireIdsService {
             period = period.grow((int) (startId / ider.getMaxId()));
             startId = startId % ider.getMaxId();
         }
-        return new IdSegment(period, startId, idAmount);
+        return new IdSegment(period, 1, startId, idAmount);
     }
 
     // 更新ider
