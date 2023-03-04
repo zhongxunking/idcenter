@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -61,16 +61,6 @@ public class IderServiceTest extends AbstractTest {
         order.setNewMaxAmount(2000000);
 
         EmptyResult result = iderService.modifyIderMax(order);
-        assertSuccess(result);
-    }
-
-    @Test
-    public void testModifyIderFactor() {
-        ModifyIderFactorOrder order = new ModifyIderFactorOrder();
-        order.setIderId("userId");
-        order.setNewFactor(4);
-
-        EmptyResult result = iderService.modifyIderFactor(order);
         assertSuccess(result);
     }
 

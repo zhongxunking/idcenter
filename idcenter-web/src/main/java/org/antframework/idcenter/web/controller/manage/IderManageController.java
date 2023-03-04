@@ -100,23 +100,6 @@ public class IderManageController {
     }
 
     /**
-     * 修改id提供者的因数
-     *
-     * @param iderId    id提供者的id（id编码）
-     * @param newFactor 新的因数（生产者数量）
-     * @return 修改结果
-     */
-    @RequestMapping("/modifyIderFactor")
-    public EmptyResult modifyIderFactor(String iderId, Integer newFactor) {
-        ManagerIders.assertAdminOrHaveIder(iderId);
-        ModifyIderFactorOrder order = new ModifyIderFactorOrder();
-        order.setIderId(iderId);
-        order.setNewFactor(newFactor);
-
-        return iderService.modifyIderFactor(order);
-    }
-
-    /**
      * 修改id提供者的当前数据
      *
      * @param iderId           id提供者的id（id编码）
