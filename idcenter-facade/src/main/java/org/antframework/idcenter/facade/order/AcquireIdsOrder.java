@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -26,7 +26,7 @@ public class AcquireIdsOrder extends AbstractOrder {
     @NotBlank
     private String iderId;
     // 数量
-    @Min(1)
+    @Min(0)
     @NotNull
     private Integer amount;
 }

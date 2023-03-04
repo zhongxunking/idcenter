@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -23,8 +23,6 @@ import java.io.Serializable;
 public final class IdSegment implements Serializable {
     // 周期
     private final Period period;
-    // 因数
-    private final int factor;
     // 开始id（包含）
     private final long startId;
     // id个数

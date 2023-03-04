@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -15,9 +15,7 @@ import org.antframework.common.util.facade.CommonResultCode;
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.facade.Status;
 import org.antframework.common.util.id.Period;
-import org.antframework.idcenter.dal.dao.IdProducerDao;
 import org.antframework.idcenter.dal.dao.IderDao;
-import org.antframework.idcenter.dal.entity.IdProducer;
 import org.antframework.idcenter.dal.entity.Ider;
 import org.antframework.idcenter.facade.order.AddIderOrder;
 import org.bekit.service.annotation.service.Service;
@@ -36,8 +34,6 @@ import java.util.Date;
 public class AddIderService {
     // id提供者dao
     private final IderDao iderDao;
-    // id生产者dao
-    private final IdProducerDao idProducerDao;
 
     @ServiceExecute
     public void execute(ServiceContext<AddIderOrder, EmptyResult> context) {
@@ -51,31 +47,17 @@ public class AddIderService {
         ider = buildIder(order);
         iderDao.save(ider);
         log.info("新增id提供者：{}", ider);
-
-        IdProducer idProducer = buildIdProducer(ider);
-        idProducerDao.save(idProducer);
-        log.info("新增id生产者：{}", idProducer);
     }
 
     // 构建id提供者
-    private Ider buildIder(AddIderOrder addIderOrder) {
+    private Ider buildIder(AddIderOrder order) {
+        Period modernPeriod = new Period(order.getPeriodType(), new Date());
+
         Ider ider = new Ider();
-        BeanUtils.copyProperties(addIderOrder, ider);
-        ider.setFactor(1);
+        BeanUtils.copyProperties(order, ider);
+        ider.setCurrentPeriod(modernPeriod.getDate());
+        ider.setCurrentId(0L);
 
         return ider;
-    }
-
-    // 构建id生产者
-    private IdProducer buildIdProducer(Ider ider) {
-        Period period = new Period(ider.getPeriodType(), new Date());
-
-        IdProducer idProducer = new IdProducer();
-        idProducer.setIderId(ider.getIderId());
-        idProducer.setIndex(0);
-        idProducer.setCurrentPeriod(period.getDate());
-        idProducer.setCurrentId(0L);
-
-        return idProducer;
     }
 }

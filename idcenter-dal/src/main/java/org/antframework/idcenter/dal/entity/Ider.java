@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -14,6 +14,7 @@ import org.antframework.boot.jpa.AbstractEntity;
 import org.antframework.common.util.id.PeriodType;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * id提供者
@@ -31,6 +32,10 @@ public class Ider extends AbstractEntity {
     @Column
     private String iderName;
 
+    // 单次获取id的最大数量（包含），null表示不限制
+    @Column
+    private Integer maxAmount;
+
     // 周期类型
     @Column(length = 64)
     @Enumerated(EnumType.STRING)
@@ -40,11 +45,11 @@ public class Ider extends AbstractEntity {
     @Column
     private Long maxId;
 
-    // 单次获取id的最大数量（包含），null表示不限制
+    // 当前周期
     @Column
-    private Integer maxAmount;
+    private Date currentPeriod;
 
-    // 因数（生产者数量）
+    // 当前Id（还未被使用）
     @Column
-    private Integer factor;
+    private Long currentId;
 }
