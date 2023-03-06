@@ -31,6 +31,10 @@
             <artifactId>ant-boot-starter-jpa</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.antframework.datasource</groupId>
+            <artifactId>datasource</artifactId>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>

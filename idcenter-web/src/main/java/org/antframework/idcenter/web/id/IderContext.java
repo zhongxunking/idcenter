@@ -9,10 +9,13 @@
 package org.antframework.idcenter.web.id;
 
 import org.antframework.common.util.kit.Cache;
+import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.id.core.DefaultIder;
 import org.antframework.idcenter.web.id.support.TaskExecutor;
 
+import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -28,7 +31,8 @@ public class IderContext {
                     minReserve,
                     maxReserve,
                     maxBlockedThreads,
-                    taskExecutor);
+                    taskExecutor,
+                    idAcquirer);
         }
     });
     // 最短时长储备量（毫秒）
@@ -39,6 +43,8 @@ public class IderContext {
     private final Integer maxBlockedThreads;
     // 任务执行器
     private final TaskExecutor taskExecutor;
+    // id获取器
+    private final BiFunction<String, Integer, List<IdSegment>> idAcquirer;
 
     /**
      * 构造id提供者上下文
@@ -47,11 +53,13 @@ public class IderContext {
      * @param maxReserve            最长时长储备量（毫秒）
      * @param maxBlockedThreads     最多被阻塞的线程数量（null表示不限制数量）
      * @param requestServiceThreads 请求服务的线程数量
+     * @param idAcquirer            id获取器
      */
     public IderContext(long minReserve,
                        long maxReserve,
                        Integer maxBlockedThreads,
-                       int requestServiceThreads) {
+                       int requestServiceThreads,
+                       BiFunction<String, Integer, List<IdSegment>> idAcquirer) {
         if (minReserve < 0
                 || maxReserve < minReserve
                 || (maxBlockedThreads != null && maxBlockedThreads < 0)
@@ -62,6 +70,7 @@ public class IderContext {
         this.maxReserve = maxReserve;
         this.maxBlockedThreads = maxBlockedThreads;
         this.taskExecutor = new TaskExecutor(requestServiceThreads);
+        this.idAcquirer = idAcquirer;
     }
 
     /**

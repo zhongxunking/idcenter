@@ -11,7 +11,6 @@ package org.antframework.idcenter.web.id.core;
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Period;
 import org.antframework.common.util.kit.RateLimiter;
-import org.antframework.idcenter.biz.util.Iders;
 import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.id.Ider;
 import org.antframework.idcenter.web.id.support.FlowCounter;
@@ -21,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiFunction;
 
 /**
  * id提供者默认实现
@@ -43,6 +43,8 @@ public class DefaultIder implements Ider {
     private final Semaphore limitedThreadsSemaphore;
     // 任务执行器
     private final TaskExecutor taskExecutor;
+    // id获取器
+    private final BiFunction<String, Integer, List<IdSegment>> idAcquirer;
 
     /**
      * 构造id提供者
@@ -52,16 +54,19 @@ public class DefaultIder implements Ider {
      * @param maxReserve        最长时长储备量（毫秒）
      * @param maxBlockedThreads 最多被阻塞的线程数量（null表示不限制数量）
      * @param taskExecutor      任务执行器
+     * @param idAcquirer        id获取器
      */
     public DefaultIder(String iderId,
                        long minReserve,
                        long maxReserve,
                        Integer maxBlockedThreads,
-                       TaskExecutor taskExecutor) {
+                       TaskExecutor taskExecutor,
+                       BiFunction<String, Integer, List<IdSegment>> idAcquirer) {
         this.iderId = iderId;
         this.flowCounter = new FlowCounter(minReserve, maxReserve);
         this.limitedThreadsSemaphore = maxBlockedThreads == null ? null : new Semaphore(maxBlockedThreads);
         this.taskExecutor = taskExecutor;
+        this.idAcquirer = idAcquirer;
     }
 
     @Override
@@ -141,7 +146,7 @@ public class DefaultIder implements Ider {
             return;
         }
         try {
-            List<IdSegment> idSegments = Iders.acquireIds(iderId, amount);
+            List<IdSegment> idSegments = idAcquirer.apply(iderId, amount);
             idSegments.stream()
                     .map(idSegment -> new IdChunk(idSegment.getPeriod(), idSegment.getFactor(), idSegment.getStartId(), idSegment.getAmount()))
                     .forEach(idStorage::addIdChunk);

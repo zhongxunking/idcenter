@@ -10,8 +10,13 @@ package org.antframework.idcenter.web;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.antframework.datasource.DataSourceTemplate;
+import org.antframework.idcenter.biz.util.Iders;
+import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.idcenter.web.id.IderContext;
+import org.antframework.idcenter.web.shard.IdShardDataSourcePropertyFilter;
+import org.antframework.idcenter.web.shard.IdShardRangeHub;
 import org.antframework.manager.facade.event.ManagerDeletingEvent;
 import org.antframework.manager.facade.info.ManagerInfo;
 import org.bekit.event.annotation.DomainListener;
@@ -23,23 +28,37 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * web层配置
  */
 @Configuration
 @EnableConfigurationProperties(WebConfiguration.IdcenterProperties.class)
-@Import(WebConfiguration.ManagerListener.class)
+@Import({WebConfiguration.ManagerListener.class, IdShardRangeHub.class, IdShardDataSourcePropertyFilter.class})
 public class WebConfiguration {
     // id提供者上下文
     @Bean
-    public IderContext iderContext(IdcenterProperties properties) {
+    public IderContext iderContext(IdcenterProperties properties, DataSourceTemplate dataSourceTemplate, IdShardRangeHub idShardRangeHub) {
+        BiFunction<String, Integer, List<IdSegment>> idAcquirer = (iderId, amount) -> {
+            return idShardRangeHub.acquireIds(amount, (dataSource, amountOfDataSource) -> {
+                return dataSourceTemplate.doWith(dataSource, () -> {
+                    return Iders.acquireIds(iderId, amountOfDataSource);
+                });
+            });
+        };
         return new IderContext(
                 properties.getMinReserve(),
                 properties.getMaxReserve(),
                 properties.getMaxBlockedThreads(),
-                properties.getRequestServiceThreads());
+                properties.getRequestServiceThreads(),
+                idAcquirer);
     }
 
     /**
@@ -83,5 +102,31 @@ public class WebConfiguration {
          */
         @Min(1)
         private int requestServiceThreads = 20;
+        /**
+         * id分片配置
+         */
+        @NotNull
+        @Valid
+        private IdShard idShard = new IdShard();
+
+        /**
+         * id分片
+         */
+        @Getter
+        @Setter
+        public static class IdShard {
+            /**
+             * 必填：总分片数
+             */
+            @Min(1)
+            @NotNull
+            private Integer totalShards;
+            /**
+             * 必填：使用的数据源
+             */
+            @NotEmpty
+            @NotNull
+            private Set<String> activeDatasources;
+        }
     }
 }
