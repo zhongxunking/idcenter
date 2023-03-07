@@ -13,6 +13,7 @@ import org.antframework.common.util.facade.FacadeUtils;
 import org.antframework.idcenter.facade.vo.IdSegment;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 
 /**
@@ -20,8 +21,8 @@ import java.util.function.BiFunction;
  */
 @Slf4j
 public class IdShardHub {
-    // 随机数
-    private final Random random = new Random(System.currentTimeMillis());
+    // 计数器
+    private final AtomicLong counter = new AtomicLong(0);
     // 总分片数
     private volatile int totalShards = 0;
     // 数据源与分片范围的映射集
@@ -60,11 +61,22 @@ public class IdShardHub {
      * @return 批量id
      */
     public List<IdSegment> acquireIds(int amount, BiFunction<String, Integer, List<IdSegment>> idAcquirer) {
-        String dataSource = dataSources.get(random.nextInt(dataSources.size()));
+        String dataSource = chooseDataSource();
         log.info("选择数据库[{}]提供批量id", dataSource);
         int shardAmount = computeShardAmount(dataSource);
         List<IdSegment> idSegments = idAcquirer.apply(dataSource, FacadeUtils.calcTotalPage(amount, shardAmount));
         return convertIdSegments(dataSource, idSegments);
+    }
+
+    // 选择数据源
+    private String chooseDataSource() {
+        long count = counter.getAndAdd(1);
+        if (count < 0) {
+            counter.set(0);
+            count = 0;
+        }
+        int index = (int) (count % dataSources.size());
+        return dataSources.get(index);
     }
 
     // 计算分片数量
