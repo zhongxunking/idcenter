@@ -23,7 +23,7 @@ import java.util.List;
  * 数据源管理controller
  */
 @RestController
-@RequestMapping("/manage/datasource")
+@RequestMapping("/manage/dataSource")
 @AllArgsConstructor
 public class DataSourceManageController {
     // id分片中心
