@@ -31,13 +31,14 @@ const IdersTemplate = `
                 <span v-else>{{ row.iderName }}</span>
             </template>
         </el-table-column>
-        <el-table-column prop="periodType" label="周期类型">
+        <el-table-column prop="maxAmount" label="单次获取id限额">
             <template slot-scope="{ row }">
-                <el-tag v-if="row.periodType === 'NONE'" size="medium">无周期</el-tag>
-                <el-tag v-else-if="row.periodType === 'HOUR'" type="success" size="medium">每小时</el-tag>
-                <el-tag v-else-if="row.periodType === 'DAY'" type="info" size="medium">每天</el-tag>
-                <el-tag v-else-if="row.periodType === 'MONTH'" type="warning" size="medium">每月</el-tag>
-                <el-tag v-else-if="row.periodType === 'YEAR'" type="danger" size="medium">每年</el-tag>
+                <el-input v-if="row.editing" v-model="row.editingMaxAmount" type="textarea" autosize size="mini"
+                          placeholder="无限制"></el-input>
+                <div v-else>
+                    <span v-if="row.maxAmount !== null">{{ row.maxAmount }}</span>
+                    <el-tag v-else size="medium">无限制</el-tag>
+                </div>
             </template>
         </el-table-column>
         <el-table-column prop="maxId" label="id最大值（不包含）">
@@ -50,14 +51,13 @@ const IdersTemplate = `
                 </div>
             </template>
         </el-table-column>
-        <el-table-column prop="maxAmount" label="单次获取id最大数量">
+        <el-table-column prop="periodType" label="周期类型">
             <template slot-scope="{ row }">
-                <el-input v-if="row.editing" v-model="row.editingMaxAmount" type="textarea" autosize size="mini"
-                          placeholder="无限制"></el-input>
-                <div v-else>
-                    <span v-if="row.maxAmount !== null">{{ row.maxAmount }}</span>
-                    <el-tag v-else size="medium">无限制</el-tag>
-                </div>
+                <el-tag v-if="row.periodType === 'NONE'" size="medium">无周期</el-tag>
+                <el-tag v-else-if="row.periodType === 'HOUR'" type="success" size="medium">每小时</el-tag>
+                <el-tag v-else-if="row.periodType === 'DAY'" type="info" size="medium">每天</el-tag>
+                <el-tag v-else-if="row.periodType === 'MONTH'" type="warning" size="medium">每月</el-tag>
+                <el-tag v-else-if="row.periodType === 'YEAR'" type="danger" size="medium">每年</el-tag>
             </template>
         </el-table-column>
         <el-table-column prop="currentPeriod" label="当前周期">
@@ -181,7 +181,8 @@ const IdersTemplate = `
             <el-button type="primary" @click="modifyCurrent">提交</el-button>
         </div>
     </el-dialog>
-</div>`;
+</div>
+`;
 
 const Iders = {
     template: IdersTemplate,
@@ -384,8 +385,8 @@ const Iders = {
         startModifyCurrent: function (ider) {
             this.modifyCurrentDialogVisible = true;
             this.modifyCurrentForm.ider = ider;
-            this.modifyCurrentForm.newCurrentPeriod = null;
-            this.modifyCurrentForm.newCurrentId = null;
+            this.modifyCurrentForm.newCurrentPeriod = this.toShowingCurrentPeriod(ider);
+            this.modifyCurrentForm.newCurrentId = ider.currentId;
         },
         modifyCurrent: function () {
             const theThis = this;
