@@ -8,6 +8,7 @@
  */
 package org.antframework.idcenter.web.idshard;
 
+import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.facade.FacadeUtils;
 import org.antframework.idcenter.facade.vo.IdSegment;
 
@@ -17,6 +18,7 @@ import java.util.function.BiFunction;
 /**
  * id分片中心
  */
+@Slf4j
 public class IdShardHub {
     // 随机数
     private final Random random = new Random(System.currentTimeMillis());
@@ -59,6 +61,7 @@ public class IdShardHub {
      */
     public List<IdSegment> acquireIds(int amount, BiFunction<String, Integer, List<IdSegment>> idAcquirer) {
         String dataSource = dataSources.get(random.nextInt(dataSources.size()));
+        log.info("选择数据库[{}]提供批量id", dataSource);
         int shardAmount = computeShardAmount(dataSource);
         List<IdSegment> idSegments = idAcquirer.apply(dataSource, FacadeUtils.calcTotalPage(amount, shardAmount));
         return convertIdSegments(dataSource, idSegments);
