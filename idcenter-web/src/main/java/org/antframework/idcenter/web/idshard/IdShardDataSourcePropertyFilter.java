@@ -86,8 +86,8 @@ public class IdShardDataSourcePropertyFilter implements DataSourcePropertyFilter
     private IdShardRange convertRange(String rangeStr) {
         String[] startEnd = StringUtils.split(rangeStr, ',');
         Assert.isTrue(startEnd.length == 2, String.format("数据源的元数据idcenter.shard-ranges的配置[%s]不合法", rangeStr));
-        int start = Integer.parseInt(startEnd[0]);
-        int end = Integer.parseInt(startEnd[1]);
+        int start = Integer.parseInt(startEnd[0].trim());
+        int end = Integer.parseInt(startEnd[1].trim());
         Assert.isTrue(start >= 0 && start <= end && end < properties.getIdShard().getTotalShards(), String.format("数据源的元数据idcenter.id-shard-ranges的配置[%s]不合法", rangeStr));
         return new IdShardRange(start, end);
     }
