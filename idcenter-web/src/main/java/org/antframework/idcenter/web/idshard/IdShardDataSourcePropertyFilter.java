@@ -61,10 +61,15 @@ public class IdShardDataSourcePropertyFilter implements DataSourcePropertyFilter
 
     // 计算id分片范围集
     private void computeIdShardRanges(Map<String, DataSourceProperty> nameProperties) {
+        List<IdShardRange> allRanges = new ArrayList<>();
         nameProperties.forEach((name, property) -> {
             String rangesStr = (String) property.getMetadata().get(ID_SHARD_RANGES_KEY);
             if (rangesStr != null) {
                 List<IdShardRange> ranges = convertRanges(rangesStr);
+                for (IdShardRange range : ranges) {
+                    allRanges.forEach(one -> Assert.isTrue(range.getStart() > one.getEnd() || range.getEnd() < one.getStart(), String.format("数据源[%s]的元数据idcenter.id-shard-ranges的配置[%s]不合法，分片范围有重合", name, rangesStr)));
+                    allRanges.add(range);
+                }
                 property.getMetadata().put(ID_SHARD_RANGES_KEY, ranges);
             }
         });
@@ -76,7 +81,6 @@ public class IdShardDataSourcePropertyFilter implements DataSourcePropertyFilter
         String[] rangeStrs = StringUtils.split(rangesStr, ';');
         for (String rangeStr : rangeStrs) {
             IdShardRange range = convertRange(rangeStr);
-            ranges.forEach(one -> Assert.isTrue(range.getStart() > one.getEnd() || range.getEnd() < one.getStart(), String.format("数据源的元数据idcenter.id-shard-ranges的配置[%s]不合法，与其他数据源的分片范围有重合", rangesStr)));
             ranges.add(range);
         }
         return ranges;
