@@ -15,8 +15,8 @@ import org.antframework.idcenter.biz.util.Iders;
 import org.antframework.idcenter.facade.vo.IdSegment;
 import org.antframework.idcenter.web.common.ManagerIders;
 import org.antframework.idcenter.web.id.IderContext;
-import org.antframework.idcenter.web.shard.IdShardDataSourcePropertyFilter;
-import org.antframework.idcenter.web.shard.IdShardRangeHub;
+import org.antframework.idcenter.web.idshard.IdShardDataSourcePropertyFilter;
+import org.antframework.idcenter.web.idshard.IdShardHub;
 import org.antframework.manager.facade.event.ManagerDeletingEvent;
 import org.antframework.manager.facade.info.ManagerInfo;
 import org.bekit.event.annotation.DomainListener;
@@ -41,13 +41,13 @@ import java.util.function.BiFunction;
  */
 @Configuration
 @EnableConfigurationProperties(WebConfiguration.IdcenterProperties.class)
-@Import({WebConfiguration.ManagerListener.class, IdShardRangeHub.class, IdShardDataSourcePropertyFilter.class})
+@Import({WebConfiguration.ManagerListener.class, IdShardHub.class, IdShardDataSourcePropertyFilter.class})
 public class WebConfiguration {
     // id提供者上下文
     @Bean
-    public IderContext iderContext(IdcenterProperties properties, DataSourceTemplate dataSourceTemplate, IdShardRangeHub idShardRangeHub) {
+    public IderContext iderContext(IdShardHub idShardHub, DataSourceTemplate dataSourceTemplate, IdcenterProperties properties) {
         BiFunction<String, Integer, List<IdSegment>> idAcquirer = (iderId, amount) -> {
-            return idShardRangeHub.acquireIds(amount, (dataSource, amountOfDataSource) -> {
+            return idShardHub.acquireIds(amount, (dataSource, amountOfDataSource) -> {
                 return dataSourceTemplate.doWith(dataSource, () -> {
                     return Iders.acquireIds(iderId, amountOfDataSource);
                 });
@@ -127,6 +127,11 @@ public class WebConfiguration {
             @NotEmpty
             @NotNull
             private Set<String> activeDatasources;
+            /**
+             * 选填：id分片数据源配置过滤器的优先级（默认:0）
+             */
+            @NotNull
+            private Integer idShardDataSourcePropertyOrder = 0;
         }
     }
 }

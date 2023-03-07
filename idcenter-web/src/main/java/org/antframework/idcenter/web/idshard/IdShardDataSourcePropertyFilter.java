@@ -6,7 +6,7 @@
  * 修订记录:
  * @author 钟勋 2023-03-06 17:40 创建
  */
-package org.antframework.idcenter.web.shard;
+package org.antframework.idcenter.web.idshard;
 
 import lombok.AllArgsConstructor;
 import org.antframework.datasource.core.DataSourceProperty;
@@ -21,27 +21,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * id分片数据源配置过滤器
  */
 @AllArgsConstructor
 public class IdShardDataSourcePropertyFilter implements DataSourcePropertyFilter {
-
+    /**
+     * id分片范围集的key
+     */
     public static final String ID_SHARD_RANGES_KEY = "idcenter.id-shard-ranges";
 
+    // id分片中心
+    private final IdShardHub idShardHub;
+    // 配置
     private final WebConfiguration.IdcenterProperties properties;
-
-    private final IdShardRangeHub idShardRangeHub;
 
     @Override
     public int getOrder() {
-        return 0;
+        return properties.getIdShard().getIdShardDataSourcePropertyOrder();
     }
 
     @Override
     public Map<String, DataSourceProperty> doFilter(Map<String, DataSourceProperty> nameProperties) {
         Map<String, DataSourceProperty> filteredOne = new HashMap<>();
 
-        convert(nameProperties);
+        computeIdShardRanges(nameProperties);
         Map<String, List<IdShardRange>> nameRanges = new HashMap<>();
         for (String datasource : properties.getIdShard().getActiveDatasources()) {
             DataSourceProperty property = nameProperties.get(datasource);
@@ -51,12 +54,13 @@ public class IdShardDataSourcePropertyFilter implements DataSourcePropertyFilter
             nameRanges.put(datasource, ranges);
             filteredOne.put(datasource, property);
         }
-        idShardRangeHub.replace(properties.getIdShard().getTotalShards(), nameRanges);
+        idShardHub.replace(properties.getIdShard().getTotalShards(), nameRanges);
 
         return filteredOne;
     }
 
-    private void convert(Map<String, DataSourceProperty> nameProperties) {
+    // 计算id分片范围集
+    private void computeIdShardRanges(Map<String, DataSourceProperty> nameProperties) {
         nameProperties.forEach((name, property) -> {
             String rangesStr = (String) property.getMetadata().get(ID_SHARD_RANGES_KEY);
             if (rangesStr != null) {
@@ -66,23 +70,25 @@ public class IdShardDataSourcePropertyFilter implements DataSourcePropertyFilter
         });
     }
 
+    // 转换id分片范围集
     private List<IdShardRange> convertRanges(String rangesStr) {
         List<IdShardRange> ranges = new ArrayList<>();
         String[] rangeStrs = StringUtils.split(rangesStr, ';');
         for (String rangeStr : rangeStrs) {
             IdShardRange range = convertRange(rangeStr);
-            ranges.forEach(one -> Assert.isTrue(range.getStart() > one.getEnd() || range.getEnd() < one.getStart(), String.format("数据源的元数据idcenter.shard-ranges的配置[%s]不合法，与其他数据源的分片范围有重合", rangesStr)));
+            ranges.forEach(one -> Assert.isTrue(range.getStart() > one.getEnd() || range.getEnd() < one.getStart(), String.format("数据源的元数据idcenter.id-shard-ranges的配置[%s]不合法，与其他数据源的分片范围有重合", rangesStr)));
             ranges.add(range);
         }
         return ranges;
     }
 
+    // 转换id分片范围
     private IdShardRange convertRange(String rangeStr) {
         String[] startEnd = StringUtils.split(rangeStr, ',');
         Assert.isTrue(startEnd.length == 2, String.format("数据源的元数据idcenter.shard-ranges的配置[%s]不合法", rangeStr));
         int start = Integer.parseInt(startEnd[0]);
         int end = Integer.parseInt(startEnd[1]);
-        Assert.isTrue(start >= 0 && start <= end && end < properties.getIdShard().getTotalShards(), String.format("数据源的元数据idcenter.shard-ranges的配置[%s]不合法", rangeStr));
+        Assert.isTrue(start >= 0 && start <= end && end < properties.getIdShard().getTotalShards(), String.format("数据源的元数据idcenter.id-shard-ranges的配置[%s]不合法", rangeStr));
         return new IdShardRange(start, end);
     }
 }
