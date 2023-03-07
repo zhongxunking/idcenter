@@ -10,6 +10,7 @@ package org.antframework.idcenter.test.facade.api;
 
 import org.antframework.common.util.facade.EmptyResult;
 import org.antframework.common.util.id.PeriodType;
+import org.antframework.datasource.DataSourceTemplate;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.order.*;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
@@ -27,6 +28,10 @@ import java.util.Date;
  */
 @Ignore
 public class IderServiceTest extends AbstractTest {
+    // 数据源
+    private final String dataSource = "db0";
+    @Autowired
+    private DataSourceTemplate dataSourceTemplate;
     @Autowired
     private IderService iderService;
 
@@ -39,7 +44,7 @@ public class IderServiceTest extends AbstractTest {
         order.setMaxId(9000000000L);
         order.setMaxAmount(1000000);
 
-        EmptyResult result = iderService.addIder(order);
+        EmptyResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.addIder(order));
         assertSuccess(result);
     }
 
@@ -49,7 +54,7 @@ public class IderServiceTest extends AbstractTest {
         order.setIderId("userId");
         order.setNewIderName("用户id2");
 
-        EmptyResult result = iderService.modifyIderName(order);
+        EmptyResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.modifyIderName(order));
         assertSuccess(result);
     }
 
@@ -60,7 +65,7 @@ public class IderServiceTest extends AbstractTest {
         order.setNewMaxId(9000000000L - 100 * 4);
         order.setNewMaxAmount(2000000);
 
-        EmptyResult result = iderService.modifyIderMax(order);
+        EmptyResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.modifyIderMax(order));
         assertSuccess(result);
     }
 
@@ -71,7 +76,7 @@ public class IderServiceTest extends AbstractTest {
         order.setNewCurrentPeriod(new Date());
         order.setNewCurrentId(100L);
 
-        EmptyResult result = iderService.modifyIderCurrent(order);
+        EmptyResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.modifyIderCurrent(order));
         assertSuccess(result);
     }
 
@@ -80,7 +85,7 @@ public class IderServiceTest extends AbstractTest {
         DeleteIderOrder order = new DeleteIderOrder();
         order.setIderId("userId");
 
-        EmptyResult result = iderService.deleteIder(order);
+        EmptyResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.deleteIder(order));
         assertSuccess(result);
     }
 
@@ -90,7 +95,7 @@ public class IderServiceTest extends AbstractTest {
         order.setIderId("userId");
         order.setAmount(1000);
 
-        AcquireIdsResult result = iderService.acquireIds(order);
+        AcquireIdsResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.acquireIds(order));
         assertSuccess(result);
     }
 
@@ -99,7 +104,7 @@ public class IderServiceTest extends AbstractTest {
         FindIderOrder order = new FindIderOrder();
         order.setIderId("userId");
 
-        FindIderResult result = iderService.findIder(order);
+        FindIderResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.findIder(order));
         assertSuccess(result);
     }
 
@@ -109,7 +114,7 @@ public class IderServiceTest extends AbstractTest {
         order.setPageNo(1);
         order.setPageSize(10);
 
-        QueryIdersResult result = iderService.queryIders(order);
+        QueryIdersResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.queryIders(order));
         assertSuccess(result);
     }
 }

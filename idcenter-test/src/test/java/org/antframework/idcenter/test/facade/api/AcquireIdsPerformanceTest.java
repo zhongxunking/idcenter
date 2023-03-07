@@ -1,4 +1,4 @@
-/* 
+/*
  * 作者：钟勋 (e-mail:zhongxunking@163.com)
  */
 
@@ -11,6 +11,7 @@ package org.antframework.idcenter.test.facade.api;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.antframework.common.util.facade.FacadeUtils;
+import org.antframework.datasource.DataSourceTemplate;
 import org.antframework.idcenter.facade.api.IderService;
 import org.antframework.idcenter.facade.order.AcquireIdsOrder;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
@@ -37,6 +38,10 @@ public class AcquireIdsPerformanceTest extends AbstractTest {
             new ArrayBlockingQueue<>(AMOUNT_OF_TASKS));
     private CountDownLatch latch = new CountDownLatch(AMOUNT_OF_TASKS);
     private Performance[] performances = new Performance[AMOUNT_OF_TASKS];
+    // 数据源
+    private final String dataSource = "db0";
+    @Autowired
+    private DataSourceTemplate dataSourceTemplate;
     @Autowired
     private IderService iderService;
 
@@ -81,7 +86,7 @@ public class AcquireIdsPerformanceTest extends AbstractTest {
         order.setIderId("userId");
         order.setAmount(100);
 
-        AcquireIdsResult result = iderService.acquireIds(order);
+        AcquireIdsResult result = dataSourceTemplate.doWith(dataSource, () -> iderService.acquireIds(order));
         FacadeUtils.assertSuccess(result);
     }
 
