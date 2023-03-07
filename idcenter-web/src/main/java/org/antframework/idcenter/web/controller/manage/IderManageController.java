@@ -62,16 +62,13 @@ public class IderManageController {
     public EmptyResult addIder(String dataSource, String iderId, String iderName, PeriodType periodType, Long maxId, Integer maxAmount) {
         CurrentManagerAssert.admin();
 
-        return doWithDataSource(dataSource, () -> {
-            AddIderOrder order = new AddIderOrder();
-            order.setIderId(iderId);
-            order.setIderName(iderName);
-            order.setPeriodType(periodType);
-            order.setMaxId(maxId);
-            order.setMaxAmount(maxAmount);
-
-            return iderService.addIder(order);
-        });
+        AddIderOrder order = new AddIderOrder();
+        order.setIderId(iderId);
+        order.setIderName(iderName);
+        order.setPeriodType(periodType);
+        order.setMaxId(maxId);
+        order.setMaxAmount(maxAmount);
+        return doWithDataSource(dataSource, () -> iderService.addIder(order));
     }
 
     /**
@@ -86,13 +83,10 @@ public class IderManageController {
     public EmptyResult modifyIderName(String dataSource, String iderId, String newIderName) {
         ManagerIders.assertAdminOrHaveIder(iderId);
 
-        return doWithDataSource(dataSource, () -> {
-            ModifyIderNameOrder order = new ModifyIderNameOrder();
-            order.setIderId(iderId);
-            order.setNewIderName(newIderName);
-
-            return iderService.modifyIderName(order);
-        });
+        ModifyIderNameOrder order = new ModifyIderNameOrder();
+        order.setIderId(iderId);
+        order.setNewIderName(newIderName);
+        return doWithDataSource(dataSource, () -> iderService.modifyIderName(order));
     }
 
     /**
@@ -108,14 +102,11 @@ public class IderManageController {
     public EmptyResult modifyIderMax(String dataSource, String iderId, Long newMaxId, Integer newMaxAmount) {
         ManagerIders.assertAdminOrHaveIder(iderId);
 
-        return doWithDataSource(dataSource, () -> {
-            ModifyIderMaxOrder order = new ModifyIderMaxOrder();
-            order.setIderId(iderId);
-            order.setNewMaxId(newMaxId);
-            order.setNewMaxAmount(newMaxAmount);
-
-            return iderService.modifyIderMax(order);
-        });
+        ModifyIderMaxOrder order = new ModifyIderMaxOrder();
+        order.setIderId(iderId);
+        order.setNewMaxId(newMaxId);
+        order.setNewMaxAmount(newMaxAmount);
+        return doWithDataSource(dataSource, () -> iderService.modifyIderMax(order));
     }
 
     /**
@@ -131,21 +122,19 @@ public class IderManageController {
     public EmptyResult modifyIderCurrent(String dataSource, String iderId, String newCurrentPeriod, Long newCurrentId) {
         ManagerIders.assertAdminOrHaveIder(iderId);
 
-        return doWithDataSource(dataSource, () -> {
-            // 解析出新的当前周期
-            IderInfo ider = Iders.findIder(iderId);
-            if (ider == null) {
-                throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", iderId));
-            }
-            Date newCurrentPeriodDate = parseCurrentPeriod(ider.getPeriodType(), newCurrentPeriod);
-            // 修改当前数据
-            ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
-            order.setIderId(iderId);
-            order.setNewCurrentPeriod(newCurrentPeriodDate);
-            order.setNewCurrentId(newCurrentId);
+        // 解析出新的当前周期
+        IderInfo ider = doWithDataSource(dataSource, () -> Iders.findIder(iderId));
+        if (ider == null) {
+            throw new BizException(Status.FAIL, CommonResultCode.INVALID_PARAMETER.getCode(), String.format("id提供者[%s]不存在", iderId));
+        }
+        Date newCurrentPeriodDate = parseCurrentPeriod(ider.getPeriodType(), newCurrentPeriod);
+        // 修改当前数据
+        ModifyIderCurrentOrder order = new ModifyIderCurrentOrder();
+        order.setIderId(iderId);
+        order.setNewCurrentPeriod(newCurrentPeriodDate);
+        order.setNewCurrentId(newCurrentId);
 
-            return iderService.modifyIderCurrent(order);
-        });
+        return doWithDataSource(dataSource, () -> iderService.modifyIderCurrent(order));
     }
 
     // 解析出当前周期
@@ -192,12 +181,9 @@ public class IderManageController {
         // 删除与该id提供者有关的管理权限
         ManagerIders.deletesByIder(iderId);
 
-        return doWithDataSource(dataSource, () -> {
-            DeleteIderOrder order = new DeleteIderOrder();
-            order.setIderId(iderId);
-
-            return iderService.deleteIder(order);
-        });
+        DeleteIderOrder order = new DeleteIderOrder();
+        order.setIderId(iderId);
+        return doWithDataSource(dataSource, () -> iderService.deleteIder(order));
     }
 
     /**
@@ -211,12 +197,9 @@ public class IderManageController {
     public FindIderResult findIder(String dataSource, String iderId) {
         ManagerIders.assertAdminOrHaveIder(iderId);
 
-        return doWithDataSource(dataSource, () -> {
-            FindIderOrder order = new FindIderOrder();
-            order.setIderId(iderId);
-
-            return iderService.findIder(order);
-        });
+        FindIderOrder order = new FindIderOrder();
+        order.setIderId(iderId);
+        return doWithDataSource(dataSource, () -> iderService.findIder(order));
     }
 
     /**
@@ -233,15 +216,12 @@ public class IderManageController {
     public QueryIdersResult queryIders(String dataSource, int pageNo, int pageSize, String iderId, PeriodType periodType) {
         CurrentManagerAssert.admin();
 
-        return doWithDataSource(dataSource, () -> {
-            QueryIdersOrder order = new QueryIdersOrder();
-            order.setPageNo(pageNo);
-            order.setPageSize(pageSize);
-            order.setIderId(iderId);
-            order.setPeriodType(periodType);
-
-            return iderService.queryIders(order);
-        });
+        QueryIdersOrder order = new QueryIdersOrder();
+        order.setPageNo(pageNo);
+        order.setPageSize(pageSize);
+        order.setIderId(iderId);
+        order.setPeriodType(periodType);
+        return doWithDataSource(dataSource, () -> iderService.queryIders(order));
     }
 
     /**
@@ -275,18 +255,16 @@ public class IderManageController {
 
     // 查询普通管理员管理的id提供者
     private QueryManagedIdersResult forNormal(String dataSource, ManagerIders.QueryManagedIdersResult iderIdsResult) {
-        return doWithDataSource(dataSource, () -> {
-            QueryManagedIdersResult result = new QueryManagedIdersResult();
-            BeanUtils.copyProperties(iderIdsResult, result, "infos");
-            // 根据关系查找id提供者
-            for (String iderId : iderIdsResult.getInfos()) {
-                IderInfo ider = Iders.findIder(iderId);
-                if (ider != null) {
-                    result.addInfo(ider);
-                }
+        QueryManagedIdersResult result = new QueryManagedIdersResult();
+        BeanUtils.copyProperties(iderIdsResult, result, "infos");
+        // 根据关系查找id提供者
+        for (String iderId : iderIdsResult.getInfos()) {
+            IderInfo ider = doWithDataSource(dataSource, () -> Iders.findIder(iderId));
+            if (ider != null) {
+                result.addInfo(ider);
             }
-            return result;
-        });
+        }
+        return result;
     }
 
     // 指定数据源执行
