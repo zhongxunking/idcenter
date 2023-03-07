@@ -165,13 +165,19 @@
     <el-dialog :visible.sync="modifyCurrentDialogVisible" :before-close="closeModifyCurrentDialog"
                title="修改当前周期和id" width="40%">
         <el-form ref="modifyCurrentForm" :model="modifyCurrentForm" label-width="30%">
-            <el-form-item label="新的当前周期" prop="newCurrentPeriod"
+            <el-form-item label="数据源:">
+                {{ currentDataSource }}
+            </el-form-item>
+            <el-form-item label="id编码:">
+                {{ modifyCurrentForm.ider ? modifyCurrentForm.ider.iderId : ''}}
+            </el-form-item>
+            <el-form-item label="新的当前周期:" prop="newCurrentPeriod"
                           :rules="[{required:modifyCurrentPeriodEnable(), message:'请输入新的当前周期', trigger:'blur'}]">
                 <el-input v-model="modifyCurrentForm.newCurrentPeriod" :disabled="!modifyCurrentPeriodEnable()"
                           clearable
                           :placeholder="modifyCurrentForm.ider ? getPeriodFormat(modifyCurrentForm.ider.periodType) : ''"></el-input>
             </el-form-item>
-            <el-form-item label="新的当前id" prop="newCurrentId"
+            <el-form-item label="新的当前id:" prop="newCurrentId"
                           :rules="[{required:true, message:'请输入新的当前id', trigger:'blur'}]">
                 <el-input v-model="modifyCurrentForm.newCurrentId" clearable placeholder="请输入新的当前id"></el-input>
             </el-form-item>
