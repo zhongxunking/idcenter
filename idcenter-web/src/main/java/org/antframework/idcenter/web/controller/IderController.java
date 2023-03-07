@@ -20,7 +20,6 @@ import org.antframework.idcenter.biz.util.Iders;
 import org.antframework.idcenter.facade.info.IderInfo;
 import org.antframework.idcenter.facade.result.AcquireIdsResult;
 import org.antframework.idcenter.facade.vo.IdSegment;
-import org.antframework.idcenter.web.WebConfiguration;
 import org.antframework.idcenter.web.id.Ider;
 import org.antframework.idcenter.web.id.IderContext;
 import org.apache.commons.lang3.StringUtils;
@@ -42,8 +41,6 @@ public class IderController {
     private final LoadingCache<String, Integer> maxAmountCache = Caffeine.newBuilder()
             .refreshAfterWrite(Duration.ofMinutes(1))
             .build(this::findMaxAmount);
-    // 配置
-    private final WebConfiguration.IdcenterProperties properties;
     // id提供者上下文
     private final IderContext iderContext;
 
