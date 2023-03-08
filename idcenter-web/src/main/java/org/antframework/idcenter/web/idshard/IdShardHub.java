@@ -11,6 +11,7 @@ package org.antframework.idcenter.web.idshard;
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.facade.FacadeUtils;
 import org.antframework.idcenter.facade.vo.IdSegment;
+import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -107,6 +108,7 @@ public class IdShardHub {
     private IdSegment convertIdSegment(IdSegment idSegment, int shard) {
         int factor = idSegment.getFactor() * totalShards;
         long startId = idSegment.getStartId() * totalShards + shard;
+        Assert.isTrue(startId >= idSegment.getStartId(), "运算中超过long类型最大值，无法进行计算");
         return new IdSegment(idSegment.getPeriod(), factor, startId, idSegment.getAmount());
     }
 }
