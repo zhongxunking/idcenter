@@ -17,7 +17,7 @@ const IdersTemplate = `
                     <el-button type="primary" icon="el-icon-search" @click="queryIders">查询</el-button>
                 </el-form-item>
                 <el-form-item v-if="manager.type === 'ADMIN'">
-                    <el-button type="primary" icon="el-icon-plus" @click="openAddIderDialogVisible">新增</el-button>
+                    <el-button type="primary" icon="el-icon-plus" @click="openAddIderDialog">新增</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -146,7 +146,7 @@ const IdersTemplate = `
                 <el-input v-model="addIderForm.maxId" clearable placeholder="不填表示不限制"
                           style="width: 90%"></el-input>
             </el-form-item>
-            <el-form-item label="单次最大数量">
+            <el-form-item label="单次获取id限额">
                 <el-input v-model="addIderForm.maxAmount" clearable placeholder="不填表示不限制"
                           style="width: 90%"></el-input>
             </el-form-item>
@@ -369,13 +369,13 @@ const Iders = {
                 }
             });
         },
-        openAddIderDialogVisible: function () {
-            this.addIderForm.dataSource = this.currentDataSource;
+        openAddIderDialog: function () {
+            this.addIderForm.dataSource = '__allDataSource';
             this.addIderForm.iderId = null;
             this.addIderForm.iderName = null;
             this.addIderForm.periodType = 'NONE';
             this.addIderForm.maxId = null;
-            this.addIderForm.maxAmount = null;
+            this.addIderForm.maxAmount = 10000;
             this.addIderDialogVisible = true;
         },
         closeAddIderDialog: function () {
