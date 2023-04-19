@@ -17,7 +17,6 @@ import org.antframework.common.util.id.Period;
 import org.antframework.common.util.id.PeriodType;
 import org.antframework.common.util.json.JSON;
 import org.antframework.common.util.tostring.ToString;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -55,20 +54,16 @@ public class ServerRequester {
      * @param amount id数量
      * @return 批量id
      */
-    public List<IdSegment> acquireIds(String iderId, int amount) {
-        try {
-            String resultJson = HTTP_CLIENT.execute(buildRequest(iderId, amount), new BasicResponseHandler());
-            AcquireIdsResult result = convertToAcquireIdsResult(resultJson);
-            if (result == null) {
-                throw new RuntimeException("请求idcenter失败");
-            }
-            if (!result.isSuccess()) {
-                throw new RuntimeException("从idcenter获取批量id失败：" + result.getMessage());
-            }
-            return result.getIdSegments();
-        } catch (IOException e) {
-            return ExceptionUtils.rethrow(e);
+    public List<IdSegment> acquireIds(String iderId, int amount) throws IOException {
+        String resultJson = HTTP_CLIENT.execute(buildRequest(iderId, amount), new BasicResponseHandler());
+        AcquireIdsResult result = convertToAcquireIdsResult(resultJson);
+        if (result == null) {
+            throw new RuntimeException("请求idcenter失败");
         }
+        if (!result.isSuccess()) {
+            throw new RuntimeException("从idcenter获取批量id失败：" + result.getMessage());
+        }
+        return result.getIdSegments();
     }
 
     // 构建请求

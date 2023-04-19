@@ -11,6 +11,7 @@ package org.antframework.idcenter.client.core;
 import lombok.extern.slf4j.Slf4j;
 import org.antframework.common.util.id.Id;
 import org.antframework.common.util.id.Period;
+import org.antframework.common.util.kit.Exceptions;
 import org.antframework.common.util.kit.RateLimiter;
 import org.antframework.idcenter.client.Ider;
 import org.antframework.idcenter.client.support.FlowCounter;
@@ -112,6 +113,8 @@ public class DefaultIder implements Ider {
                 taskExecutor.execute(() -> {
                     try {
                         syncAcquireIds(false);
+                    } catch (Throwable e) {
+                        log.error("从idcenter获取id出错：{}", e.toString());
                     } finally {
                         existingAsyncTask.set(false);
                     }
@@ -142,6 +145,8 @@ public class DefaultIder implements Ider {
                     idStorage.clearOverdueIdChunks(currentTime);
                 }
             }
+        } catch (Throwable e) {
+            Exceptions.rethrow(e);
         } finally {
             if (limit && limitedThreadsSemaphore != null) {
                 limitedThreadsSemaphore.release();
@@ -150,7 +155,7 @@ public class DefaultIder implements Ider {
     }
 
     // 从服务端获取批量id
-    private void acquireIdsFromServer(int amount) {
+    private void acquireIdsFromServer(int amount) throws Throwable {
         if (!serverFailureRateLimiter.can()) {
             return;
         }
@@ -162,7 +167,7 @@ public class DefaultIder implements Ider {
             flowCounter.next();
         } catch (Throwable e) {
             serverFailureRateLimiter.run();
-            log.error("从idcenter获取id出错：{}", e.toString());
+            throw e;
         }
     }
 }
