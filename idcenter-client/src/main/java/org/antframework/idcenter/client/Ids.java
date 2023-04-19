@@ -11,6 +11,7 @@ package org.antframework.idcenter.client;
 import org.antframework.common.util.id.Id;
 import org.antframework.common.util.id.Period;
 import org.antframework.common.util.kit.Exceptions;
+import org.apache.http.util.Asserts;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeoutException;
@@ -54,7 +55,13 @@ public class Ids {
     }
 
     /**
-     * 设置新周期
+     * 设置新周期（十进制的id长度会增加两位）
+     * <p>
+     * 1.周期类型为HOUR时，新周期和原周期的差值不能超过11，即11个小时
+     * 2.周期类型为DAY时，新周期和原周期的差值不能超过13，即13天
+     * 3.周期类型为MONTH时，新周期和原周期的差值不能超过5，即5个月
+     * 4.周期类型为YEAR时，不支持设置新周期
+     * 5.周期类型为NONE时，不支持设置新周期
      *
      * @param id            id
      * @param newPeriod     新周期
@@ -69,9 +76,14 @@ public class Ids {
 
         long newId = idHead;
         for (int i = 0; i < decimalLength; i++) {
-            newId *= 10;
+            long newerId = newId * 10;
+            Asserts.check(newerId >= newId, "运算中超过long类型最大值，无法进行计算");
+            newId = newerId;
         }
-        newId += id.getId();
+        long newerId = newId + id.getId();
+        Asserts.check(newerId >= newId, "运算中超过long类型最大值，无法进行计算");
+        newId = newerId;
+
         return new Id(newPeriod, newId);
     }
 
