@@ -10,6 +10,7 @@ package org.antframework.idcenter.client;
 
 import org.antframework.common.util.id.Id;
 import org.antframework.common.util.id.Period;
+import org.antframework.common.util.id.PeriodType;
 import org.antframework.common.util.kit.Exceptions;
 import org.apache.http.util.Asserts;
 
@@ -89,6 +90,10 @@ public class Ids {
 
     // 计算新id头
     private static Integer computeIdHead(Id id, Period newPeriod) {
+        if (id.getPeriod().getType() == PeriodType.NONE) {
+            throw new IllegalArgumentException(String.format("周期类型为%s的id[%s]不支持重新分配新周期", id.getPeriod().getType(), id));
+        }
+
         int idHead;
 
         int gap = newPeriod.subtract(id.getPeriod());
