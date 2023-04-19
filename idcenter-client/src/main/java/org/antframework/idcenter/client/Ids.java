@@ -67,7 +67,7 @@ public class Ids {
      * @param id            id
      * @param newPeriod     新周期
      * @param decimalLength 原来的十进制长度
-     * @return 新id
+     * @return 新id（null表示新周期和原周期的差值超过了以上描述的最大值）
      */
     public static Id setNewPeriod(Id id, Period newPeriod, int decimalLength) {
         Integer idHead = computeIdHead(id, newPeriod);
